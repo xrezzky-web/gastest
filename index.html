@@ -3,72 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uji Coba Firebase - Xrezzky Store</title>
+    <title>Xrezzky Store | Home</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }
-        h1 { color: #1a73e8; font-size: 24px; }
-        p { color: #5f6368; line-height: 1.6; }
-        .btn { background: #1a73e8; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: 0.3s; }
-        .btn:hover { background: #1557b0; }
-        #status-msg { margin-top: 15px; font-weight: bold; }
+        :root { --primary: #2563eb; --secondary: #10b981; --dark: #1e293b; --light: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background: var(--light); margin: 0; }
+        
+        /* Navbar */
+        nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .nav-btns { display: flex; gap: 10px; }
+        
+        /* Buttons */
+        .btn { padding: 8px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; font-weight: 500; border: none; }
+        .btn-outline { border: 1px solid var(--primary); color: var(--primary); background: transparent; }
+        .btn-fill { background: var(--primary); color: white; }
+
+        /* Modal Form Daftar */
+        #modal-daftar { 
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
+            justify-content: center; align-items: center; z-index: 1000; 
+        }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; position: relative; }
+        .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 1.5rem; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+
+        /* Product Grid */
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        #product-list { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; 
+        }
+        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
+        .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; }
+        .price { color: var(--secondary); font-weight: bold; display: block; margin: 10px 0; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Xrezzky Marketplace Test</h1>
-    <p>Klik tombol di bawah untuk mengetes apakah Firebase kamu sudah terhubung dengan benar ke database.</p>
-    
-    <button id="btnTes" class="btn">Tes Koneksi Database</button>
-    <div id="status-msg"></div>
+<nav>
+    <div class="logo">Xrezzky Store</div>
+    <div class="nav-btns">
+        <a href="admin-panel.html" class="btn btn-outline">Admin Panel</a>
+        <button class="btn btn-fill" onclick="toggleModal(true)">Buka Toko</button>
+    </div>
+</nav>
+
+<div class="container">
+    <h2 style="color: var(--dark)">Produk Terbaru</h2>
+    <div id="product-list">
+        <p>Memuat produk...</p>
+    </div>
+</div>
+
+<div id="modal-daftar">
+    <div class="modal-content">
+        <span class="close-btn" onclick="toggleModal(false)">&times;</span>
+        <h3>Daftar Jadi Seller</h3>
+        <p>Isi data toko lu untuk ditinjau admin.</p>
+        <form id="regForm">
+            <input type="text" id="storeName" placeholder="Nama Toko" required>
+            <input type="email" id="sellerEmail" placeholder="Email Aktif" required>
+            <button type="submit" class="btn btn-fill" style="width: 100%; margin-top: 10px;">Kirim Pendaftaran</button>
+        </form>
+    </div>
 </div>
 
 <script type="module">
-    // Import Firebase SDK (Versi Web terbaru dari CDN)
-    import { initializeApp } from "https://www.gstatic.com";
-    import { getDatabase, ref, set } from "https://www.gstatic.com";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // Konfigurasi Firebase yang kamu berikan tadi
     const firebaseConfig = {
-      apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
-      authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
-      databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "xrezzkystore-marketplace-83bc0",
-      storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
-      messagingSenderId: "604900856944",
-      appId: "1:604900856944:web:c48c973da45214c68a10b5",
-      measurementId: "G-7XG9V48HW0"
+        apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
+        authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
+        databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "xrezzkystore-marketplace-83bc0",
+        storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
+        messagingSenderId: "604900856944",
+        appId: "1:604900856944:web:c48c973da45214c68a10b5"
     };
 
-    // Inisialisasi Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Ambil elemen dari HTML
-    const btn = document.getElementById('btnTes');
-    const msg = document.getElementById('status-msg');
+    // --- LOGIC DISPLAY PRODUK ---
+    const productContainer = document.getElementById('product-list');
+    onValue(ref(db, 'products'), (snapshot) => {
+        const data = snapshot.val();
+        productContainer.innerHTML = '';
+        if (data) {
+            Object.values(data).forEach(item => {
+                productContainer.innerHTML += `
+                    <div class="card">
+                        <img src="${item.image}" alt="${item.name}">
+                        <h4>${item.name}</h4>
+                        <span class="price">Rp ${item.price.toLocaleString('id-ID')}</span>
+                        <button class="btn btn-outline" style="width:100%">Detail</button>
+                    </div>
+                `;
+            });
+        } else {
+            productContainer.innerHTML = '<p>Belum ada produk.</p>';
+        }
+    });
 
-    // Jalankan Fungsi saat tombol diklik
-    btn.addEventListener('click', () => {
-        msg.innerText = "Sedang mencoba koneksi...";
-        msg.style.color = "blue";
+    // --- LOGIC DAFTAR SELLER ---
+    window.toggleModal = (show) => {
+        document.getElementById('modal-daftar').style.display = show ? 'flex' : 'none';
+    };
 
-        // Simpan data sederhana ke Firebase sebagai tes
-        set(ref(db, 'testing_connection/'), {
-            nama_web: "Xrezzky Marketplace",
-            status: "Online",
-            update_terakhir: new Date().toLocaleString()
-        })
-        .then(() => {
-            msg.innerText = "✅ Mantap! Firebase Berhasil Terhubung!";
-            msg.style.color = "green";
-            console.log("Data berhasil dikirim ke Firebase!");
-        })
-        .catch((error) => {
-            msg.innerText = "❌ Gagal: " + error.message;
-            msg.style.color = "red";
-            console.error(error);
+    const regForm = document.getElementById('regForm');
+    regForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const storeName = document.getElementById('storeName').value;
+        const email = document.getElementById('sellerEmail').value;
+
+        const regRef = ref(db, 'registrations');
+        const newRegRef = push(regRef);
+        
+        set(newRegRef, {
+            storeName: storeName,
+            email: email,
+            status: 'pending' // Status awal selalu pending
+        }).then(() => {
+            alert("Pendaftaran berhasil dikirim! Tunggu konfirmasi admin.");
+            toggleModal(false);
+            regForm.reset();
         });
     });
 </script>
