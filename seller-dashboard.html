@@ -3,113 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Seller - Daftar Toko Baru</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Seller Dashboard | Xrezzky Store</title>
+    <style>
+        :root { --primary: #2563eb; --success: #10b981; --danger: #ef4444; --dark: #1e293b; --bg: #f1f5f9; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; display: flex; }
+        
+        /* Sidebar */
+        .sidebar { width: 250px; background: var(--dark); color: white; height: 100vh; padding: 20px; position: fixed; }
+        .sidebar h2 { font-size: 1.2rem; border-bottom: 1px solid #334155; padding-bottom: 15px; }
+        .nav-link { display: block; color: #94a3b8; text-decoration: none; padding: 10px 0; transition: 0.3s; }
+        .nav-link:hover { color: white; }
+
+        /* Main Content */
+        .main-content { margin-left: 250px; padding: 30px; width: 100%; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .stat-card h3 { margin: 0; color: #64748b; font-size: 0.9rem; }
+        .stat-card p { margin: 10px 0 0; font-size: 1.8rem; font-weight: bold; color: var(--dark); }
+
+        /* Form & Table */
+        .section { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        
+        .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600; }
+        .btn-add { background: var(--primary); color: white; width: 100%; }
+        .btn-delete { background: var(--danger); color: white; padding: 5px 10px; font-size: 0.8rem; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        .prod-img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<body>
 
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg">
-        <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-gray-800">Daftar Menjadi Seller</h1>
-            <p class="text-gray-500">Lengkapi data toko kamu untuk diverifikasi Admin</p>
-        </div>
+<div class="sidebar">
+    <h2>Seller Center</h2>
+    <nav>
+        <a href="index.html" class="nav-link">🏠 Lihat Toko</a>
+        <a href="#" class="nav-link" style="color: white;">📦 Kelola Produk</a>
+        <a href="#" class="nav-link" onclick="alert('Fitur Pesanan Segera Hadir!')">🛒 Pesanan</a>
+    </nav>
+</div>
 
-        <form id="sellerForm" class="space-y-4">
-            <!-- Nama Toko -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Nama Toko</label>
-                <input type="text" id="namaToko" required class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-            </div>
+<div class="main-content">
+    <div class="header">
+        <h1>Dashboard Produk</h1>
+        <div id="seller-info" style="font-weight: 600; color: var(--primary);">Seller Mode</div>
+    </div>
 
-            <!-- Nama Pemilik -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Nama Pemilik (Sesuai KTP)</label>
-                <input type="text" id="namaPemilik" required class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-            </div>
-
-            <!-- WhatsApp -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Nomor WhatsApp</label>
-                <input type="number" id="noWA" required placeholder="0812..." class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-            </div>
-
-            <!-- Kategori Produk -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Kategori Jualan</label>
-                <select id="kategori" class="w-full mt-1 p-2 border border-gray-300 rounded-md">
-                    <option value="Elektronik">Elektronik</option>
-                    <option value="Fashion">Fashion</option>
-                    <option value="Makanan">Makanan</option>
-                    <option value="Lainnya">Lainnya</option>
-                </select>
-            </div>
-
-            <button type="submit" id="btnSubmit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-md transition duration-300">
-                Kirim Pengajuan Toko
-            </button>
-        </form>
-
-        <div id="statusUpdate" class="mt-4 text-center hidden">
-            <p class="text-green-600 font-semibold">✅ Data berhasil dikirim! Menunggu persetujuan Admin.</p>
-            <a href="index.html" class="text-blue-500 hover:underline text-sm">Kembali ke Beranda</a>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Produk</h3>
+            <p id="count-produk">0</p>
         </div>
     </div>
 
-    <!-- Firebase Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com";
-        import { getDatabase, ref, push, set } from "https://www.gstatic.com";
+    <div class="grid-layout" style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+        <div class="section">
+            <h3>Tambah Produk Baru</h3>
+            <form id="addForm">
+                <div class="form-group">
+                    <label>Nama Produk</label>
+                    <input type="text" id="pName" placeholder="Contoh: Top Up Diamond" required>
+                </div>
+                <div class="form-group">
+                    <label>Harga (Rp)</label>
+                    <input type="number" id="pPrice" placeholder="50000" required>
+                </div>
+                <div class="form-group">
+                    <label>URL Gambar</label>
+                    <input type="url" id="pImage" placeholder="https://link-gambar.com/foto.jpg" required>
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea id="pDesc" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-add">🚀 Upload Produk</button>
+            </form>
+        </div>
 
-        // Konfigurasi Firebase kamu
-        const firebaseConfig = {
-          apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
-          authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
-          databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-          projectId: "xrezzkystore-marketplace-83bc0",
-          storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
-          messagingSenderId: "604900856944",
-          appId: "1:604900856944:web:c48c973da45214c68a10b5",
-          measurementId: "G-7XG9V48HW0"
+        <div class="section">
+            <h3>Produk Saya</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Nama</th>
+                        <th>Harga</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="my-products">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
+        authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
+        databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "xrezzkystore-marketplace-83bc0",
+        storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
+        messagingSenderId: "604900856944",
+        appId: "1:604900856944:web:c48c973da45214c68a10b5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // 1. Fungsi Tambah Produk
+    const addForm = document.getElementById('addForm');
+    addForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newProduct = {
+            name: document.getElementById('pName').value,
+            price: parseInt(document.getElementById('pPrice').value),
+            image: document.getElementById('pImage').value,
+            desc: document.getElementById('pDesc').value
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        const sellerForm = document.getElementById('sellerForm');
-        const statusUpdate = document.getElementById('statusUpdate');
-
-        sellerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const btn = document.getElementById('btnSubmit');
-            btn.disabled = true;
-            btn.innerText = "Mengirim...";
-
-            // Ambil Data
-            const dataSeller = {
-                namaToko: document.getElementById('namaToko').value,
-                namaPemilik: document.getElementById('namaPemilik').value,
-                noWA: document.getElementById('noWA').value,
-                kategori: document.getElementById('kategori').value,
-                status: "pending", // Status awal wajib pending
-                waktuDaftar: new Date().toLocaleString()
-            };
-
-            // Simpan ke Realtime Database dalam folder 'pendaftaran_seller'
-            const listRef = ref(db, 'pendaftaran_seller');
-            const newSellerRef = push(listRef);
-            
-            set(newSellerRef, dataSeller)
-                .then(() => {
-                    sellerForm.classList.add('hidden');
-                    statusUpdate.classList.remove('hidden');
-                })
-                .catch((error) => {
-                    alert("Error: " + error.message);
-                    btn.disabled = false;
-                    btn.innerText = "Kirim Pengajuan Toko";
-                });
+        const productsRef = ref(db, 'products');
+        push(productsRef, newProduct).then(() => {
+            alert("Produk Berhasil Tayang!");
+            addForm.reset();
         });
-    </script>
+    });
+
+    // 2. Fungsi Load & Hitung Produk
+    const productTable = document.getElementById('my-products');
+    const countDisplay = document.getElementById('count-produk');
+
+    onValue(ref(db, 'products'), (snapshot) => {
+        const data = snapshot.val();
+        productTable.innerHTML = '';
+        
+        if (data) {
+            const keys = Object.keys(data);
+            countDisplay.innerText = keys.length;
+
+            keys.forEach(key => {
+                const p = data[key];
+                productTable.innerHTML += `
+                    <tr>
+                        <td><img src="${p.image}" class="prod-img"></td>
+                        <td>${p.name}</td>
+                        <td>Rp ${p.price.toLocaleString()}</td>
+                        <td>
+                            <button class="btn btn-delete" onclick="deleteProduct('${key}')">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } else {
+            countDisplay.innerText = "0";
+            productTable.innerHTML = '<tr><td colspan="4">Belum ada produk.</td></tr>';
+        }
+    });
+
+    // 3. Fungsi Hapus Produk
+    window.deleteProduct = (id) => {
+        if(confirm("Yakin ingin menghapus produk ini?")) {
+            remove(ref(db, `products/${id}`));
+        }
+    }
+</script>
+
 </body>
 </html>
