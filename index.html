@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xrezzky Store | Marketplace & Seller System</title>
+    <title>Xrezzky Store | Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #2563eb; --secondary: #10b981; --dark: #1e293b; --light: #f8fafc; }
         body { font-family: 'Inter', sans-serif; background: var(--light); margin: 0; color: var(--dark); }
         
-        /* Navigation */
+        /* Navbar */
         nav { 
             background: white; padding: 15px 5%; display: flex; 
             justify-content: space-between; align-items: center; 
@@ -21,14 +21,7 @@
         /* Buttons */
         .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; text-decoration: none; font-weight: 600; border: none; transition: 0.3s; font-size: 0.9rem; }
         .btn-outline { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
-        .btn-outline:hover { background: var(--primary); color: white; }
         .btn-fill { background: var(--primary); color: white; }
-        .btn-fill:hover { opacity: 0.9; }
-
-        /* Hero / Header */
-        .hero { background: var(--dark); color: white; padding: 60px 20px; text-align: center; }
-        .hero h1 { margin: 0; font-size: 2.5rem; }
-        .hero p { opacity: 0.8; font-size: 1.1rem; }
 
         /* Product Grid */
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
@@ -37,70 +30,57 @@
         }
         .card { 
             background: white; padding: 15px; border-radius: 15px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.3s; 
-            border: 1px solid #eee;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #eee; text-align: center;
         }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; }
-        .card h4 { margin: 15px 0 5px; font-size: 1.1rem; }
-        .price { color: var(--secondary); font-weight: 700; font-size: 1.2rem; display: block; margin-bottom: 15px; }
+        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; }
+        .price { color: var(--secondary); font-weight: 700; font-size: 1.2rem; display: block; margin: 10px 0; }
 
         /* Modal Pendaftaran */
         .modal { 
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); 
             justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px);
         }
-        .modal-content { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; position: relative; }
-        .modal-content h3 { margin-top: 0; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; position: relative; }
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <nav>
-    <a href="#" class="logo">Xrezzky<span>Store</span></a>
+    <a href="index.html" class="logo">Xrezzky<span>Store</span></a>
     <div class="nav-btns">
-        <a href="admin-panel.html" class="btn btn-outline">Admin Panel</a>
+        <a href="admin-panel.html" class="btn btn-outline">Admin</a>
         <a href="seller-dashboard.html" class="btn btn-outline">Seller Login</a>
         <button class="btn btn-fill" onclick="openModal()">Buka Toko</button>
     </div>
 </nav>
 
-<div class="hero">
-    <h1>Marketplace Masa Kini</h1>
-    <p>Cari produk digital dan kebutuhan gaming terbaik di sini.</p>
-</div>
-
 <div class="container">
-    <h2 style="margin-bottom: 30px;">🔥 Produk Rekomendasi</h2>
+    <h2>🛍️ Produk Terbaru</h2>
     <div id="product-list">
-        <p style="text-align: center; grid-column: 1/-1;">Sedang memuat produk terbaru...</p>
+        <p>Memuat produk...</p>
     </div>
 </div>
 
 <div id="modal-daftar" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal()">&times;</span>
-        <h3>Daftar Jadi Seller</h3>
-        <p style="color: #64748b; font-size: 0.9rem;">Mulai jualan produk lu sendiri. Pendaftaran akan ditinjau oleh Admin.</p>
+        <h3>Daftar Seller</h3>
+        <p style="font-size: 0.9rem; color: #666;">Isi data untuk ditinjau admin.</p>
         <form id="regForm">
-            <label>Nama Toko</label>
-            <input type="text" id="storeName" placeholder="Contoh: Xrezzky Gaming Shop" required>
-            <label>Email Seller</label>
-            <input type="email" id="sellerEmail" placeholder="email@toko.com" required>
-            <button type="submit" class="btn btn-fill" style="width: 100%; margin-top: 20px;">Kirim Pendaftaran</button>
+            <input type="text" id="storeName" placeholder="Nama Toko" required>
+            <input type="email" id="sellerEmail" placeholder="Email Toko" required>
+            <button type="submit" class="btn btn-fill" style="width: 100%; margin-top: 10px;">Kirim Pendaftaran</button>
         </form>
     </div>
 </div>
 
 <script type="module">
-    // Import SDK Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // Konfigurasi Firebase
+    // --- CONFIG FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
         authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
@@ -114,60 +94,49 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // --- 1. AMBIL DATA PRODUK ---
+    // --- 1. TAMPILKAN PRODUK ---
     const productList = document.getElementById('product-list');
     onValue(ref(db, 'products'), (snapshot) => {
         const data = snapshot.val();
-        productList.innerHTML = ''; // Reset container
-
+        productList.innerHTML = '';
         if (data) {
             Object.values(data).forEach(item => {
-                const card = `
+                productList.innerHTML += `
                     <div class="card">
-                        <img src="${item.image || 'https://via.placeholder.com/300'}" alt="${item.name}">
+                        <img src="${item.image}" alt="${item.name}">
                         <h4>${item.name}</h4>
-                        <span class="price">Rp ${item.price.toLocaleString('id-ID')}</span>
-                        <button class="btn btn-fill" style="width: 100%;" onclick="alert('Fitur Checkout segera hadir!')">Beli Sekarang</button>
-                    </div>
-                `;
-                productList.innerHTML += card;
+                        <span class="price">Rp ${item.price.toLocaleString()}</span>
+                        <p style="font-size:0.8rem; color:#888">Penjual: ${item.storeName || 'Anonim'}</p>
+                    </div>`;
             });
         } else {
-            productList.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Belum ada produk yang tersedia.</p>';
+            productList.innerHTML = '<p>Belum ada produk.</p>';
         }
     });
 
-    // --- 2. SISTEM DAFTAR SELLER ---
+    // --- 2. SISTEM MODAL & DAFTAR ---
     const modal = document.getElementById('modal-daftar');
     window.openModal = () => modal.style.display = 'flex';
     window.closeModal = () => modal.style.display = 'none';
 
     document.getElementById('regForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        
         const storeName = document.getElementById('storeName').value;
         const email = document.getElementById('sellerEmail').value.toLowerCase();
 
+        // Push data ke registrations
         const regRef = ref(db, 'registrations');
-        const newReg = push(regRef);
-
-        set(newReg, {
+        const newRegRef = push(regRef);
+        set(newRegRef, {
             storeName: storeName,
             email: email,
-            status: 'pending',
-            timestamp: Date.now()
+            status: 'pending'
         }).then(() => {
-            alert("Berhasil! Silahkan hubungi admin untuk aktivasi toko lu.");
+            alert("Berhasil mendaftar! Tunggu persetujuan admin.");
             closeModal();
             e.target.reset();
-        }).catch(err => alert("Gagal: " + err.message));
+        });
     });
-
-    // Close modal if user clicks outside
-    window.onclick = (event) => {
-        if (event.target == modal) closeModal();
-    }
 </script>
-
 </body>
 </html>
