@@ -1,1 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Seller - Daftar Toko Baru</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
 
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold text-gray-800">Daftar Menjadi Seller</h1>
+            <p class="text-gray-500">Lengkapi data toko kamu untuk diverifikasi Admin</p>
+        </div>
+
+        <form id="sellerForm" class="space-y-4">
+            <!-- Nama Toko -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nama Toko</label>
+                <input type="text" id="namaToko" required class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Nama Pemilik -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nama Pemilik (Sesuai KTP)</label>
+                <input type="text" id="namaPemilik" required class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- WhatsApp -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Nomor WhatsApp</label>
+                <input type="number" id="noWA" required placeholder="0812..." class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <!-- Kategori Produk -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Kategori Jualan</label>
+                <select id="kategori" class="w-full mt-1 p-2 border border-gray-300 rounded-md">
+                    <option value="Elektronik">Elektronik</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Makanan">Makanan</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+
+            <button type="submit" id="btnSubmit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-md transition duration-300">
+                Kirim Pengajuan Toko
+            </button>
+        </form>
+
+        <div id="statusUpdate" class="mt-4 text-center hidden">
+            <p class="text-green-600 font-semibold">✅ Data berhasil dikirim! Menunggu persetujuan Admin.</p>
+            <a href="index.html" class="text-blue-500 hover:underline text-sm">Kembali ke Beranda</a>
+        </div>
+    </div>
+
+    <!-- Firebase Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com";
+
+        // Konfigurasi Firebase kamu
+        const firebaseConfig = {
+          apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
+          authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
+          databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "xrezzkystore-marketplace-83bc0",
+          storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
+          messagingSenderId: "604900856944",
+          appId: "1:604900856944:web:c48c973da45214c68a10b5",
+          measurementId: "G-7XG9V48HW0"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        const sellerForm = document.getElementById('sellerForm');
+        const statusUpdate = document.getElementById('statusUpdate');
+
+        sellerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true;
+            btn.innerText = "Mengirim...";
+
+            // Ambil Data
+            const dataSeller = {
+                namaToko: document.getElementById('namaToko').value,
+                namaPemilik: document.getElementById('namaPemilik').value,
+                noWA: document.getElementById('noWA').value,
+                kategori: document.getElementById('kategori').value,
+                status: "pending", // Status awal wajib pending
+                waktuDaftar: new Date().toLocaleString()
+            };
+
+            // Simpan ke Realtime Database dalam folder 'pendaftaran_seller'
+            const listRef = ref(db, 'pendaftaran_seller');
+            const newSellerRef = push(listRef);
+            
+            set(newSellerRef, dataSeller)
+                .then(() => {
+                    sellerForm.classList.add('hidden');
+                    statusUpdate.classList.remove('hidden');
+                })
+                .catch((error) => {
+                    alert("Error: " + error.message);
+                    btn.disabled = false;
+                    btn.innerText = "Kirim Pengajuan Toko";
+                });
+        });
+    </script>
+</body>
+</html>
