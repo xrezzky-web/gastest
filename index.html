@@ -25,11 +25,11 @@
 </div>
 
 <script type="module">
-    // Import Firebase SDK (Versi Web terbaru dari CDN)
-    import { initializeApp } from "https://www.gstatic.com";
-    import { getDatabase, ref, set } from "https://www.gstatic.com";
+    // Import Firebase SDK menggunakan CDN resmi (versi 9+ modular)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // Konfigurasi Firebase yang kamu berikan tadi
+    // Konfigurasi Firebase yang kamu berikan
     const firebaseConfig = {
       apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
       authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
