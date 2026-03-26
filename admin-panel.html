@@ -3,81 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | Xrezzky Store</title>
+    <title>Admin Panel | Konfirmasi Seller</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #6366f1; --success: #22c55e; --danger: #ef4444; --dark: #0f172a; --bg: #f8fafc; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
         
         .container { max-width: 1000px; margin: 0 auto; }
         
-        /* Header */
         header { 
-            background: var(--dark); color: white; padding: 25px; 
-            border-radius: 15px; margin-bottom: 30px; 
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            background: var(--dark); color: white; padding: 20px 30px; 
+            border-radius: 15px; margin-bottom: 30px; display: flex; 
+            justify-content: space-between; align-items: center;
         }
-        header h1 { margin: 0; font-size: 1.5rem; }
 
-        /* Stats Card */
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
-        .stat-box h3 { margin: 0; color: #64748b; font-size: 0.8rem; text-transform: uppercase; }
-        .stat-box p { margin: 10px 0 0; font-size: 1.5rem; font-weight: bold; }
-
-        /* Table Style */
-        .table-container { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f1f5f9; color: #475569; text-align: left; padding: 15px; font-size: 0.9rem; }
-        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; }
+        .card { background: white; border-radius: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow: hidden; }
         
-        /* Badges */
-        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f1f5f9; color: #475569; text-align: left; padding: 15px; font-size: 0.85rem; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; }
+
+        /* Status Badges */
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
         .pending { background: #fef9c3; color: #854d0e; }
         .approved { background: #dcfce7; color: #166534; }
 
-        /* Buttons */
-        .btn-group { display: flex; gap: 8px; }
-        .btn { border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; }
-        .btn-approve { background: var(--success); color: white; }
-        .btn-approve:hover { background: #16a34a; }
+        /* Action Buttons */
+        .btn { border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; font-size: 0.8rem; }
+        .btn-approve { background: var(--success); color: white; margin-right: 5px; }
+        .btn-approve:hover { opacity: 0.8; }
         .btn-delete { background: var(--danger); color: white; }
-        .btn-delete:hover { background: #dc2626; }
         
-        .empty-state { padding: 50px; text-align: center; color: #94a3b8; }
+        .empty-msg { padding: 40px; text-align: center; color: #94a3b8; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>🛡️ Xrezzky Admin Control</h1>
-        <div id="time">Panel Konfirmasi Seller</div>
+        <div>
+            <h1 style="margin:0; font-size:1.4rem;">🛡️ Admin Dashboard</h1>
+            <p style="margin:5px 0 0; font-size:0.8rem; opacity:0.7;">Verifikasi Pendaftaran Seller</p>
+        </div>
+        <a href="index.html" style="color:white; text-decoration:none; font-size:0.9rem;">Ke Halaman Utama →</a>
     </header>
 
-    <div class="stats">
-        <div class="stat-box">
-            <h3>Menunggu Persetujuan</h3>
-            <p id="count-pending">0</p>
-        </div>
-        <div class="stat-box" style="border-left-color: var(--success);">
-            <h3>Seller Terverifikasi</h3>
-            <p id="count-approved">0</p>
-        </div>
-    </div>
-
-    <div class="table-container">
+    <div class="card">
         <table>
             <thead>
                 <tr>
                     <th>Nama Toko</th>
-                    <th>Email Seller</th>
+                    <th>Email</th>
                     <th>Status</th>
-                    <th>Aksi Pengelolaan</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody id="request-list">
-                <tr><td colspan="4" class="empty-state">Memuat data pendaftar...</td></tr>
+            <tbody id="table-body">
+                <tr><td colspan="4" class="empty-msg">Memverifikasi akses admin...</td></tr>
             </tbody>
         </table>
     </div>
@@ -87,7 +69,13 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // Konfigurasi Firebase (Gunakan milik Anda)
+    // Proteksi Admin (Ganti 'admin123' sesuai keinginan lu)
+    const access = prompt("Masukkan Password Admin:");
+    if (access !== "admin123") {
+        alert("Akses Ditolak!");
+        window.location.href = "index.html";
+    }
+
     const firebaseConfig = {
         apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
         authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
@@ -100,64 +88,48 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const tableBody = document.getElementById('table-body');
 
-    const requestList = document.getElementById('request-list');
-    const pendingDisplay = document.getElementById('count-pending');
-    const approvedDisplay = document.getElementById('count-approved');
-
-    // Load Data Registrations secara Real-time
-    onValue(ref(db, 'registrations'), (snapshot) => {
+    // Load Data Seller Registrations
+    const regRef = ref(db, 'registrations');
+    onValue(regRef, (snapshot) => {
         const data = snapshot.val();
-        requestList.innerHTML = '';
-        
-        let pendingCount = 0;
-        let approvedCount = 0;
+        tableBody.innerHTML = '';
 
         if (data) {
             Object.keys(data).forEach(key => {
-                const reg = data[key];
-                
-                // Hitung Statistik
-                if(reg.status === 'pending') pendingCount++;
-                if(reg.status === 'approved') approvedCount++;
-
-                const row = `
-                    <tr>
-                        <td><strong>${reg.storeName}</strong></td>
-                        <td>${reg.email}</td>
-                        <td><span class="badge ${reg.status}">${reg.status.toUpperCase()}</span></td>
-                        <td>
-                            <div class="btn-group">
-                                ${reg.status === 'pending' ? 
-                                    `<button class="btn btn-approve" onclick="approveSeller('${key}')">Setujui</button>` : 
-                                    `<span style="color:#22c55e; font-size:0.8rem">Sudah Aktif</span>`
-                                }
-                                <button class="btn btn-delete" onclick="deleteEntry('${key}')">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>
+                const seller = data[key];
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${seller.storeName}</strong></td>
+                    <td>${seller.email}</td>
+                    <td><span class="badge ${seller.status}">${seller.status.toUpperCase()}</span></td>
+                    <td>
+                        ${seller.status === 'pending' ? 
+                            `<button class="btn btn-approve" onclick="approveSeller('${key}')">Setujui</button>` : 
+                            `<span style="color:#22c55e; font-size:0.8rem; font-weight:bold; margin-right:10px;">AKTIF</span>`
+                        }
+                        <button class="btn btn-delete" onclick="deleteSeller('${key}')">Hapus</button>
+                    </td>
                 `;
-                requestList.innerHTML += row;
+                tableBody.appendChild(row);
             });
         } else {
-            requestList.innerHTML = '<tr><td colspan="4" class="empty-state">Tidak ada pendaftaran seller.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="4" class="empty-msg">Belum ada pendaftar baru.</td></tr>';
         }
-
-        pendingDisplay.innerText = pendingCount;
-        approvedDisplay.innerText = approvedCount;
     });
 
-    // Fungsi Global agar bisa dipanggil dari HTML
+    // Fungsi Approve Seller
     window.approveSeller = (id) => {
-        if(confirm("Setujui toko ini sebagai seller resmi?")) {
-            update(ref(db, `registrations/${id}`), {
-                status: 'approved'
-            }).then(() => alert("Seller berhasil disetujui!"));
+        if(confirm("Izinkan toko ini untuk mulai berjualan?")) {
+            update(ref(db, `registrations/${id}`), { status: 'approved' })
+            .then(() => alert("Seller Berhasil Disetujui!"));
         }
     };
 
-    window.deleteEntry = (id) => {
-        if(confirm("Hapus data pendaftaran ini selamanya?")) {
+    // Fungsi Hapus Data
+    window.deleteSeller = (id) => {
+        if(confirm("Hapus data pendaftaran ini secara permanen?")) {
             remove(ref(db, `registrations/${id}`));
         }
     };
