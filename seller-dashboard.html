@@ -4,90 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seller Dashboard | Xrezzky Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #2563eb; --success: #10b981; --danger: #ef4444; --dark: #1e293b; --bg: #f1f5f9; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; display: flex; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; display: flex; min-height: 100vh; }
         
+        /* Login Overlay */
+        #auth-gate { 
+            position: fixed; inset: 0; background: var(--bg); z-index: 9999; 
+            display: flex; justify-content: center; align-items: center; 
+        }
+        .login-box { 
+            background: white; padding: 40px; border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 350px; text-align: center; 
+        }
+
         /* Sidebar */
-        .sidebar { width: 250px; background: var(--dark); color: white; height: 100vh; padding: 20px; position: fixed; }
-        .sidebar h2 { font-size: 1.2rem; border-bottom: 1px solid #334155; padding-bottom: 15px; }
-        .nav-link { display: block; color: #94a3b8; text-decoration: none; padding: 10px 0; transition: 0.3s; }
-        .nav-link:hover { color: white; }
+        .sidebar { width: 260px; background: var(--dark); color: white; padding: 30px 20px; flex-shrink: 0; }
+        .sidebar h2 { font-size: 1.2rem; margin-bottom: 30px; color: var(--primary); }
+        .nav-link { 
+            display: block; color: #94a3b8; text-decoration: none; 
+            padding: 12px; border-radius: 8px; margin-bottom: 5px; transition: 0.3s; 
+        }
+        .nav-link.active, .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
 
         /* Main Content */
-        .main-content { margin-left: 250px; padding: 30px; width: 100%; }
+        .main-content { flex-grow: 1; padding: 40px; overflow-y: auto; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .stat-card h3 { margin: 0; color: #64748b; font-size: 0.9rem; }
-        .stat-card p { margin: 10px 0 0; font-size: 1.8rem; font-weight: bold; color: var(--dark); }
-
-        /* Form & Table */
-        .section { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 30px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 600; }
-        input, textarea, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 30px; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         
-        .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-weight: 600; }
-        .btn-add { background: var(--primary); color: white; width: 100%; }
-        .btn-delete { background: var(--danger); color: white; padding: 5px 10px; font-size: 0.8rem; }
+        /* Form & Table */
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+        input, textarea { 
+            width: 100%; padding: 12px; border: 1px solid #e2e8f0; 
+            border-radius: 10px; margin-bottom: 20px; font-family: inherit; 
+        }
+        .btn { 
+            padding: 12px 20px; border-radius: 10px; cursor: pointer; 
+            font-weight: 600; border: none; transition: 0.2s; 
+        }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        .btn-danger { background: #fee2e2; color: var(--danger); font-size: 0.8rem; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        .prod-img { width: 50px; height: 50px; object-fit: cover; border-radius: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: #64748b; font-size: 0.85rem; padding: 10px; border-bottom: 2px solid #f1f5f9; }
+        td { padding: 15px 10px; border-bottom: 1px solid #f1f5f9; }
+        .prod-img { width: 45px; height: 45px; object-fit: cover; border-radius: 8px; }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>Seller Center</h2>
-    <nav>
-        <a href="index.html" class="nav-link">🏠 Lihat Toko</a>
-        <a href="#" class="nav-link" style="color: white;">📦 Kelola Produk</a>
-        <a href="#" class="nav-link" onclick="alert('Fitur Pesanan Segera Hadir!')">🛒 Pesanan</a>
-    </nav>
+<div id="auth-gate">
+    <div class="login-box">
+        <h2 style="margin-top:0">Seller Login</h2>
+        <p style="color:#64748b; font-size:0.9rem">Gunakan email yang sudah di-approve Admin.</p>
+        <input type="email" id="emailInput" placeholder="email@toko.com">
+        <button class="btn btn-primary" onclick="checkSellerAccess()">Masuk Dashboard</button>
+        <p id="errorMsg" style="color:var(--danger); font-size:0.8rem; margin-top:15px;"></p>
+        <a href="index.html" style="display:block; margin-top:20px; color:var(--primary); text-decoration:none; font-size:0.85rem;">← Balik ke Toko</a>
+    </div>
 </div>
 
-<div class="main-content">
+<aside class="sidebar">
+    <h2>Xrezzky<span>Store</span></h2>
+    <nav>
+        <a href="#" class="nav-link active">📦 Kelola Produk</a>
+        <a href="index.html" class="nav-link">🏠 Lihat Toko</a>
+        <a href="#" onclick="logout()" class="nav-link">Logout</a>
+    </nav>
+</aside>
+
+<main class="main-content">
     <div class="header">
-        <h1>Dashboard Produk</h1>
-        <div id="seller-info" style="font-weight: 600; color: var(--primary);">Seller Mode</div>
+        <h1 id="welcomeText">Dashboard Seller</h1>
+        <span id="sellerBadge" style="background:#dcfce7; color:#166534; padding:5px 15px; border-radius:20px; font-size:0.8rem; font-weight:bold;">Verified Seller</span>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Total Produk</h3>
-            <p id="count-produk">0</p>
-        </div>
-    </div>
-
-    <div class="grid-layout" style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
-        <div class="section">
-            <h3>Tambah Produk Baru</h3>
-            <form id="addForm">
-                <div class="form-group">
-                    <label>Nama Produk</label>
-                    <input type="text" id="pName" placeholder="Contoh: Top Up Diamond" required>
-                </div>
-                <div class="form-group">
-                    <label>Harga (Rp)</label>
-                    <input type="number" id="pPrice" placeholder="50000" required>
-                </div>
-                <div class="form-group">
-                    <label>URL Gambar</label>
-                    <input type="url" id="pImage" placeholder="https://link-gambar.com/foto.jpg" required>
-                </div>
-                <div class="form-group">
-                    <label>Deskripsi</label>
-                    <textarea id="pDesc" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn btn-add">🚀 Upload Produk</button>
+    <div class="grid">
+        <section class="card">
+            <h3 style="margin-top:0">Tambah Produk</h3>
+            <form id="productForm">
+                <label>Nama Produk</label>
+                <input type="text" id="pName" placeholder="Contoh: Akun Premium" required>
+                <label>Harga (Rp)</label>
+                <input type="number" id="pPrice" placeholder="50000" required>
+                <label>Link Gambar</label>
+                <input type="url" id="pImage" placeholder="https://link-gambar.com/foto.jpg" required>
+                <label>Deskripsi</label>
+                <textarea id="pDesc" rows="3" placeholder="Detail produk..."></textarea>
+                <button type="submit" class="btn btn-primary">Publish Produk</button>
             </form>
-        </div>
+        </section>
 
-        <div class="section">
-            <h3>Produk Saya</h3>
+        <section class="card">
+            <h3 style="margin-top:0">Produk Saya</h3>
             <table>
                 <thead>
                     <tr>
@@ -97,12 +109,12 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="my-products">
+                <tbody id="productTable">
                     </tbody>
             </table>
-        </div>
+        </section>
     </div>
-</div>
+</main>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -121,61 +133,90 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // 1. Fungsi Tambah Produk
-    const addForm = document.getElementById('addForm');
-    addForm.addEventListener('submit', (e) => {
+    // --- SISTEM LOGIN/AUTH GATE ---
+    window.checkSellerAccess = () => {
+        const email = document.getElementById('emailInput').value.toLowerCase();
+        const error = document.getElementById('errorMsg');
+
+        onValue(ref(db, 'registrations'), (snapshot) => {
+            const data = snapshot.val();
+            let user = null;
+
+            for(let id in data) {
+                if(data[id].email === email && data[id].status === 'approved') {
+                    user = data[id];
+                    break;
+                }
+            }
+
+            if(user) {
+                document.getElementById('auth-gate').style.display = 'none';
+                document.getElementById('welcomeText').innerText = "Toko: " + user.storeName;
+                localStorage.setItem('sellerEmail', email);
+                loadProducts();
+            } else {
+                error.innerText = "Email belum di-approve atau tidak terdaftar!";
+            }
+        }, { onlyOnce: true });
+    };
+
+    // Auto-login jika sudah ada session
+    if(localStorage.getItem('sellerEmail')) {
+        document.getElementById('auth-gate').style.display = 'none';
+        loadProducts();
+    }
+
+    window.logout = () => {
+        localStorage.removeItem('sellerEmail');
+        location.reload();
+    };
+
+    // --- KELOLA PRODUK ---
+    const productForm = document.getElementById('productForm');
+    productForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const newProduct = {
+        const pData = {
             name: document.getElementById('pName').value,
             price: parseInt(document.getElementById('pPrice').value),
             image: document.getElementById('pImage').value,
-            desc: document.getElementById('pDesc').value
+            desc: document.getElementById('pDesc').value,
+            seller: localStorage.getItem('sellerEmail')
         };
 
-        const productsRef = ref(db, 'products');
-        push(productsRef, newProduct).then(() => {
-            alert("Produk Berhasil Tayang!");
-            addForm.reset();
+        push(ref(db, 'products'), pData).then(() => {
+            alert("Produk Berhasil Ditambahkan!");
+            productForm.reset();
         });
     });
 
-    // 2. Fungsi Load & Hitung Produk
-    const productTable = document.getElementById('my-products');
-    const countDisplay = document.getElementById('count-produk');
+    function loadProducts() {
+        onValue(ref(db, 'products'), (snapshot) => {
+            const data = snapshot.val();
+            const table = document.getElementById('productTable');
+            table.innerHTML = '';
 
-    onValue(ref(db, 'products'), (snapshot) => {
-        const data = snapshot.val();
-        productTable.innerHTML = '';
-        
-        if (data) {
-            const keys = Object.keys(data);
-            countDisplay.innerText = keys.length;
-
-            keys.forEach(key => {
-                const p = data[key];
-                productTable.innerHTML += `
-                    <tr>
-                        <td><img src="${p.image}" class="prod-img"></td>
-                        <td>${p.name}</td>
-                        <td>Rp ${p.price.toLocaleString()}</td>
-                        <td>
-                            <button class="btn btn-delete" onclick="deleteProduct('${key}')">Hapus</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        } else {
-            countDisplay.innerText = "0";
-            productTable.innerHTML = '<tr><td colspan="4">Belum ada produk.</td></tr>';
-        }
-    });
-
-    // 3. Fungsi Hapus Produk
-    window.deleteProduct = (id) => {
-        if(confirm("Yakin ingin menghapus produk ini?")) {
-            remove(ref(db, `products/${id}`));
-        }
+            if(data) {
+                Object.keys(data).forEach(key => {
+                    const p = data[key];
+                    // Hanya tampilkan produk milik seller ini
+                    if(p.seller === localStorage.getItem('sellerEmail')) {
+                        table.innerHTML += `
+                            <tr>
+                                <td><img src="${p.image}" class="prod-img"></td>
+                                <td><strong>${p.name}</strong></td>
+                                <td>Rp ${p.price.toLocaleString()}</td>
+                                <td><button class="btn btn-danger" onclick="deleteProd('${key}')">Hapus</button></td>
+                            </tr>
+                        `;
+                    }
+                });
+            }
+        });
     }
+
+    window.deleteProd = (id) => {
+        if(confirm("Hapus produk ini?")) remove(ref(db, `products/${id}`));
+    };
 </script>
 
 </body>
