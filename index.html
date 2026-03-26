@@ -3,74 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xrezzky Store | Home</title>
+    <title>Xrezzky Store | Marketplace & Seller System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #2563eb; --secondary: #10b981; --dark: #1e293b; --light: #f8fafc; }
-        body { font-family: 'Inter', sans-serif; background: var(--light); margin: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--light); margin: 0; color: var(--dark); }
         
-        /* Navbar */
-        nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        /* Navigation */
+        nav { 
+            background: white; padding: 15px 5%; display: flex; 
+            justify-content: space-between; align-items: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; 
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
         .nav-btns { display: flex; gap: 10px; }
         
         /* Buttons */
-        .btn { padding: 8px 16px; border-radius: 6px; cursor: pointer; text-decoration: none; font-weight: 500; border: none; }
-        .btn-outline { border: 1px solid var(--primary); color: var(--primary); background: transparent; }
+        .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; text-decoration: none; font-weight: 600; border: none; transition: 0.3s; font-size: 0.9rem; }
+        .btn-outline { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
+        .btn-outline:hover { background: var(--primary); color: white; }
         .btn-fill { background: var(--primary); color: white; }
+        .btn-fill:hover { opacity: 0.9; }
 
-        /* Modal Form Daftar */
-        #modal-daftar { 
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); 
-            justify-content: center; align-items: center; z-index: 1000; 
-        }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; position: relative; }
-        .close-btn { position: absolute; top: 10px; right: 15px; cursor: pointer; font-size: 1.5rem; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        /* Hero / Header */
+        .hero { background: var(--dark); color: white; padding: 60px 20px; text-align: center; }
+        .hero h1 { margin: 0; font-size: 2.5rem; }
+        .hero p { opacity: 0.8; font-size: 1.1rem; }
 
         /* Product Grid */
-        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
         #product-list { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; 
         }
-        .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
-        .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; }
-        .price { color: var(--secondary); font-weight: bold; display: block; margin: 10px 0; }
+        .card { 
+            background: white; padding: 15px; border-radius: 15px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02); transition: 0.3s; 
+            border: 1px solid #eee;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; }
+        .card h4 { margin: 15px 0 5px; font-size: 1.1rem; }
+        .price { color: var(--secondary); font-weight: 700; font-size: 1.2rem; display: block; margin-bottom: 15px; }
+
+        /* Modal Pendaftaran */
+        .modal { 
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); 
+            justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px);
+        }
+        .modal-content { background: white; padding: 40px; border-radius: 20px; width: 90%; max-width: 400px; position: relative; }
+        .modal-content h3 { margin-top: 0; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">Xrezzky Store</div>
+    <a href="#" class="logo">Xrezzky<span>Store</span></a>
     <div class="nav-btns">
         <a href="admin-panel.html" class="btn btn-outline">Admin Panel</a>
-        <button class="btn btn-fill" onclick="toggleModal(true)">Buka Toko</button>
+        <a href="seller-dashboard.html" class="btn btn-outline">Seller Login</a>
+        <button class="btn btn-fill" onclick="openModal()">Buka Toko</button>
     </div>
 </nav>
 
+<div class="hero">
+    <h1>Marketplace Masa Kini</h1>
+    <p>Cari produk digital dan kebutuhan gaming terbaik di sini.</p>
+</div>
+
 <div class="container">
-    <h2 style="color: var(--dark)">Produk Terbaru</h2>
+    <h2 style="margin-bottom: 30px;">🔥 Produk Rekomendasi</h2>
     <div id="product-list">
-        <p>Memuat produk...</p>
+        <p style="text-align: center; grid-column: 1/-1;">Sedang memuat produk terbaru...</p>
     </div>
 </div>
 
-<div id="modal-daftar">
+<div id="modal-daftar" class="modal">
     <div class="modal-content">
-        <span class="close-btn" onclick="toggleModal(false)">&times;</span>
+        <span class="close-modal" onclick="closeModal()">&times;</span>
         <h3>Daftar Jadi Seller</h3>
-        <p>Isi data toko lu untuk ditinjau admin.</p>
+        <p style="color: #64748b; font-size: 0.9rem;">Mulai jualan produk lu sendiri. Pendaftaran akan ditinjau oleh Admin.</p>
         <form id="regForm">
-            <input type="text" id="storeName" placeholder="Nama Toko" required>
-            <input type="email" id="sellerEmail" placeholder="Email Aktif" required>
-            <button type="submit" class="btn btn-fill" style="width: 100%; margin-top: 10px;">Kirim Pendaftaran</button>
+            <label>Nama Toko</label>
+            <input type="text" id="storeName" placeholder="Contoh: Xrezzky Gaming Shop" required>
+            <label>Email Seller</label>
+            <input type="email" id="sellerEmail" placeholder="email@toko.com" required>
+            <button type="submit" class="btn btn-fill" style="width: 100%; margin-top: 20px;">Kirim Pendaftaran</button>
         </form>
     </div>
 </div>
 
 <script type="module">
+    // Import SDK Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+    // Konfigurasi Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
         authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
@@ -84,51 +114,59 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // --- LOGIC DISPLAY PRODUK ---
-    const productContainer = document.getElementById('product-list');
+    // --- 1. AMBIL DATA PRODUK ---
+    const productList = document.getElementById('product-list');
     onValue(ref(db, 'products'), (snapshot) => {
         const data = snapshot.val();
-        productContainer.innerHTML = '';
+        productList.innerHTML = ''; // Reset container
+
         if (data) {
             Object.values(data).forEach(item => {
-                productContainer.innerHTML += `
+                const card = `
                     <div class="card">
-                        <img src="${item.image}" alt="${item.name}">
+                        <img src="${item.image || 'https://via.placeholder.com/300'}" alt="${item.name}">
                         <h4>${item.name}</h4>
                         <span class="price">Rp ${item.price.toLocaleString('id-ID')}</span>
-                        <button class="btn btn-outline" style="width:100%">Detail</button>
+                        <button class="btn btn-fill" style="width: 100%;" onclick="alert('Fitur Checkout segera hadir!')">Beli Sekarang</button>
                     </div>
                 `;
+                productList.innerHTML += card;
             });
         } else {
-            productContainer.innerHTML = '<p>Belum ada produk.</p>';
+            productList.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Belum ada produk yang tersedia.</p>';
         }
     });
 
-    // --- LOGIC DAFTAR SELLER ---
-    window.toggleModal = (show) => {
-        document.getElementById('modal-daftar').style.display = show ? 'flex' : 'none';
-    };
+    // --- 2. SISTEM DAFTAR SELLER ---
+    const modal = document.getElementById('modal-daftar');
+    window.openModal = () => modal.style.display = 'flex';
+    window.closeModal = () => modal.style.display = 'none';
 
-    const regForm = document.getElementById('regForm');
-    regForm.addEventListener('submit', (e) => {
+    document.getElementById('regForm').addEventListener('submit', (e) => {
         e.preventDefault();
+        
         const storeName = document.getElementById('storeName').value;
-        const email = document.getElementById('sellerEmail').value;
+        const email = document.getElementById('sellerEmail').value.toLowerCase();
 
         const regRef = ref(db, 'registrations');
-        const newRegRef = push(regRef);
-        
-        set(newRegRef, {
+        const newReg = push(regRef);
+
+        set(newReg, {
             storeName: storeName,
             email: email,
-            status: 'pending' // Status awal selalu pending
+            status: 'pending',
+            timestamp: Date.now()
         }).then(() => {
-            alert("Pendaftaran berhasil dikirim! Tunggu konfirmasi admin.");
-            toggleModal(false);
-            regForm.reset();
-        });
+            alert("Berhasil! Silahkan hubungi admin untuk aktivasi toko lu.");
+            closeModal();
+            e.target.reset();
+        }).catch(err => alert("Gagal: " + err.message));
     });
+
+    // Close modal if user clicks outside
+    window.onclick = (event) => {
+        if (event.target == modal) closeModal();
+    }
 </script>
 
 </body>
