@@ -3,75 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uji Coba Firebase - Xrezzky Store</title>
-    <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }
-        h1 { color: #1a73e8; font-size: 24px; }
-        p { color: #5f6368; line-height: 1.6; }
-        .btn { background: #1a73e8; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: 0.3s; }
-        .btn:hover { background: #1557b0; }
-        #status-msg { margin-top: 15px; font-weight: bold; }
-    </style>
+    <title>Xrezzky Marketplace - Uji Coba</title>
+    <!-- Pakai Tailwind CSS via CDN agar tampilan langsung bagus -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-6">
 
-<div class="card">
-    <h1>Xrezzky Marketplace Test</h1>
-    <p>Klik tombol di bawah untuk mengetes apakah Firebase kamu sudah terhubung dengan benar ke database.</p>
-    
-    <button id="btnTes" class="btn">Tes Koneksi Database</button>
-    <div id="status-msg"></div>
-</div>
+    <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 max-w-md w-full text-center">
+        <h1 class="text-3xl font-extrabold mb-2 text-blue-400">Xrezzky Store</h1>
+        <p class="text-slate-400 mb-8 text-sm">Mode Uji Coba Koneksi Firebase Realtime Database</p>
 
-<script type="module">
-    // Import Firebase SDK menggunakan CDN resmi (versi 9+ modular)
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+        <div class="space-y-4">
+            <button id="btnTes" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl transition duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-blue-900/50">
+                🚀 Tes Koneksi Sekarang
+            </button>
+            
+            <div id="statusBox" class="hidden p-4 rounded-lg bg-slate-900 border border-slate-700">
+                <p id="statusMsg" class="text-sm font-medium italic">Menghubungkan...</p>
+            </div>
+        </div>
 
-    // Konfigurasi Firebase yang kamu berikan
-    const firebaseConfig = {
-      apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
-      authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
-      databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "xrezzkystore-marketplace-83bc0",
-      storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
-      messagingSenderId: "604900856944",
-      appId: "1:604900856944:web:c48c973da45214c68a10b5",
-      measurementId: "G-7XG9V48HW0"
-    };
+        <div class="mt-8 pt-6 border-t border-slate-700 flex justify-center gap-4 text-xs text-slate-500 font-medium">
+            <a href="seller-dashboard.html" class="hover:text-blue-400 underline transition">Menu Seller</a>
+            <span>•</span>
+            <a href="admin-panel.html" class="hover:text-blue-400 underline transition">Menu Admin</a>
+        </div>
+    </div>
 
-    // Inisialisasi Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    <!-- SCRIPT FIREBASE (PASTIKAN TYPE="MODULE") -->
+    <script type="module">
+        // 1. Import library Firebase langsung dari internet (CDN)
+        import { initializeApp } from "https://www.gstatic.com";
+        import { getDatabase, ref, set } from "https://www.gstatic.com";
 
-    // Ambil elemen dari HTML
-    const btn = document.getElementById('btnTes');
-    const msg = document.getElementById('status-msg');
+        // 2. Konfigurasi Firebase milik kamu (JANGAN DIUBAH)
+        const firebaseConfig = {
+          apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
+          authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
+          databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "xrezzkystore-marketplace-83bc0",
+          storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
+          messagingSenderId: "604900856944",
+          appId: "1:604900856944:web:c48c973da45214c68a10b5",
+          measurementId: "G-7XG9V48HW0"
+        };
 
-    // Jalankan Fungsi saat tombol diklik
-    btn.addEventListener('click', () => {
-        msg.innerText = "Sedang mencoba koneksi...";
-        msg.style.color = "blue";
+        // 3. Inisialisasi Aplikasi
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-        // Simpan data sederhana ke Firebase sebagai tes
-        set(ref(db, 'testing_connection/'), {
-            nama_web: "Xrezzky Marketplace",
-            status: "Online",
-            update_terakhir: new Date().toLocaleString()
-        })
-        .then(() => {
-            msg.innerText = "✅ Mantap! Firebase Berhasil Terhubung!";
-            msg.style.color = "green";
-            console.log("Data berhasil dikirim ke Firebase!");
-        })
-        .catch((error) => {
-            msg.innerText = "❌ Gagal: " + error.message;
-            msg.style.color = "red";
-            console.error(error);
+        // 4. Logika Tombol
+        const btn = document.getElementById('btnTes');
+        const box = document.getElementById('statusBox');
+        const msg = document.getElementById('statusMsg');
+
+        btn.addEventListener('click', async () => {
+            box.classList.remove('hidden');
+            msg.innerText = "⏳ Sedang mengirim data ke Firebase...";
+            msg.className = "text-yellow-400 italic";
+
+            try {
+                // Mencoba menulis data ke folder 'cek_koneksi'
+                await set(ref(db, 'cek_koneksi/'), {
+                    device: "Web Browser",
+                    timestamp: new Date().toISOString(),
+                    pesan: "Halo dari index.html!"
+                });
+
+                msg.innerText = "✅ BERHASIL! Data terkirim ke Firebase.";
+                msg.className = "text-green-400 font-bold";
+                console.log("Koneksi Firebase Sukses!");
+            } catch (error) {
+                msg.innerText = "❌ GAGAL: " + error.message;
+                msg.className = "text-red-400 font-bold";
+                console.error("Error Firebase:", error);
+            }
         });
-    });
-</script>
-
+    </script>
 </body>
 </html>
