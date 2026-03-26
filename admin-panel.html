@@ -3,129 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Verifikasi Seller</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Admin Panel | Xrezzky Store</title>
+    <style>
+        :root { --primary: #6366f1; --success: #22c55e; --danger: #ef4444; --dark: #0f172a; --bg: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        /* Header */
+        header { 
+            background: var(--dark); color: white; padding: 25px; 
+            border-radius: 15px; margin-bottom: 30px; 
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        header h1 { margin: 0; font-size: 1.5rem; }
+
+        /* Stats Card */
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
+        .stat-box h3 { margin: 0; color: #64748b; font-size: 0.8rem; text-transform: uppercase; }
+        .stat-box p { margin: 10px 0 0; font-size: 1.5rem; font-weight: bold; }
+
+        /* Table Style */
+        .table-container { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f1f5f9; color: #475569; text-align: left; padding: 15px; font-size: 0.9rem; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; }
+        
+        /* Badges */
+        .badge { padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
+        .pending { background: #fef9c3; color: #854d0e; }
+        .approved { background: #dcfce7; color: #166534; }
+
+        /* Buttons */
+        .btn-group { display: flex; gap: 8px; }
+        .btn { border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.2s; }
+        .btn-approve { background: var(--success); color: white; }
+        .btn-approve:hover { background: #16a34a; }
+        .btn-delete { background: var(--danger); color: white; }
+        .btn-delete:hover { background: #dc2626; }
+        
+        .empty-state { padding: 50px; text-align: center; color: #94a3b8; }
+    </style>
 </head>
-<body class="bg-gray-900 min-h-screen p-6 text-gray-100">
+<body>
 
-    <div class="max-w-6xl mx-auto">
-        <header class="flex justify-between items-center mb-8 border-b border-gray-700 pb-4">
-            <div>
-                <h1 class="text-3xl font-bold text-blue-400">Admin Control Center</h1>
-                <p class="text-gray-400">Verifikasi pendaftaran seller baru secara real-time</p>
-            </div>
-            <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
-                <span class="text-sm text-gray-400">Total Pending:</span>
-                <span id="countPending" class="text-xl font-bold text-orange-400 ml-2">0</span>
-            </div>
-        </header>
+<div class="container">
+    <header>
+        <h1>🛡️ Xrezzky Admin Control</h1>
+        <div id="time">Panel Konfirmasi Seller</div>
+    </header>
 
-        <!-- Tabel Monitoring -->
-        <div class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-gray-700">
-            <table class="w-full text-left">
-                <thead class="bg-gray-700 text-gray-300 uppercase text-xs">
-                    <tr>
-                        <th class="px-6 py-4">Nama Toko</th>
-                        <th class="px-6 py-4">Pemilik & WA</th>
-                        <th class="px-6 py-4">Kategori</th>
-                        <th class="px-6 py-4">Waktu Daftar</th>
-                        <th class="px-6 py-4 text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody" class="divide-y divide-gray-700">
-                    <!-- Data dari Firebase akan muncul di sini -->
-                    <tr id="loadingRow">
-                        <td colspan="5" class="px-6 py-10 text-center text-gray-500 italic">
-                            Sedang memuat data seller...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="stats">
+        <div class="stat-box">
+            <h3>Menunggu Persetujuan</h3>
+            <p id="count-pending">0</p>
+        </div>
+        <div class="stat-box" style="border-left-color: var(--success);">
+            <h3>Seller Terverifikasi</h3>
+            <p id="count-approved">0</p>
         </div>
     </div>
 
-    <!-- Firebase Logic -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com";
-        import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com";
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama Toko</th>
+                    <th>Email Seller</th>
+                    <th>Status</th>
+                    <th>Aksi Pengelolaan</th>
+                </tr>
+            </thead>
+            <tbody id="request-list">
+                <tr><td colspan="4" class="empty-state">Memuat data pendaftar...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
-          authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
-          databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-          projectId: "xrezzkystore-marketplace-83bc0",
-          storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
-          messagingSenderId: "604900856944",
-          appId: "1:604900856944:web:c48c973da45214c68a10b5",
-          measurementId: "G-7XG9V48HW0"
-        };
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+    // Konfigurasi Firebase (Gunakan milik Anda)
+    const firebaseConfig = {
+        apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
+        authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
+        databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "xrezzkystore-marketplace-83bc0",
+        storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
+        messagingSenderId: "604900856944",
+        appId: "1:604900856944:web:c48c973da45214c68a10b5"
+    };
 
-        const tableBody = document.getElementById('tableBody');
-        const countPending = document.getElementById('countPending');
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-        // Fungsi Load Data secara Real-time
-        const sellerRef = ref(db, 'pendaftaran_seller');
-        onValue(sellerRef, (snapshot) => {
-            tableBody.innerHTML = "";
-            let counter = 0;
+    const requestList = document.getElementById('request-list');
+    const pendingDisplay = document.getElementById('count-pending');
+    const approvedDisplay = document.getElementById('count-approved');
 
-            if (snapshot.exists()) {
-                const data = snapshot.val();
+    // Load Data Registrations secara Real-time
+    onValue(ref(db, 'registrations'), (snapshot) => {
+        const data = snapshot.val();
+        requestList.innerHTML = '';
+        
+        let pendingCount = 0;
+        let approvedCount = 0;
+
+        if (data) {
+            Object.keys(data).forEach(key => {
+                const reg = data[key];
                 
-                Object.keys(data).forEach(key => {
-                    const seller = data[key];
-                    
-                    // Hanya tampilkan yang statusnya pending
-                    if (seller.status === "pending") {
-                        counter++;
-                        const row = `
-                            <tr class="hover:bg-gray-750 transition">
-                                <td class="px-6 py-4 font-semibold text-white">${seller.namaToko}</td>
-                                <td class="px-6 py-4 text-sm text-gray-400">
-                                    ${seller.namaPemilik}<br>
-                                    <span class="text-blue-400">${seller.noWA}</span>
-                                </td>
-                                <td class="px-6 py-4"><span class="bg-gray-900 px-3 py-1 rounded-full text-xs">${seller.kategori}</span></td>
-                                <td class="px-6 py-4 text-xs text-gray-500">${seller.waktuDaftar}</td>
-                                <td class="px-6 py-4 text-center space-x-2">
-                                    <button onclick="updateStatus('${key}', 'active')" class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm font-bold transition">Approve</button>
-                                    <button onclick="hapusSeller('${key}')" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm font-bold transition">Reject</button>
-                                </td>
-                            </tr>
-                        `;
-                        tableBody.innerHTML += row;
-                    }
-                });
-            }
+                // Hitung Statistik
+                if(reg.status === 'pending') pendingCount++;
+                if(reg.status === 'approved') approvedCount++;
 
-            countPending.innerText = counter;
-            if (counter === 0) {
-                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-gray-500 italic">Tidak ada pendaftaran seller baru.</td></tr>`;
-            }
-        });
+                const row = `
+                    <tr>
+                        <td><strong>${reg.storeName}</strong></td>
+                        <td>${reg.email}</td>
+                        <td><span class="badge ${reg.status}">${reg.status.toUpperCase()}</span></td>
+                        <td>
+                            <div class="btn-group">
+                                ${reg.status === 'pending' ? 
+                                    `<button class="btn btn-approve" onclick="approveSeller('${key}')">Setujui</button>` : 
+                                    `<span style="color:#22c55e; font-size:0.8rem">Sudah Aktif</span>`
+                                }
+                                <button class="btn btn-delete" onclick="deleteEntry('${key}')">Hapus</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                requestList.innerHTML += row;
+            });
+        } else {
+            requestList.innerHTML = '<tr><td colspan="4" class="empty-state">Tidak ada pendaftaran seller.</td></tr>';
+        }
 
-        // Global functions agar bisa dipanggil dari atribut onclick
-        window.updateStatus = (id, newStatus) => {
-            if(confirm("Setujui seller ini untuk mulai berjualan?")) {
-                update(ref(db, 'pendaftaran_seller/' + id), { status: newStatus })
-                .then(() => alert("Seller berhasil di-Approve!"))
-                .catch(err => alert("Error: " + err.message));
-            }
-        };
+        pendingDisplay.innerText = pendingCount;
+        approvedDisplay.innerText = approvedCount;
+    });
 
-        window.hapusSeller = (id) => {
-            if(confirm("Tolak dan hapus data pendaftaran ini?")) {
-                remove(ref(db, 'pendaftaran_seller/' + id))
-                .then(() => alert("Data berhasil dihapus."));
-            }
-        };
-    </script>
+    // Fungsi Global agar bisa dipanggil dari HTML
+    window.approveSeller = (id) => {
+        if(confirm("Setujui toko ini sebagai seller resmi?")) {
+            update(ref(db, `registrations/${id}`), {
+                status: 'approved'
+            }).then(() => alert("Seller berhasil disetujui!"));
+        }
+    };
 
-    <style>
-        .hover\:bg-gray-750:hover { background-color: #2d3748; }
-    </style>
+    window.deleteEntry = (id) => {
+        if(confirm("Hapus data pendaftaran ini selamanya?")) {
+            remove(ref(db, `registrations/${id}`));
+        }
+    };
+</script>
+
 </body>
 </html>
