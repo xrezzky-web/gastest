@@ -3,64 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Seller - Daftar Toko Baru</title>
+    <title>Admin Panel - Verifikasi Seller</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-900 min-h-screen p-6 text-gray-100">
 
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg">
-        <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold text-gray-800">Daftar Menjadi Seller</h1>
-            <p class="text-gray-500">Lengkapi data toko kamu untuk diverifikasi Admin</p>
-        </div>
-
-        <form id="sellerForm" class="space-y-4">
-            <!-- Nama Toko -->
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-8 border-b border-gray-700 pb-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700">Nama Toko</label>
-                <input type="text" id="namaToko" required class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <h1 class="text-3xl font-bold text-blue-400">Admin Control Center</h1>
+                <p class="text-gray-400">Verifikasi pendaftaran seller baru secara real-time</p>
             </div>
-
-            <!-- Nama Pemilik -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Nama Pemilik (Sesuai KTP)</label>
-                <input type="text" id="namaPemilik" required class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+            <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
+                <span class="text-sm text-gray-400">Total Pending:</span>
+                <span id="countPending" class="text-xl font-bold text-orange-400 ml-2">0</span>
             </div>
+        </header>
 
-            <!-- WhatsApp -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Nomor WhatsApp</label>
-                <input type="number" id="noWA" required placeholder="0812..." class="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
-            </div>
-
-            <!-- Kategori Produk -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Kategori Jualan</label>
-                <select id="kategori" class="w-full mt-1 p-2 border border-gray-300 rounded-md">
-                    <option value="Elektronik">Elektronik</option>
-                    <option value="Fashion">Fashion</option>
-                    <option value="Makanan">Makanan</option>
-                    <option value="Lainnya">Lainnya</option>
-                </select>
-            </div>
-
-            <button type="submit" id="btnSubmit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-md transition duration-300">
-                Kirim Pengajuan Toko
-            </button>
-        </form>
-
-        <div id="statusUpdate" class="mt-4 text-center hidden">
-            <p class="text-green-600 font-semibold">✅ Data berhasil dikirim! Menunggu persetujuan Admin.</p>
-            <a href="index.html" class="text-blue-500 hover:underline text-sm">Kembali ke Beranda</a>
+        <!-- Tabel Monitoring -->
+        <div class="bg-gray-800 rounded-xl shadow-2xl overflow-hidden border border-gray-700">
+            <table class="w-full text-left">
+                <thead class="bg-gray-700 text-gray-300 uppercase text-xs">
+                    <tr>
+                        <th class="px-6 py-4">Nama Toko</th>
+                        <th class="px-6 py-4">Pemilik & WA</th>
+                        <th class="px-6 py-4">Kategori</th>
+                        <th class="px-6 py-4">Waktu Daftar</th>
+                        <th class="px-6 py-4 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody" class="divide-y divide-gray-700">
+                    <!-- Data dari Firebase akan muncul di sini -->
+                    <tr id="loadingRow">
+                        <td colspan="5" class="px-6 py-10 text-center text-gray-500 italic">
+                            Sedang memuat data seller...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
     <!-- Firebase Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com";
-        import { getDatabase, ref, push, set } from "https://www.gstatic.com";
+        import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com";
 
-        // Konfigurasi Firebase kamu
         const firebaseConfig = {
           apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
           authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
@@ -75,41 +63,69 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        const sellerForm = document.getElementById('sellerForm');
-        const statusUpdate = document.getElementById('statusUpdate');
+        const tableBody = document.getElementById('tableBody');
+        const countPending = document.getElementById('countPending');
 
-        sellerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const btn = document.getElementById('btnSubmit');
-            btn.disabled = true;
-            btn.innerText = "Mengirim...";
+        // Fungsi Load Data secara Real-time
+        const sellerRef = ref(db, 'pendaftaran_seller');
+        onValue(sellerRef, (snapshot) => {
+            tableBody.innerHTML = "";
+            let counter = 0;
 
-            // Ambil Data
-            const dataSeller = {
-                namaToko: document.getElementById('namaToko').value,
-                namaPemilik: document.getElementById('namaPemilik').value,
-                noWA: document.getElementById('noWA').value,
-                kategori: document.getElementById('kategori').value,
-                status: "pending", // Status awal wajib pending
-                waktuDaftar: new Date().toLocaleString()
-            };
-
-            // Simpan ke Realtime Database dalam folder 'pendaftaran_seller'
-            const listRef = ref(db, 'pendaftaran_seller');
-            const newSellerRef = push(listRef);
-            
-            set(newSellerRef, dataSeller)
-                .then(() => {
-                    sellerForm.classList.add('hidden');
-                    statusUpdate.classList.remove('hidden');
-                })
-                .catch((error) => {
-                    alert("Error: " + error.message);
-                    btn.disabled = false;
-                    btn.innerText = "Kirim Pengajuan Toko";
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                
+                Object.keys(data).forEach(key => {
+                    const seller = data[key];
+                    
+                    // Hanya tampilkan yang statusnya pending
+                    if (seller.status === "pending") {
+                        counter++;
+                        const row = `
+                            <tr class="hover:bg-gray-750 transition">
+                                <td class="px-6 py-4 font-semibold text-white">${seller.namaToko}</td>
+                                <td class="px-6 py-4 text-sm text-gray-400">
+                                    ${seller.namaPemilik}<br>
+                                    <span class="text-blue-400">${seller.noWA}</span>
+                                </td>
+                                <td class="px-6 py-4"><span class="bg-gray-900 px-3 py-1 rounded-full text-xs">${seller.kategori}</span></td>
+                                <td class="px-6 py-4 text-xs text-gray-500">${seller.waktuDaftar}</td>
+                                <td class="px-6 py-4 text-center space-x-2">
+                                    <button onclick="updateStatus('${key}', 'active')" class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm font-bold transition">Approve</button>
+                                    <button onclick="hapusSeller('${key}')" class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm font-bold transition">Reject</button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    }
                 });
+            }
+
+            countPending.innerText = counter;
+            if (counter === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-10 text-center text-gray-500 italic">Tidak ada pendaftaran seller baru.</td></tr>`;
+            }
         });
+
+        // Global functions agar bisa dipanggil dari atribut onclick
+        window.updateStatus = (id, newStatus) => {
+            if(confirm("Setujui seller ini untuk mulai berjualan?")) {
+                update(ref(db, 'pendaftaran_seller/' + id), { status: newStatus })
+                .then(() => alert("Seller berhasil di-Approve!"))
+                .catch(err => alert("Error: " + err.message));
+            }
+        };
+
+        window.hapusSeller = (id) => {
+            if(confirm("Tolak dan hapus data pendaftaran ini?")) {
+                remove(ref(db, 'pendaftaran_seller/' + id))
+                .then(() => alert("Data berhasil dihapus."));
+            }
+        };
     </script>
+
+    <style>
+        .hover\:bg-gray-750:hover { background-color: #2d3748; }
+    </style>
 </body>
 </html>
