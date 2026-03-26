@@ -1,1 +1,77 @@
-# gastest
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uji Coba Firebase - Xrezzky Store</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; max-width: 400px; }
+        h1 { color: #1a73e8; font-size: 24px; }
+        p { color: #5f6368; line-height: 1.6; }
+        .btn { background: #1a73e8; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .btn:hover { background: #1557b0; }
+        #status-msg { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Xrezzky Marketplace Test</h1>
+    <p>Klik tombol di bawah untuk mengetes apakah Firebase kamu sudah terhubung dengan benar ke database.</p>
+    
+    <button id="btnTes" class="btn">Tes Koneksi Database</button>
+    <div id="status-msg"></div>
+</div>
+
+<script type="module">
+    // Import Firebase SDK (Versi Web terbaru dari CDN)
+    import { initializeApp } from "https://www.gstatic.com";
+    import { getDatabase, ref, set } from "https://www.gstatic.com";
+
+    // Konfigurasi Firebase yang kamu berikan tadi
+    const firebaseConfig = {
+      apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
+      authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
+      databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "xrezzkystore-marketplace-83bc0",
+      storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
+      messagingSenderId: "604900856944",
+      appId: "1:604900856944:web:c48c973da45214c68a10b5",
+      measurementId: "G-7XG9V48HW0"
+    };
+
+    // Inisialisasi Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Ambil elemen dari HTML
+    const btn = document.getElementById('btnTes');
+    const msg = document.getElementById('status-msg');
+
+    // Jalankan Fungsi saat tombol diklik
+    btn.addEventListener('click', () => {
+        msg.innerText = "Sedang mencoba koneksi...";
+        msg.style.color = "blue";
+
+        // Simpan data sederhana ke Firebase sebagai tes
+        set(ref(db, 'testing_connection/'), {
+            nama_web: "Xrezzky Marketplace",
+            status: "Online",
+            update_terakhir: new Date().toLocaleString()
+        })
+        .then(() => {
+            msg.innerText = "✅ Mantap! Firebase Berhasil Terhubung!";
+            msg.style.color = "green";
+            console.log("Data berhasil dikirim ke Firebase!");
+        })
+        .catch((error) => {
+            msg.innerText = "❌ Gagal: " + error.message;
+            msg.style.color = "red";
+            console.error(error);
+        });
+    });
+</script>
+
+</body>
+</html>
