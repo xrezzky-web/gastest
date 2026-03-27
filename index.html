@@ -3,84 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xrezzky Store | Home</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>XREZZKY STORE | Premium Digital Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    
     <style>
-        :root { --primary: #2563eb; --secondary: #10b981; --dark: #1e293b; --light: #f8fafc; }
-        body { font-family: 'Inter', sans-serif; background: var(--light); margin: 0; color: var(--dark); }
-        
-        /* Navbar */
-        nav { 
-            background: white; padding: 15px 5%; display: flex; 
-            justify-content: space-between; align-items: center; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; 
+        :root {
+            --bg-dark: #05080f;
+            --surface: #0f172a;
+            --surface-light: #1e293b;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.5);
+            --accent: #f59e0b;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(15, 23, 42, 0.8);
         }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
-        .nav-btns { display: flex; gap: 10px; }
-        
-        /* Buttons */
-        .btn { padding: 10px 20px; border-radius: 8px; cursor: pointer; text-decoration: none; font-weight: 600; border: none; transition: 0.3s; font-size: 0.9rem; }
-        .btn-outline { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
-        .btn-fill { background: var(--primary); color: white; }
 
-        /* Product Grid */
-        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
-        #product-list { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; 
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
         }
-        .card { 
-            background: white; padding: 15px; border-radius: 15px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #eee; text-align: center;
-        }
-        .card img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; }
-        .price { color: var(--secondary); font-weight: 700; font-size: 1.2rem; display: block; margin: 10px 0; }
 
-        /* Modal Pendaftaran */
-        .modal { 
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); 
-            justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px);
+        h1, h2, h3, .font-syne { font-family: 'Syne', sans-serif; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--surface-light); border-radius: 10px; }
+
+        /* Glassmorphism Utilities */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
         }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-width: 400px; position: relative; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; }
+
+        .glow-blue { box-shadow: 0 0 20px var(--primary-glow); }
+        
+        /* Loading Animation */
+        #loader {
+            position: fixed; inset: 0; background: var(--bg-dark);
+            z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 4px solid var(--border);
+            border-top: 4px solid var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Product Cards */
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        }
+        .product-img-container {
+            position: relative; overflow: hidden; border-radius: 18px;
+        }
+        .product-card:hover .product-img { transform: scale(1.1); }
+        .product-img { transition: transform 0.6s ease; width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px); z-index: 1000;
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content {
+            background: var(--surface);
+            width: 100%; max-width: 600px;
+            max-height: 90vh; overflow-y: auto;
+            border-radius: 28px; border: 1px solid var(--border);
+            position: relative; animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* Inputs & Buttons */
+        .input-group { position: relative; margin-bottom: 20px; }
+        .custom-input {
+            width: 100%; background: #0a0f1a; border: 1px solid var(--border);
+            padding: 14px 18px; border-radius: 14px; color: white; transition: 0.3s;
+        }
+        .custom-input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 10px rgba(59,130,246,0.2); }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white; padding: 14px 28px; border-radius: 14px;
+            font-weight: 700; transition: 0.3s; text-align: center; display: block;
+        }
+        .btn-primary:active { transform: scale(0.95); }
+
+        /* Navigation */
+        .nav-link { color: var(--text-dim); transition: 0.3s; font-size: 0.8rem; font-weight: 600; }
+        .nav-link.active { color: var(--primary); }
+
+        /* Badges */
+        .badge-new { background: #ef4444; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; position: absolute; top: 12px; right: 12px; }
     </style>
 </head>
-<body>
+<body class="pb-24">
 
-<nav>
-    <a href="index.html" class="logo">Xrezzky<span>Store</span></a>
-    <div class="nav-btns">
-        <a href="admin-panel.html" class="btn btn-outline">Admin</a>
-        <a href="seller-dashboard.html" class="btn btn-outline">Seller Login</a>
-        <button class="btn btn-fill" onclick="openModal()">Buka Toko</button>
+    <div id="loader">
+        <div class="spinner mb-4"></div>
+        <h2 class="text-2xl font-bold font-syne animate-pulse">XREZZKY</h2>
+        <p class="text-xs text-gray-500 mt-2 tracking-[0.3em] uppercase">Syncing with Firebase...</p>
     </div>
-</nav>
 
-<div class="container">
-    <h2>🛍️ Produk Terbaru</h2>
-    <div id="product-list">
-        <p>Memuat produk...</p>
+    <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/20 blur-[120px] rounded-full z-[-1]"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-900/20 blur-[120px] rounded-full z-[-1]"></div>
+
+    <header class="sticky top-0 z-[100] glass-card !rounded-none border-t-0 border-x-0 bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('home')">
+                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center glow-blue">
+                    <i class="fas fa-bolt text-white"></i>
+                </div>
+                <span class="text-2xl font-extrabold font-syne hidden md:block">XREZZKY</span>
+            </div>
+
+            <div class="flex-1 max-w-xl mx-6 relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                <input type="text" id="globalSearch" placeholder="Cari skin, jasa, atau akun..." 
+                       class="custom-input !pl-12 !py-3 !rounded-full text-sm">
+            </div>
+
+            <div id="authHeader" class="flex items-center gap-3">
+                </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 mt-8">
+        
+        <section id="page-home" class="page-view">
+            <div class="relative rounded-[32px] overflow-hidden mb-10 h-[220px] md:h-[350px]">
+                <img src="https://images.unsplash.com/photo-1614850523296-e8c041de8c2b?auto=format&fit=crop&q=80&w=2070" class="w-full h-full object-cover brightness-50">
+                <div class="absolute inset-0 p-8 flex flex-col justify-center">
+                    <h1 class="text-3xl md:text-5xl font-extrabold mb-3">LEVEL UP YOUR GAME</h1>
+                    <p class="text-gray-300 max-w-md text-sm md:text-base mb-6">Marketplace digital paling aman dengan sistem escrow otomatis dan layanan 24/7.</p>
+                    <div class="flex gap-3">
+                        <button class="px-6 py-3 bg-blue-600 rounded-xl font-bold text-sm">Lihat Promo</button>
+                        <button class="px-6 py-3 bg-white/10 backdrop-blur rounded-xl font-bold text-sm">Top Up</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 overflow-x-auto pb-6 no-scrollbar">
+                <div class="flex-none px-6 py-3 glass-card text-sm font-bold border-blue-500 bg-blue-500/10 cursor-pointer">Semua</div>
+                <div class="flex-none px-6 py-3 glass-card text-sm font-bold hover:border-blue-500 cursor-pointer">Game Mobile</div>
+                <div class="flex-none px-6 py-3 glass-card text-sm font-bold hover:border-blue-500 cursor-pointer">Premium Apps</div>
+                <div class="flex-none px-6 py-3 glass-card text-sm font-bold hover:border-blue-500 cursor-pointer">E-Voucher</div>
+                <div class="flex-none px-6 py-3 glass-card text-sm font-bold hover:border-blue-500 cursor-pointer">Akun Sosmed</div>
+            </div>
+
+            <div id="mainProductGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-4">
+                <div class="animate-pulse glass-card h-64"></div>
+                <div class="animate-pulse glass-card h-64"></div>
+                <div class="animate-pulse glass-card h-64"></div>
+                <div class="animate-pulse glass-card h-64"></div>
+                <div class="animate-pulse glass-card h-64"></div>
+            </div>
+        </section>
+
+        <section id="page-profile" class="page-view hidden">
+            <div class="max-w-3xl mx-auto">
+                <div class="glass-card p-8 mb-6">
+                    <div class="flex flex-col items-center">
+                        <div class="relative group">
+                            <div id="profileAvatar" class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-4xl mb-4 font-bold border-4 border-surface shadow-2xl">?</div>
+                            <label for="avatarUpload" class="absolute bottom-4 right-0 bg-white text-black w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition">
+                                <i class="fas fa-camera text-xs"></i>
+                            </label>
+                            <input type="file" id="avatarUpload" class="hidden" accept="image/*">
+                        </div>
+                        <h2 id="userNameText" class="text-2xl font-bold">Memuat...</h2>
+                        <p id="userEmailText" class="text-gray-400 text-sm mb-6"></p>
+                        
+                        <div class="grid grid-cols-2 gap-4 w-full">
+                            <div class="bg-white/5 p-4 rounded-2xl text-center">
+                                <p class="text-xs text-gray-400">Total Transaksi</p>
+                                <p class="text-xl font-bold" id="statsTrx">0</p>
+                            </div>
+                            <div class="bg-white/5 p-4 rounded-2xl text-center">
+                                <p class="text-xs text-gray-400">Saldo Wallet</p>
+                                <p class="text-xl font-bold text-green-400">Rp 0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <button onclick="openEditProfile()" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition">
+                        <div class="flex items-center gap-4">
+                            <i class="fas fa-user-edit text-blue-400"></i>
+                            <span>Edit Profil</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-600"></i>
+                    </button>
+                    <button onclick="showTransactionHistory()" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition">
+                        <div class="flex items-center gap-4">
+                            <i class="fas fa-history text-purple-400"></i>
+                            <span>Riwayat Pembelian</span>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-600"></i>
+                    </button>
+                    <button onclick="logoutUser()" class="w-full flex items-center justify-between p-5 glass-card border-red-500/20 hover:bg-red-500/10 transition">
+                        <div class="flex items-center gap-4 text-red-400">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Keluar dari Akun</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="fixed bottom-0 inset-x-0 z-[100] glass-card !rounded-none border-x-0 border-b-0 px-4 py-2 flex justify-around items-center md:hidden">
+        <button onclick="navigate('home')" id="nav-home" class="nav-link active flex flex-col items-center gap-1">
+            <i class="fas fa-home text-xl"></i>
+            <span>Beranda</span>
+        </button>
+        <button onclick="navigate('orders')" id="nav-orders" class="nav-link flex flex-col items-center gap-1">
+            <i class="fas fa-shopping-bag text-xl"></i>
+            <span>Pesanan</span>
+        </button>
+        <button onclick="navigate('profile')" id="nav-profile" class="nav-link flex flex-col items-center gap-1">
+            <i class="fas fa-user-circle text-xl"></i>
+            <span>Profil</span>
+        </button>
+    </nav>
+
+    <div id="modalDetail" class="modal-overlay">
+        <div class="modal-content !max-w-4xl p-0 overflow-hidden">
+            <div class="flex flex-col md:flex-row h-full">
+                <div class="w-full md:w-1/2 bg-black flex items-center justify-center p-4 relative">
+                    <button onclick="closeModal('modalDetail')" class="absolute top-4 left-4 w-10 h-10 bg-black/50 backdrop-blur-xl rounded-full flex items-center justify-center z-10">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <img id="detImg" src="" class="max-h-[400px] object-contain shadow-2xl">
+                </div>
+                <div class="w-full md:w-1/2 p-8 overflow-y-auto">
+                    <div class="flex justify-between items-start mb-4">
+                        <span id="detCat" class="text-xs font-bold text-blue-500 uppercase tracking-widest">KATEGORI</span>
+                        <div class="flex items-center gap-1 text-yellow-400 text-sm">
+                            <i class="fas fa-star"></i> <span id="detRating">4.9</span>
+                        </div>
+                    </div>
+                    <h2 id="detTitle" class="text-3xl font-extrabold mb-2 leading-tight">Product Title</h2>
+                    <p id="detPrice" class="text-2xl font-bold text-blue-400 mb-6">Rp 0</p>
+                    
+                    <div class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 mb-6">
+                        <div id="detSellerAvatar" class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center font-bold">S</div>
+                        <div>
+                            <p class="text-xs text-gray-400 text-dim">Penjual Terverifikasi</p>
+                            <p id="detSellerName" class="font-bold">XREZZKY Official</p>
+                        </div>
+                        <button class="ml-auto text-blue-400 font-bold text-sm">Follow</button>
+                    </div>
+
+                    <div class="space-y-4 mb-8">
+                        <h4 class="font-bold border-l-4 border-blue-500 pl-3">Deskripsi Produk</h4>
+                        <p id="detDesc" class="text-gray-400 text-sm leading-relaxed">Lorem ipsum dolor sit amet...</p>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <button onclick="copyLink()" class="flex-none w-14 h-14 glass-card flex items-center justify-center hover:bg-white/10">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                        <button onclick="handleBuyNow()" class="flex-1 btn-primary !rounded-2xl flex items-center justify-center gap-3">
+                            <i class="fas fa-shopping-cart"></i> Beli Sekarang
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div id="modal-daftar" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="closeModal()">&times;</span>
-        <h3>Daftar Seller</h3>
-        <p style="font-size: 0.9rem; color: #666;">Isi data untuk ditinjau admin.</p>
-        <form id="regForm">
-            <input type="text" id="storeName" placeholder="Nama Toko" required>
-            <input type="email" id="sellerEmail" placeholder="Email Toko" required>
-            <button type="submit" class="btn btn-fill" style="width: 100%; margin-top: 10px;">Kirim Pendaftaran</button>
-        </form>
+    <div id="modalAuth" class="modal-overlay">
+        <div class="modal-content !max-w-md p-8">
+            <div id="loginForm">
+                <h2 class="text-3xl font-extrabold mb-2">Selamat Datang</h2>
+                <p class="text-gray-400 text-sm mb-8">Masuk ke akun XREZZKY STORE Anda</p>
+                <div class="input-group">
+                    <input type="email" id="authEmail" class="custom-input" placeholder="Alamat Email">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="authPass" class="custom-input" placeholder="Password">
+                </div>
+                <button onclick="processLogin()" class="btn-primary w-full mb-6">Masuk Sekarang</button>
+                <p class="text-center text-sm text-gray-500">
+                    Belum punya akun? <span onclick="toggleAuthForm()" class="text-blue-400 font-bold cursor-pointer">Daftar</span>
+                </p>
+            </div>
+            
+            <div id="regForm" class="hidden">
+                <h2 class="text-3xl font-extrabold mb-2">Buat Akun</h2>
+                <p class="text-gray-400 text-sm mb-8">Daftar untuk mulai belanja produk premium</p>
+                <div class="input-group">
+                    <input type="text" id="regName" class="custom-input" placeholder="Nama Lengkap">
+                </div>
+                <div class="input-group">
+                    <input type="email" id="regEmail" class="custom-input" placeholder="Alamat Email">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="regPass" class="custom-input" placeholder="Password Minimal 6 Karakter">
+                </div>
+                <button onclick="processRegister()" class="btn-primary w-full mb-6">Daftar Akun</button>
+                <p class="text-center text-sm text-gray-500">
+                    Sudah punya akun? <span onclick="toggleAuthForm()" class="text-blue-400 font-bold cursor-pointer">Login</span>
+                </p>
+            </div>
+        </div>
     </div>
-</div>
 
+    <div id="toast" class="fixed top-24 right-4 z-[9999] transform translate-x-[150%] transition-transform duration-500">
+        <div class="glass-card !rounded-2xl p-4 flex items-center gap-4 min-w-[300px] border-l-4 border-l-blue-500">
+            <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-500" id="toastIcon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div>
+                <p class="font-bold text-sm" id="toastTitle">Berhasil</p>
+                <p class="text-xs text-gray-400" id="toastMsg">Pesan anda berhasil diproses.</p>
+            </div>
+        </div>
+    </div>
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { getDatabase, ref, onValue, set, get, push, child } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-    // --- CONFIG FIREBASE ---
+    // Konfigurasi Firebase (Gunakan milik Anda jika ingin persistensi data sendiri)
     const firebaseConfig = {
         apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
         authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
@@ -91,52 +360,212 @@
         appId: "1:604900856944:web:c48c973da45214c68a10b5"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // --- 1. TAMPILKAN PRODUK ---
-    const productList = document.getElementById('product-list');
-    onValue(ref(db, 'products'), (snapshot) => {
-        const data = snapshot.val();
-        productList.innerHTML = '';
-        if (data) {
-            Object.values(data).forEach(item => {
-                productList.innerHTML += `
-                    <div class="card">
-                        <img src="${item.image}" alt="${item.name}">
-                        <h4>${item.name}</h4>
-                        <span class="price">Rp ${item.price.toLocaleString()}</span>
-                        <p style="font-size:0.8rem; color:#888">Penjual: ${item.storeName || 'Anonim'}</p>
-                    </div>`;
+    // Global State
+    let currentUser = null;
+    let allProducts = [];
+    let selectedProduct = null;
+
+    // --- UTILS ---
+    window.showToast = (title, msg, type = 'success') => {
+        const toast = document.getElementById('toast');
+        document.getElementById('toastTitle').textContent = title;
+        document.getElementById('toastMsg').textContent = msg;
+        toast.classList.remove('translate-x-[150%]');
+        setTimeout(() => toast.classList.add('translate-x-[150%]'), 4000);
+    };
+
+    window.navigate = (page) => {
+        document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+        document.getElementById(`page-${page}`).classList.remove('hidden');
+        
+        document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+        document.getElementById(`nav-${page}`)?.classList.add('active');
+        window.scrollTo(0, 0);
+    };
+
+    window.closeModal = (id) => {
+        document.getElementById(id).style.display = 'none';
+        document.body.style.overflow = 'auto';
+    };
+
+    const openModal = (id) => {
+        document.getElementById(id).style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    };
+
+    // --- AUTH LOGIC ---
+    window.toggleAuthForm = () => {
+        document.getElementById('loginForm').classList.toggle('hidden');
+        document.getElementById('regForm').classList.toggle('hidden');
+    };
+
+    window.processRegister = async () => {
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const pass = document.getElementById('regPass').value;
+
+        if (!name || !email || pass.length < 6) return showToast('Error', 'Data tidak valid!', 'error');
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+            await updateProfile(userCredential.user, { displayName: name });
+            await set(ref(db, 'users/' + userCredential.user.uid), {
+                name: name,
+                email: email,
+                role: 'buyer',
+                createdAt: Date.now()
             });
-        } else {
-            productList.innerHTML = '<p>Belum ada produk.</p>';
-        }
-    });
+            closeModal('modalAuth');
+            showToast('Berhasil', 'Akun berhasil dibuat!');
+        } catch (e) { showToast('Gagal', e.message, 'error'); }
+    };
 
-    // --- 2. SISTEM MODAL & DAFTAR ---
-    const modal = document.getElementById('modal-daftar');
-    window.openModal = () => modal.style.display = 'flex';
-    window.closeModal = () => modal.style.display = 'none';
+    window.processLogin = async () => {
+        const email = document.getElementById('authEmail').value;
+        const pass = document.getElementById('authPass').value;
 
-    document.getElementById('regForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const storeName = document.getElementById('storeName').value;
-        const email = document.getElementById('sellerEmail').value.toLowerCase();
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+            closeModal('modalAuth');
+            showToast('Berhasil', 'Selamat datang kembali!');
+        } catch (e) { showToast('Gagal', 'Email atau Password salah!', 'error'); }
+    };
 
-        // Push data ke registrations
-        const regRef = ref(db, 'registrations');
-        const newRegRef = push(regRef);
-        set(newRegRef, {
-            storeName: storeName,
-            email: email,
-            status: 'pending'
-        }).then(() => {
-            alert("Berhasil mendaftar! Tunggu persetujuan admin.");
-            closeModal();
-            e.target.reset();
+    window.logoutUser = () => {
+        signOut(auth).then(() => {
+            navigate('home');
+            showToast('Logout', 'Sampai jumpa lagi!');
         });
+    };
+
+    // --- DATA FETCHING ---
+    const initApp = () => {
+        // Listen Auth State
+        onAuthStateChanged(auth, async (user) => {
+            const authHeader = document.getElementById('authHeader');
+            if (user) {
+                currentUser = user;
+                authHeader.innerHTML = `
+                    <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-xs font-bold">${user.displayName || 'User'}</p>
+                            <p class="text-[10px] text-blue-400">Buyer Tier</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold border-2 border-white/10">
+                            ${(user.displayName || 'U').charAt(0).toUpperCase()}
+                        </div>
+                    </div>
+                `;
+                // Fill Profile Data
+                document.getElementById('userNameText').textContent = user.displayName;
+                document.getElementById('userEmailText').textContent = user.email;
+                document.getElementById('profileAvatar').textContent = (user.displayName || 'U').charAt(0).toUpperCase();
+            } else {
+                currentUser = null;
+                authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-6 !text-sm">Masuk</button>`;
+            }
+        });
+
+        // Load Products Realtime
+        onValue(ref(db, 'products'), (snapshot) => {
+            const data = snapshot.val();
+            allProducts = [];
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    allProducts.push({ id: key, ...data[key] });
+                });
+            }
+            renderProducts(allProducts);
+            document.getElementById('loader').style.opacity = '0';
+            setTimeout(() => document.getElementById('loader').remove(), 500);
+        });
+    };
+
+    const renderProducts = (products) => {
+        const grid = document.getElementById('mainProductGrid');
+        grid.innerHTML = '';
+
+        if (products.length === 0) {
+            grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500">Produk tidak ditemukan</div>`;
+            return;
+        }
+
+        products.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'glass-card product-card p-3';
+            card.onclick = () => showDetail(p);
+            card.innerHTML = `
+                <div class="product-img-container mb-3">
+                    <img src="${p.images?.[0] || 'https://placehold.co/400'}" class="product-img">
+                    ${p.stock < 5 ? '<span class="badge-new bg-orange-500">Stok Limit</span>' : ''}
+                </div>
+                <p class="text-[10px] text-blue-400 font-bold uppercase tracking-tighter mb-1">${p.category || 'General'}</p>
+                <h3 class="text-sm font-bold line-clamp-1 mb-2">${p.name}</h3>
+                <div class="flex justify-between items-center">
+                    <p class="text-sm font-extrabold text-white">Rp ${Number(p.price).toLocaleString('id-ID')}</p>
+                    <div class="text-[10px] text-gray-500"><i class="fas fa-box"></i> ${p.stock}</div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    };
+
+    // --- SEARCH LOGIC ---
+    document.getElementById('globalSearch').addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        const filtered = allProducts.filter(p => 
+            p.name.toLowerCase().includes(val) || 
+            p.category?.toLowerCase().includes(val)
+        );
+        renderProducts(filtered);
     });
+
+    // --- PRODUCT DETAIL & CHECKOUT ---
+    window.showDetail = (product) => {
+        selectedProduct = product;
+        document.getElementById('detImg').src = product.images?.[0] || 'https://placehold.co/400';
+        document.getElementById('detTitle').textContent = product.name;
+        document.getElementById('detPrice').textContent = `Rp ${Number(product.price).toLocaleString('id-ID')}`;
+        document.getElementById('detDesc').textContent = product.description || 'Tidak ada deskripsi.';
+        document.getElementById('detCat').textContent = product.category || 'Digital Asset';
+        document.getElementById('detRating').textContent = product.rating || '4.8';
+        
+        openModal('modalDetail');
+    };
+
+    window.handleBuyNow = () => {
+        if (!currentUser) {
+            closeModal('modalDetail');
+            openModal('modalAuth');
+            showToast('Info', 'Silakan login untuk bertransaksi', 'info');
+            return;
+        }
+
+        const waNumber = "6281234567890"; // Ganti dengan nomor Admin/Seller
+        const message = `Halo XREZZKY STORE, saya ingin membeli produk berikut:%0A%0A` +
+                        `*Produk:* ${selectedProduct.name}%0A` +
+                        `*Harga:* Rp ${Number(selectedProduct.price).toLocaleString('id-ID')}%0A` +
+                        `*ID Produk:* ${selectedProduct.id}%0A%0A` +
+                        `*Pembeli:* ${currentUser.displayName}%0A` +
+                        `*Email:* ${currentUser.email}%0A%0A` +
+                        `Mohon instruksi selanjutnya untuk pembayaran.`;
+
+        window.open(`https://wa.me/${waNumber}?text=${message}`, '_blank');
+    };
+
+    window.copyLink = () => {
+        navigator.clipboard.writeText(window.location.href);
+        showToast('Link Disalin', 'Tautan produk berhasil disalin ke clipboard');
+    };
+
+    // Start App
+    initApp();
+
 </script>
 </body>
-</html>
+                                                                                                </html>
