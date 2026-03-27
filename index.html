@@ -306,13 +306,17 @@
                     </div>
 
                     <div class="flex gap-4">
-                        <button onclick="copyLink()" class="flex-none w-14 h-14 glass-card flex items-center justify-center hover:bg-white/10">
-                            <i class="fas fa-share-alt"></i>
+                        <button onclick="copyLink()" class="flex-none w-14 h-14 glass-card flex items-center justify-center hover:bg-white/10 transition" title="Salin Link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button onclick="shareToWA()" class="flex-none w-14 h-14 glass-card flex items-center justify-center hover:bg-green-500/20 text-green-500 transition" title="Share ke WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
                         </button>
                         <button onclick="handleBuyNow()" class="flex-1 btn-primary !rounded-2xl flex items-center justify-center gap-3">
                             <i class="fas fa-shopping-cart"></i> Beli Sekarang
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -424,7 +428,7 @@
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
     import { getDatabase, ref, onValue, set, get, push, child } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-    // Konfigurasi Firebase (Gunakan milik Anda jika ingin persistensi data sendiri)
+    // 1. CONFIGURATION
     const firebaseConfig = {
         apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
         authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
@@ -435,17 +439,15 @@
         appId: "1:604900856944:web:c48c973da45214c68a10b5"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // Global State
     let currentUser = null;
     let allProducts = [];
     let selectedProduct = null;
 
-    // --- UTILS ---
+    // 2. CORE FUNCTIONS (NAV & UI)
     window.showToast = (title, msg, type = 'success') => {
         const toast = document.getElementById('toast');
         document.getElementById('toastTitle').textContent = title;
@@ -457,7 +459,6 @@
     window.navigate = (page) => {
         document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
         document.getElementById(`page-${page}`).classList.remove('hidden');
-        
         document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
         document.getElementById(`nav-${page}`)?.classList.add('active');
         window.scrollTo(0, 0);
@@ -473,7 +474,7 @@
         document.body.style.overflow = 'hidden';
     };
 
-    // --- AUTH LOGIC ---
+    // 3. AUTH SYSTEM
     window.toggleAuthForm = () => {
         document.getElementById('loginForm').classList.toggle('hidden');
         document.getElementById('regForm').classList.toggle('hidden');
@@ -483,18 +484,11 @@
         const name = document.getElementById('regName').value;
         const email = document.getElementById('regEmail').value;
         const pass = document.getElementById('regPass').value;
-
         if (!name || !email || pass.length < 6) return showToast('Error', 'Data tidak valid!', 'error');
-
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
             await updateProfile(userCredential.user, { displayName: name });
-            await set(ref(db, 'users/' + userCredential.user.uid), {
-                name: name,
-                email: email,
-                role: 'buyer',
-                createdAt: Date.now()
-            });
+            await set(ref(db, 'users/' + userCredential.user.uid), { name, email, role: 'buyer', createdAt: Date.now() });
             closeModal('modalAuth');
             showToast('Berhasil', 'Akun berhasil dibuat!');
         } catch (e) { showToast('Gagal', e.message, 'error'); }
@@ -503,7 +497,6 @@
     window.processLogin = async () => {
         const email = document.getElementById('authEmail').value;
         const pass = document.getElementById('authPass').value;
-
         try {
             await signInWithEmailAndPassword(auth, email, pass);
             closeModal('modalAuth');
@@ -512,31 +505,16 @@
     };
 
     window.logoutUser = () => {
-        signOut(auth).then(() => {
-            navigate('home');
-            showToast('Logout', 'Sampai jumpa lagi!');
-        });
+        signOut(auth).then(() => { navigate('home'); showToast('Logout', 'Sampai jumpa lagi!'); });
     };
 
-    // --- DATA FETCHING ---
+    // 4. DATA LOGIC & DEEP LINKING
     const initApp = () => {
-        // Listen Auth State
         onAuthStateChanged(auth, async (user) => {
             const authHeader = document.getElementById('authHeader');
             if (user) {
                 currentUser = user;
-                authHeader.innerHTML = `
-                    <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
-                        <div class="text-right hidden sm:block">
-                            <p class="text-xs font-bold">${user.displayName || 'User'}</p>
-                            <p class="text-[10px] text-blue-400">Buyer Tier</p>
-                        </div>
-                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold border-2 border-white/10">
-                            ${(user.displayName || 'U').charAt(0).toUpperCase()}
-                        </div>
-                    </div>
-                `;
-                // Fill Profile Data
+                authHeader.innerHTML = `<div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')"><div class="text-right hidden sm:block"><p class="text-xs font-bold">${user.displayName || 'User'}</p><p class="text-[10px] text-blue-400">Buyer Tier</p></div><div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold border-2 border-white/10">${(user.displayName || 'U').charAt(0).toUpperCase()}</div></div>`;
                 document.getElementById('userNameText').textContent = user.displayName;
                 document.getElementById('userEmailText').textContent = user.email;
                 document.getElementById('profileAvatar').textContent = (user.displayName || 'U').charAt(0).toUpperCase();
@@ -546,7 +524,7 @@
             }
         });
 
-        // Load Products Realtime
+                // Load Products Realtime & Auto-Open Link
         onValue(ref(db, 'products'), (snapshot) => {
             const data = snapshot.val();
             allProducts = [];
@@ -556,51 +534,39 @@
                 });
             }
             renderProducts(allProducts);
-            document.getElementById('loader').style.opacity = '0';
-            setTimeout(() => document.getElementById('loader').remove(), 500);
+
+            // LOGIKA AUTO-OPEN: Cek apakah ada ?id= di URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            if (productId) {
+                const targetProduct = allProducts.find(p => p.id === productId);
+                if (targetProduct) {
+                    showDetail(targetProduct); // Otomatis buka modal detail
+                }
+            }
+
+            // Hilangkan Loader
+            const loader = document.getElementById('loader');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => loader.remove(), 500);
+            }
         });
-    };
+
 
     const renderProducts = (products) => {
         const grid = document.getElementById('mainProductGrid');
-        grid.innerHTML = '';
-
-        if (products.length === 0) {
-            grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500">Produk tidak ditemukan</div>`;
-            return;
-        }
-
+        grid.innerHTML = products.length === 0 ? `<div class="col-span-full text-center py-20 text-gray-500">Produk tidak ditemukan</div>` : '';
         products.forEach(p => {
             const card = document.createElement('div');
             card.className = 'glass-card product-card p-3';
             card.onclick = () => showDetail(p);
-            card.innerHTML = `
-                <div class="product-img-container mb-3">
-                    <img src="${p.images?.[0] || 'https://placehold.co/400'}" class="product-img">
-                    ${p.stock < 5 ? '<span class="badge-new bg-orange-500">Stok Limit</span>' : ''}
-                </div>
-                <p class="text-[10px] text-blue-400 font-bold uppercase tracking-tighter mb-1">${p.category || 'General'}</p>
-                <h3 class="text-sm font-bold line-clamp-1 mb-2">${p.name}</h3>
-                <div class="flex justify-between items-center">
-                    <p class="text-sm font-extrabold text-white">Rp ${Number(p.price).toLocaleString('id-ID')}</p>
-                    <div class="text-[10px] text-gray-500"><i class="fas fa-box"></i> ${p.stock}</div>
-                </div>
-            `;
+            card.innerHTML = `<div class="product-img-container mb-3"><img src="${p.images?.[0] || 'https://placehold.co/400'}" class="product-img">${p.stock < 5 ? '<span class="badge-new bg-orange-500">Stok Limit</span>' : ''}</div><p class="text-[10px] text-blue-400 font-bold uppercase tracking-tighter mb-1">${p.category || 'General'}</p><h3 class="text-sm font-bold line-clamp-1 mb-2">${p.name}</h3><div class="flex justify-between items-center"><p class="text-sm font-extrabold text-white">Rp ${Number(p.price).toLocaleString('id-ID')}</p><div class="text-[10px] text-gray-500"><i class="fas fa-box"></i> ${p.stock}</div></div>`;
             grid.appendChild(card);
         });
     };
 
-    // --- SEARCH LOGIC ---
-    document.getElementById('globalSearch').addEventListener('input', (e) => {
-        const val = e.target.value.toLowerCase();
-        const filtered = allProducts.filter(p => 
-            p.name.toLowerCase().includes(val) || 
-            p.category?.toLowerCase().includes(val)
-        );
-        renderProducts(filtered);
-    });
-
-    // --- PRODUCT DETAIL & CHECKOUT ---
+    // 5. PRODUCT & SELLER ACTIONS
     window.showDetail = (product) => {
         selectedProduct = product;
         document.getElementById('detImg').src = product.images?.[0] || 'https://placehold.co/400';
@@ -608,122 +574,92 @@
         document.getElementById('detPrice').textContent = `Rp ${Number(product.price).toLocaleString('id-ID')}`;
         document.getElementById('detDesc').textContent = product.description || 'Tidak ada deskripsi.';
         document.getElementById('detCat').textContent = product.category || 'Digital Asset';
-        document.getElementById('detRating').textContent = product.rating || '4.8';
-        
+        document.getElementById('detSellerName').textContent = product.sellerName || 'XREZZKY Official';
+        document.getElementById('detSellerAvatar').textContent = (product.sellerName || 'X').charAt(0).toUpperCase();
         openModal('modalDetail');
     };
 
-    window.handleBuyNow = () => {
-        if (!currentUser) {
-            closeModal('modalDetail');
-            openModal('modalAuth');
-            showToast('Info', 'Silakan login untuk bertransaksi', 'info');
-            return;
-        }
-
-        const waNumber = "6281234567890"; // Ganti dengan nomor Admin/Seller
-        const message = `Halo XREZZKY STORE, saya ingin membeli produk berikut:%0A%0A` +
-                        `*Produk:* ${selectedProduct.name}%0A` +
-                        `*Harga:* Rp ${Number(selectedProduct.price).toLocaleString('id-ID')}%0A` +
-                        `*ID Produk:* ${selectedProduct.id}%0A%0A` +
-                        `*Pembeli:* ${currentUser.displayName}%0A` +
-                        `*Email:* ${currentUser.email}%0A%0A` +
-                        `Mohon instruksi selanjutnya untuk pembayaran.`;
-
-        window.open(`https://wa.me/${waNumber}?text=${message}`, '_blank');
-    };
-
-    window.copyLink = () => {
-        navigator.clipboard.writeText(window.location.href);
-        showToast('Link Disalin', 'Tautan produk berhasil disalin ke clipboard');
-    };
-    
-        // Fungsi untuk membuka gambar jadi fullscreen
-    window.expandImg = (src) => {
-        const viewer = document.getElementById('fullImageView');
-        const img = document.getElementById('imgExpanded');
-        if (viewer && img) {
-            img.src = src; 
-            viewer.classList.remove('hidden'); 
-            viewer.classList.add('flex'); 
-            document.body.style.overflow = 'hidden'; 
-        }
-    };
-
-    // Fungsi untuk menutup kembali fullscreen
-    window.closeFullScreen = () => {
-        const viewer = document.getElementById('fullImageView');
-        if (viewer) {
-            viewer.classList.add('hidden'); 
-            viewer.classList.remove('flex');
-            document.body.style.overflow = 'auto'; 
-        }
-    };
-    
     window.openSellerProfile = () => {
-    if (!selectedProduct) return;
+        if (!selectedProduct) return;
+        const sId = selectedProduct.sellerId;
+        const sName = selectedProduct.sellerName || "XREZZKY Official";
+        document.getElementById('sBigName').textContent = sName;
+        document.getElementById('sBigAvatar').textContent = sName.charAt(0).toUpperCase();
 
-    const sellerId = selectedProduct.sellerId;
-    const sellerName = document.getElementById('detSellerName').textContent;
-    const sellerAvatar = document.getElementById('detSellerAvatar').textContent;
+        const sProducts = allProducts.filter(p => p.sellerId === sId);
+        let tStock = 0, tSold = 0;
+        const list = document.getElementById('sellerProductList');
+        list.innerHTML = '';
 
-    // Set Info Dasar
-    document.getElementById('sBigName').textContent = sellerName;
-    document.getElementById('sBigAvatar').textContent = sellerAvatar;
+        sProducts.forEach(p => {
+            tStock += Number(p.stock || 0);
+            tSold += Number(p.sold || 0);
+            const div = document.createElement('div');
+            div.className = 'bg-white/5 border border-white/5 rounded-xl p-2 cursor-pointer';
+            div.onclick = () => { closeModal('modalSeller'); showDetail(p); };
+            div.innerHTML = `<img src="${p.images?.[0]}" class="w-full aspect-square object-cover rounded-lg mb-1"><p class="text-[11px] font-bold text-white line-clamp-1">${p.name}</p><p class="text-[10px] text-blue-400 font-bold">Rp ${Number(p.price).toLocaleString('id-ID')}</p>`;
+            list.appendChild(div);
+        });
 
+        document.getElementById('sTotalItem').textContent = sProducts.length;
+        document.getElementById('sTotalStock').textContent = tStock;
+        document.getElementById('sTotalSold').textContent = tSold;
+        document.getElementById('modalDetail').style.display = 'none';
+        openModal('modalSeller');
+    };
 
-    // Filter produk yang dimiliki seller ini
-    const sellerProducts = allProducts.filter(p => p.sellerId === sellerId);
-    
-    // Hitung Statistik
-    let totalStock = 0;
-    let totalSold = 0; // Tambahkan ini
+    // 6. IMAGE & SHARE SYSTEM
+    window.expandImg = (src) => {
+        document.getElementById('imgExpanded').src = src;
+        openModal('fullImageView');
+    };
 
-    sellerProducts.forEach(p => {
-        totalStock += Number(p.stock || 0);
-        totalSold += Number(p.sold || 0); // Ambil data terjual jika ada
+    window.closeFullScreen = () => closeModal('fullImageView');
+
+        // Fungsi Salin Link Produk
+    window.copyLink = () => {
+        if (!selectedProduct) return;
+        
+        // Membuat URL khusus produk ini
+        const shareUrl = `${window.location.origin}${window.location.pathname}?id=${selectedProduct.id}`;
+        
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            showToast('Link Disalin', 'Tautan produk berhasil disalin! Bagikan ke temanmu.');
+        }).catch(err => {
+            // Fallback jika browser lama
+            const textArea = document.createElement("textarea");
+            textArea.value = shareUrl;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showToast('Link Disalin', 'Tautan produk berhasil disalin!');
+        });
+    };
+
+    // Fungsi Share langsung ke WhatsApp
+    window.shareToWA = () => {
+        if (!selectedProduct) return;
+        const shareUrl = `${window.location.origin}${window.location.pathname}?id=${selectedProduct.id}`;
+        const text = encodeURIComponent(`Cek produk keren ini di XREZZKY STORE: *${selectedProduct.name}*\n\nKlik di sini: `);
+        window.open(`https://wa.me/?text=${text}${shareUrl}`, '_blank');
+    };
+
+    window.handleBuyNow = () => {
+        if (!currentUser) return openModal('modalAuth');
+        const num = "6281234567890"; // Ganti dengan nomor WA admin utama
+        const msg = encodeURIComponent(`Halo, saya mau beli ${selectedProduct.name} (Rp${Number(selectedProduct.price).toLocaleString('id-ID')})\nEmail: ${currentUser.email}`);
+        window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
+    };
+
+    // SEARCH LISTENER
+    document.getElementById('globalSearch').addEventListener('input', (e) => {
+        const val = e.target.value.toLowerCase();
+        renderProducts(allProducts.filter(p => p.name.toLowerCase().includes(val)));
     });
 
-    document.getElementById('sTotalItem').textContent = sellerProducts.length;
-    document.getElementById('sTotalStock').textContent = totalStock;
-    document.getElementById('sTotalSold').textContent = totalSold; // Tampilkan total terjual
-
-
-    // Render Daftar Produk Seller
-    const listContainer = document.getElementById('sellerProductList');
-    listContainer.innerHTML = '';
-
-    sellerProducts.forEach(p => {
-        const item = document.createElement('div');
-        item.className = 'bg-white/5 border border-white/5 rounded-xl p-2 flex flex-col gap-2 hover:border-blue-500/50 transition cursor-pointer';
-        item.onclick = () => {
-            closeModal('modalSeller');
-            showDetail(p); // Klik produk di profil akan membuka detail produk tersebut
-        };
-        item.innerHTML = `
-            <img src="${p.images?.[0] || 'https://placehold.co/400'}" class="w-full aspect-square object-cover rounded-lg mb-1">
-            <div class="px-1">
-                <p class="text-[11px] font-bold text-white line-clamp-1">${p.name}</p>
-                <div class="flex justify-between items-center mt-1">
-                    <p class="text-[10px] text-blue-400 font-bold">Rp ${Number(p.price).toLocaleString('id-ID')}</p>
-                    <p class="text-[9px] text-gray-500 font-bold">Sisa: ${p.stock}</p>
-                </div>
-            </div>
-        `;
-        listContainer.appendChild(item);
-    });
-
-    // Tutup detail, buka profil seller
-    document.getElementById('modalDetail').style.display = 'none';
-    openModal('modalSeller');
-};
-
-
-
-
-    // Start App
     initApp();
-
 </script>
+
 </body>
-                        </html>
+</html>
