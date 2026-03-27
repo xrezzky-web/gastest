@@ -132,6 +132,8 @@
     z-index: 9999 !important;
     background-color: rgba(0, 0, 0, 0.95);
 }
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 10px; }
 
 
     </style>
@@ -371,46 +373,49 @@
     <img id="imgExpanded" src="" class="max-w-[95%] max-h-[95%] object-contain">
 </div>
 
-<div class="modal-content !max-w-2xl p-0 overflow-hidden">
-    <div class="p-8 bg-gradient-to-b from-blue-600/20 to-transparent relative">
-        <button onclick="closeModal('modalSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
-            <i class="fas fa-times"></i>
-        </button>
-        
-        <div class="flex flex-col items-center">
-            <div id="sBigAvatar" class="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold bg-blue-600 border-4 border-surface shadow-2xl mb-4 text-white"></div>
-            <h2 id="sBigName" class="text-2xl font-extrabold font-syne mb-1 text-white">Nama Toko</h2>
-            <p id="sBigLocation" class="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Verified Seller</p>
+<div id="modalSeller" class="modal-overlay">
+    <div class="modal-content !max-w-2xl p-0 overflow-hidden">
+        <div class="p-8 bg-gradient-to-b from-blue-600/20 to-transparent relative">
+            <button onclick="closeModal('modalSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+                <i class="fas fa-times"></i>
+            </button>
             
-            <div class="grid grid-cols-3 gap-3 w-full">
-                <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center">
-                    <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Item</p>
-                    <p id="sTotalItem" class="text-sm font-bold text-white">0</p>
-                </div>
-                <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center">
-                    <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Stok</p>
-                    <p id="sTotalStock" class="text-sm font-bold text-green-400">0</p>
-                </div>
-                <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center">
-                    <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Terjual</p>
-                    <p id="sTotalSold" class="text-sm font-bold text-orange-400">99+</p>
+            <div class="flex flex-col items-center">
+                <div id="sBigAvatar" class="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold bg-blue-600 border-4 border-surface shadow-2xl mb-4 text-white"></div>
+                <h2 id="sBigName" class="text-2xl font-extrabold font-syne mb-1 text-white">Nama Toko</h2>
+                <p id="sBigLocation" class="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6">Verified Seller</p>
+                
+                <div class="grid grid-cols-3 gap-3 w-full">
+                    <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center">
+                        <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Item</p>
+                        <p id="sTotalItem" class="text-sm font-bold text-white">0</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center">
+                        <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Stok</p>
+                        <p id="sTotalStock" class="text-sm font-bold text-green-400">0</p>
+                    </div>
+                    <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center">
+                        <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Terjual</p>
+                        <p id="sTotalSold" class="text-sm font-bold text-orange-400">0</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="p-6">
-        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-            <i class="fas fa-th-large text-blue-500"></i> Koleksi Produk
-        </h4>
-        <div id="sellerProductList" class="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-            </div>
-    </div>
+        <div class="p-6">
+            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                <i class="fas fa-th-large text-blue-500"></i> Koleksi Produk
+            </h4>
+            <div id="sellerProductList" class="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                </div>
+        </div>
 
-    <div class="p-6 border-t border-white/5 bg-black/20">
-        <button onclick="closeModal('modalSeller')" class="btn-primary w-full !rounded-xl !py-3">Tutup Profil</button>
+        <div class="p-6 border-t border-white/5 bg-black/20 text-center">
+            <button onclick="closeModal('modalSeller')" class="btn-primary w-full !rounded-xl !py-3">Tutup Profil</button>
+        </div>
     </div>
 </div>
+
 
 
 
@@ -666,17 +671,23 @@
     document.getElementById('sBigName').textContent = sellerName;
     document.getElementById('sBigAvatar').textContent = sellerAvatar;
 
+
     // Filter produk yang dimiliki seller ini
     const sellerProducts = allProducts.filter(p => p.sellerId === sellerId);
     
     // Hitung Statistik
     let totalStock = 0;
+    let totalSold = 0; // Tambahkan ini
+
     sellerProducts.forEach(p => {
         totalStock += Number(p.stock || 0);
+        totalSold += Number(p.sold || 0); // Ambil data terjual jika ada
     });
 
     document.getElementById('sTotalItem').textContent = sellerProducts.length;
     document.getElementById('sTotalStock').textContent = totalStock;
+    document.getElementById('sTotalSold').textContent = totalSold; // Tampilkan total terjual
+
 
     // Render Daftar Produk Seller
     const listContainer = document.getElementById('sellerProductList');
@@ -715,4 +726,4 @@
 
 </script>
 </body>
-</html>
+                        </html>
