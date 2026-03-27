@@ -116,6 +116,24 @@
 
         /* Badges */
         .badge-new { background: #ef4444; color: white; padding: 2px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; position: absolute; top: 12px; right: 12px; }
+        
+        /* Efek halus saat gambar membesar */
+#fullImageView img {
+    animation: zoom 0.3s ease-out;
+}
+
+@keyframes zoom {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Memastikan layar fullscreen benar-benar di atas semua elemen */
+#fullImageView {
+    z-index: 9999 !important;
+    background-color: rgba(0, 0, 0, 0.95);
+}
+
+
     </style>
 </head>
 <body class="pb-24">
@@ -257,7 +275,8 @@
                     <button onclick="closeModal('modalDetail')" class="absolute top-4 left-4 w-10 h-10 bg-black/50 backdrop-blur-xl rounded-full flex items-center justify-center z-10">
                         <i class="fas fa-arrow-left"></i>
                     </button>
-                    <img id="detImg" src="" class="max-h-[400px] object-contain shadow-2xl">
+                    <img id="detImg" src="" onclick="expandImg(this.src)" class="max-h-[400px] object-contain shadow-2xl cursor-zoom-in hover:scale-[1.02] transition-transform duration-300">
+
                 </div>
                 <div class="w-full md:w-1/2 p-8 overflow-y-auto">
                     <div class="flex justify-between items-start mb-4">
@@ -269,7 +288,8 @@
                     <h2 id="detTitle" class="text-3xl font-extrabold mb-2 leading-tight">Product Title</h2>
                     <p id="detPrice" class="text-2xl font-bold text-blue-400 mb-6">Rp 0</p>
                     
-                    <div class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 mb-6">
+                    <div onclick="openSellerProfile()" class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 mb-6 cursor-pointer hover:bg-white/10 transition">
+
                         <div id="detSellerAvatar" class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center font-bold">S</div>
                         <div>
                             <p class="text-xs text-gray-400 text-dim">Penjual Terverifikasi</p>
@@ -344,6 +364,35 @@
             </div>
         </div>
     </div>
+    <div id="fullImageView" class="fixed inset-0 hidden items-center justify-center cursor-pointer" onclick="closeFullScreen()" style="z-index: 9999; background: rgba(0,0,0,0.95);">
+    <button class="absolute top-6 right-6 text-white text-4xl hover:text-red-500 transition">
+        <i class="fas fa-times"></i>
+    </button>
+    <img id="imgExpanded" src="" class="max-w-[95%] max-h-[95%] object-contain">
+</div>
+
+<div id="modalSeller" class="modal-overlay">
+    <div class="modal-content !max-w-md p-8 text-center">
+        <button onclick="closeModal('modalSeller')" class="absolute top-4 right-4 text-gray-500"><i class="fas fa-times"></i></button>
+        <div id="sBigAvatar" class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-bold bg-gradient-to-tr from-blue-600 to-purple-600 border-4 border-white/10 text-white shadow-2xl"></div>
+        <h2 id="sBigName" class="text-2xl font-extrabold font-syne mb-1">Nama Toko</h2>
+        <p id="sBigLocation" class="text-gray-500 text-sm mb-6"><i class="fas fa-map-marker-alt mr-2"></i>Verified Seller</p>
+        
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="bg-white/5 p-4 rounded-2xl">
+                <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Keamanan</p>
+                <p class="text-green-400 font-bold text-sm">100% Escrow</p>
+            </div>
+            <div class="bg-white/5 p-4 rounded-2xl">
+                <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Reputasi</p>
+                <p class="text-blue-400 font-bold text-sm">Recommended</p>
+            </div>
+        </div>
+        <button onclick="closeModal('modalSeller')" class="btn-primary w-full !rounded-2xl">Tutup Profil</button>
+    </div>
+</div>
+
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
@@ -562,10 +611,47 @@
         navigator.clipboard.writeText(window.location.href);
         showToast('Link Disalin', 'Tautan produk berhasil disalin ke clipboard');
     };
+    
+        // Fungsi untuk membuka gambar jadi fullscreen
+    window.expandImg = (src) => {
+        const viewer = document.getElementById('fullImageView');
+        const img = document.getElementById('imgExpanded');
+        if (viewer && img) {
+            img.src = src; 
+            viewer.classList.remove('hidden'); 
+            viewer.classList.add('flex'); 
+            document.body.style.overflow = 'hidden'; 
+        }
+    };
+
+    // Fungsi untuk menutup kembali fullscreen
+    window.closeFullScreen = () => {
+        const viewer = document.getElementById('fullImageView');
+        if (viewer) {
+            viewer.classList.add('hidden'); 
+            viewer.classList.remove('flex');
+            document.body.style.overflow = 'auto'; 
+        }
+    };
+    
+        window.openSellerProfile = () => {
+        // Mengambil data dari info yang ada di modal detail
+        const sellerName = document.getElementById('detSellerName').textContent;
+        const sellerAvatar = document.getElementById('detSellerAvatar').textContent;
+
+        document.getElementById('sBigName').textContent = sellerName;
+        document.getElementById('sBigAvatar').textContent = sellerAvatar;
+        
+        // Tutup modal detail sebentar, buka modal seller
+        document.getElementById('modalDetail').style.display = 'none';
+        openModal('modalSeller');
+    };
+
+
 
     // Start App
     initApp();
 
 </script>
 </body>
-                                                                                                </html>
+    </html>
