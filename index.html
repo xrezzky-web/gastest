@@ -138,6 +138,10 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in { animation: fadeIn 0.4s ease-out; }
+
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .promo-ticker { animation: ticker 18s linear infinite; }
+        .promo-ticker:hover { animation-play-state: paused; }
     </style>
 </head>
 <body class="pb-24">
@@ -178,14 +182,150 @@
         
         <!-- HOME PAGE -->
         <section id="page-home" class="page-view fade-in">
-            <div class="relative rounded-[32px] overflow-hidden mb-10 h-[220px] md:h-[350px]">
-                <img src="https://images.unsplash.com/photo-1614850523296-e8c041de8c2b?auto=format&fit=crop&q=80&w=2070" class="w-full h-full object-cover brightness-50">
-                <div class="absolute inset-0 p-8 flex flex-col justify-center">
-                    <h1 class="text-3xl md:text-5xl font-extrabold mb-3">LEVEL UP YOUR GAME</h1>
-                    <p class="text-gray-300 max-w-md text-sm md:text-base mb-6">Marketplace digital paling aman dengan sistem escrow otomatis dan layanan 24/7.</p>
-                    <div class="flex gap-3">
-                        <button class="px-6 py-3 bg-blue-600 rounded-xl font-bold text-sm hover:bg-blue-700 transition">Lihat Promo</button>
-                        <button class="px-6 py-3 bg-white/10 backdrop-blur rounded-xl font-bold text-sm hover:bg-white/20 transition">Top Up</button>
+
+            <!-- HERO BANNER -->
+            <div class="relative rounded-[32px] overflow-hidden mb-6" style="min-height:260px;">
+                <!-- BG gradient layer -->
+                <div class="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0d1f3c] to-[#05080f]"></div>
+                <!-- Decorative blobs -->
+                <div class="absolute top-[-30%] right-[-10%] w-[55%] h-[200%] bg-blue-600/20 blur-[80px] rounded-full"></div>
+                <div class="absolute bottom-[-40%] left-[20%] w-[40%] h-[150%] bg-purple-600/15 blur-[80px] rounded-full"></div>
+                <!-- Grid pattern overlay -->
+                <div class="absolute inset-0 opacity-[0.04]" style="background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+                <div class="relative z-10 px-8 py-10 md:px-14 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="flex-1">
+                        <!-- TRUST BADGES -->
+                        <div class="flex items-center gap-3 mb-4 flex-wrap">
+                            <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-blue-300 bg-blue-500/15 border border-blue-500/30 px-3 py-1.5 rounded-full">
+                                <i class="fas fa-shield-alt text-blue-400"></i> TERJAMIN
+                            </span>
+                            <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-green-300 bg-green-500/15 border border-green-500/30 px-3 py-1.5 rounded-full">
+                                <i class="fas fa-check-circle text-green-400"></i> TRUSTED
+                            </span>
+                            <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-yellow-300 bg-yellow-500/15 border border-yellow-500/30 px-3 py-1.5 rounded-full">
+                                <i class="fas fa-star text-yellow-400"></i> #1 MARKETPLACE
+                            </span>
+                        </div>
+
+                        <!-- STORE NAME -->
+                        <h1 class="text-3xl md:text-5xl font-extrabold font-syne leading-tight mb-1">
+                            XREZZKY
+                        </h1>
+                        <h2 class="text-xl md:text-3xl font-extrabold font-syne text-blue-400 mb-4">
+                            OFFICIAL STORE
+                        </h2>
+
+                        <!-- TAGLINE -->
+                        <p class="text-gray-300 text-sm md:text-base mb-6 max-w-md leading-relaxed">
+                            Platform jual-beli produk digital paling aman & terpercaya.<br>
+                            <span class="text-blue-300 font-semibold">Transaksi dijamin aman</span> · <span class="text-green-300 font-semibold">Respon cepat 24/7</span> · <span class="text-yellow-300 font-semibold">100% anti-tipu</span>
+                        </p>
+
+                        <!-- CTA BUTTONS -->
+                        <div class="flex gap-3 flex-wrap">
+                            <button onclick="document.getElementById('mainProductGrid').scrollIntoView({behavior:'smooth'})"
+                                class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-sm transition shadow-lg shadow-blue-900/40">
+                                <i class="fas fa-bolt"></i> Belanja Sekarang
+                            </button>
+                            <button onclick="openModal('modalAbout')"
+                                class="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur rounded-xl font-bold text-sm transition border border-white/10">
+                                <i class="fas fa-info-circle"></i> Tentang Kami
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: STATS -->
+                    <div class="flex flex-row md:flex-col gap-3 shrink-0">
+                        <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
+                            <p class="text-2xl font-extrabold text-blue-400">500+</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Produk</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
+                            <p class="text-2xl font-extrabold text-green-400">2K+</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Pembeli</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
+                            <p class="text-2xl font-extrabold text-yellow-400">4.9★</p>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Rating</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROMO TICKER -->
+            <div class="relative overflow-hidden rounded-2xl mb-6 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-600/20 border border-white/10 py-3 px-4">
+                <div class="flex items-center gap-3">
+                    <span class="shrink-0 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg">🔥 PROMO</span>
+                    <div class="overflow-hidden flex-1">
+                        <div class="promo-ticker flex gap-10 whitespace-nowrap animate-[ticker_18s_linear_infinite]">
+                            <span class="text-sm font-semibold text-gray-200">✨ Flash Sale skin Mobile Legends hingga 50% OFF setiap Jumat</span>
+                            <span class="text-sm font-semibold text-gray-200">🎮 Gratis ongkir untuk pembelian pertama kamu</span>
+                            <span class="text-sm font-semibold text-gray-200">🔐 Semua transaksi dijamin aman & bergaransi</span>
+                            <span class="text-sm font-semibold text-gray-200">💎 Member Premium dapat akses early bird produk baru</span>
+                            <span class="text-sm font-semibold text-gray-200">✨ Flash Sale skin Mobile Legends hingga 50% OFF setiap Jumat</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FITUR UNGGULAN -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+                <div class="glass-card p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-shield-alt text-blue-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-extrabold">Transaksi Aman</p>
+                        <p class="text-[10px] text-gray-500">Sistem escrow & garansi</p>
+                    </div>
+                </div>
+                <div class="glass-card p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-bolt text-green-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-extrabold">Proses Cepat</p>
+                        <p class="text-[10px] text-gray-500">Pengiriman instan</p>
+                    </div>
+                </div>
+                <div class="glass-card p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-headset text-purple-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-extrabold">CS 24/7</p>
+                        <p class="text-[10px] text-gray-500">Siap bantu kapanpun</p>
+                    </div>
+                </div>
+                <div class="glass-card p-4 flex items-center gap-3">
+                    <div class="w-10 h-10 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0">
+                        <i class="fas fa-star text-yellow-400"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-extrabold">Produk Premium</p>
+                        <p class="text-[10px] text-gray-500">Kualitas terjamin</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SELLER CTA BANNER -->
+            <div class="relative rounded-[28px] overflow-hidden mb-8 border border-blue-500/30 cursor-pointer hover:border-blue-400/60 transition group" onclick="navigate('profile')">
+                <div class="absolute inset-0 bg-gradient-to-r from-[#0d1f3c] to-[#0a1020]"></div>
+                <div class="absolute right-0 top-0 h-full w-1/3 bg-blue-600/10 blur-2xl"></div>
+                <div class="relative z-10 flex items-center justify-between p-6 md:p-8 gap-4">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 bg-blue-500/20 border border-blue-500/40 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-blue-500/30 transition">
+                            <i class="fas fa-store text-blue-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-black uppercase tracking-widest text-blue-400 mb-1">Jadi Seller di XREZZKY</p>
+                            <h3 class="text-lg md:text-xl font-extrabold font-syne leading-tight">Buka Toko Kamu Sekarang</h3>
+                            <p class="text-gray-400 text-xs mt-1">Jangkau ribuan pembeli · Gratis daftar · Komisi kompetitif</p>
+                        </div>
+                    </div>
+                    <div class="shrink-0 flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-5 py-3 rounded-xl font-bold text-sm transition whitespace-nowrap">
+                        Mulai <i class="fas fa-arrow-right ml-1"></i>
                     </div>
                 </div>
             </div>
@@ -231,17 +371,38 @@
 
                 <!-- NOT LOGGED IN STATE -->
                 <div id="profileNotLoggedIn" class="hidden">
-                    <div class="glass-card p-12 text-center">
+                    <div class="glass-card p-12 text-center mb-5">
                         <i class="fas fa-user-circle text-6xl text-gray-600 mb-4"></i>
                         <h3 class="text-xl font-bold mb-2">Kamu Belum Login</h3>
                         <p class="text-gray-400 text-sm mb-6">Login untuk akses profil, riwayat transaksi, dan fitur lainnya.</p>
                         <button onclick="openModal('modalAuth')" class="btn-primary !inline-block">Login / Daftar</button>
                     </div>
+                    <div class="space-y-3">
+                        <button onclick="openModal('modalAbout')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-info-circle text-cyan-400"></i>
+                                </div>
+                                <span class="font-semibold">Tentang XREZZKY</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+                        <button onclick="openModal('modalPolicy')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-file-contract text-orange-400"></i>
+                                </div>
+                                <span class="font-semibold">Kebijakan & Persyaratan</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- LOGGED IN STATE -->
                 <div id="profileLoggedIn" class="hidden">
-                    <div class="glass-card p-8 mb-6">
+                    <!-- USER CARD -->
+                    <div class="glass-card p-8 mb-5">
                         <div class="flex flex-col items-center">
                             <div class="relative group mb-4">
                                 <div id="profileAvatar" class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-4xl font-bold border-4 border-blue-500/30 shadow-2xl overflow-hidden">
@@ -269,7 +430,25 @@
                         </div>
                     </div>
 
-                    <div class="space-y-3">
+                    <!-- SELLER CTA CARD -->
+                    <div class="relative rounded-[24px] overflow-hidden mb-5 border border-blue-500/30 cursor-pointer hover:border-blue-400 transition group" onclick="openModal('modalBecomeSeller')">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-purple-900/40"></div>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[80px] opacity-10 font-black font-syne">SELLER</div>
+                        <div class="relative z-10 p-5 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-blue-500/30 border border-blue-400/40 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="fas fa-store text-blue-300 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-0.5">Upgrade Akun</p>
+                                <p class="font-extrabold font-syne text-base">Jadilah Seller XREZZKY</p>
+                                <p class="text-gray-400 text-xs">Buka toko & jual produk digitalmu ke ribuan pembeli</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-blue-400 shrink-0"></i>
+                        </div>
+                    </div>
+
+                    <!-- MENU LIST -->
+                    <div class="space-y-3 mb-5">
                         <button onclick="openEditProfile()" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
                             <div class="flex items-center gap-4">
                                 <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
@@ -290,6 +469,26 @@
                             <i class="fas fa-chevron-right text-gray-600"></i>
                         </button>
 
+                        <button onclick="openModal('modalAbout')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-info-circle text-cyan-400"></i>
+                                </div>
+                                <span class="font-semibold">Tentang XREZZKY</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+
+                        <button onclick="openModal('modalPolicy')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-file-contract text-orange-400"></i>
+                                </div>
+                                <span class="font-semibold">Kebijakan & Persyaratan</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-600"></i>
+                        </button>
+
                         <button onclick="logoutUser()" class="w-full flex items-center justify-between p-5 glass-card border-red-500/20 hover:bg-red-500/10 transition rounded-2xl">
                             <div class="flex items-center gap-4">
                                 <div class="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center">
@@ -299,6 +498,9 @@
                             </div>
                         </button>
                     </div>
+
+                    <!-- APP VERSION -->
+                    <p class="text-center text-[10px] text-gray-600 pb-2">XREZZKY STORE v1.0.0 · Made with ❤️</p>
                 </div>
             </div>
         </section>
@@ -491,6 +693,299 @@
             <div>
                 <p class="font-bold text-sm" id="toastTitle">Berhasil</p>
                 <p class="text-xs text-gray-400" id="toastMsg">Pesan berhasil diproses.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: TENTANG XREZZKY (Visi Misi) -->
+    <div id="modalAbout" class="modal-overlay">
+        <div class="modal-content !max-w-2xl p-0 overflow-hidden">
+            <div class="relative p-8 bg-gradient-to-b from-blue-600/20 to-transparent">
+                <button onclick="closeModal('modalAbout')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="flex items-center gap-4 mb-2">
+                    <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center glow-blue">
+                        <i class="fas fa-bolt text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-extrabold font-syne">XREZZKY OFFICIAL STORE</h2>
+                        <p class="text-blue-400 text-xs font-bold uppercase tracking-widest">Terjamin · Trusted · #1 Digital Marketplace</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-8 pb-8 overflow-y-auto max-h-[65vh] custom-scrollbar space-y-6">
+
+                <!-- TENTANG -->
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-store"></i> Tentang Kami
+                    </h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        XREZZKY OFFICIAL STORE adalah platform marketplace digital yang hadir untuk menghubungkan penjual dan pembeli produk digital secara aman, cepat, dan terpercaya. Kami berkomitmen menghadirkan pengalaman belanja digital yang menyenangkan dan bebas risiko untuk semua kalangan.
+                    </p>
+                </div>
+
+                <!-- VISI -->
+                <div class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-eye"></i> Visi
+                    </h3>
+                    <p class="text-gray-200 text-sm leading-relaxed font-medium">
+                        "Menjadi marketplace digital paling aman, terpercaya, dan inovatif di Indonesia — tempat di mana setiap transaksi digital terasa mudah, cepat, dan menyenangkan bagi semua pihak."
+                    </p>
+                </div>
+
+                <!-- MISI -->
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-bullseye"></i> Misi
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 bg-blue-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                <span class="text-blue-400 text-xs font-black">1</span>
+                            </div>
+                            <p class="text-gray-300 text-sm">Menyediakan platform yang <strong class="text-white">aman & terpercaya</strong> melalui sistem escrow dan verifikasi seller ketat.</p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 bg-purple-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                <span class="text-purple-400 text-xs font-black">2</span>
+                            </div>
+                            <p class="text-gray-300 text-sm">Memberdayakan <strong class="text-white">seller lokal</strong> agar bisa menjangkau pasar yang lebih luas dengan biaya minimum.</p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 bg-green-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                <span class="text-green-400 text-xs font-black">3</span>
+                            </div>
+                            <p class="text-gray-300 text-sm">Menghadirkan <strong class="text-white">layanan pelanggan 24/7</strong> yang responsif dan solutif untuk setiap kendala transaksi.</p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 bg-yellow-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                <span class="text-yellow-400 text-xs font-black">4</span>
+                            </div>
+                            <p class="text-gray-300 text-sm">Terus berinovasi menghadirkan <strong class="text-white">fitur-fitur terdepan</strong> yang memudahkan ekosistem jual-beli digital Indonesia.</p>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-6 h-6 bg-orange-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+                                <span class="text-orange-400 text-xs font-black">5</span>
+                            </div>
+                            <p class="text-gray-300 text-sm">Membangun <strong class="text-white">komunitas digital</strong> yang saling mendukung antara gamer, kreator, dan pelaku usaha digital.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NILAI -->
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-green-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-gem"></i> Nilai Kami
+                    </h3>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center">
+                            <i class="fas fa-shield-alt text-blue-400 text-xl mb-2"></i>
+                            <p class="text-xs font-bold">Kepercayaan</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center">
+                            <i class="fas fa-bolt text-yellow-400 text-xl mb-2"></i>
+                            <p class="text-xs font-bold">Kecepatan</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center">
+                            <i class="fas fa-heart text-red-400 text-xl mb-2"></i>
+                            <p class="text-xs font-bold">Integritas</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center">
+                            <i class="fas fa-lightbulb text-purple-400 text-xl mb-2"></i>
+                            <p class="text-xs font-bold">Inovasi</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center">
+                            <i class="fas fa-users text-green-400 text-xl mb-2"></i>
+                            <p class="text-xs font-bold">Komunitas</p>
+                        </div>
+                        <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center">
+                            <i class="fas fa-star text-orange-400 text-xl mb-2"></i>
+                            <p class="text-xs font-bold">Kualitas</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="closeModal('modalAbout')" class="btn-primary w-full !rounded-xl">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: KEBIJAKAN & PERSYARATAN -->
+    <div id="modalPolicy" class="modal-overlay">
+        <div class="modal-content !max-w-2xl p-0 overflow-hidden">
+            <div class="relative p-8 bg-gradient-to-b from-orange-600/20 to-transparent">
+                <button onclick="closeModal('modalPolicy')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center border border-orange-500/30">
+                        <i class="fas fa-file-contract text-orange-400 text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-extrabold font-syne">Kebijakan & Persyaratan</h2>
+                        <p class="text-orange-400 text-xs font-bold uppercase tracking-widest">XREZZKY OFFICIAL STORE</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-8 pb-8 overflow-y-auto max-h-[65vh] custom-scrollbar space-y-6">
+
+                <!-- KETENTUAN UMUM -->
+                <div>
+                    <h3 class="text-xs font-black uppercase tracking-widest text-orange-400 mb-3 flex items-center gap-2">
+                        <i class="fas fa-scroll"></i> Ketentuan Umum
+                    </h3>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-3">
+                        Dengan menggunakan layanan XREZZKY OFFICIAL STORE, kamu dianggap telah membaca, memahami, dan menyetujui seluruh ketentuan yang berlaku. Pastikan kamu berusia minimal 13 tahun atau mendapat izin dari orang tua/wali.
+                    </p>
+                </div>
+
+                <!-- KEBIJAKAN PEMBELI -->
+                <div class="bg-blue-500/5 border border-blue-500/15 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-blue-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-user"></i> Kebijakan Pembeli
+                    </h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Pembeli wajib melakukan pembayaran sesuai nominal yang disepakati tanpa negosiasi setelah konfirmasi.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Komplain wajib disampaikan maksimal 1×24 jam setelah produk diterima.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Pembeli dilarang melakukan chargeback atau pembalikan dana tanpa persetujuan admin.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Data pribadi pembeli dijaga kerahasiaannya dan tidak akan disebarluaskan ke pihak ketiga.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i> Refund hanya berlaku jika produk terbukti cacat atau tidak sesuai deskripsi.</li>
+                    </ul>
+                </div>
+
+                <!-- KEBIJAKAN SELLER -->
+                <div class="bg-green-500/5 border border-green-500/15 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-green-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-store"></i> Kebijakan Seller
+                    </h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Seller wajib memastikan stok produk tersedia sebelum listing aktif.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Dilarang menjual produk ilegal, bajakan, atau yang melanggar hak cipta.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Seller wajib merespons order maksimal 2 jam di jam operasional.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Deskripsi produk harus akurat dan tidak menyesatkan pembeli.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Pelanggaran berulang dapat mengakibatkan suspend atau banned permanen.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i> Komisi platform sebesar yang telah disepakati saat pendaftaran seller.</li>
+                    </ul>
+                </div>
+
+                <!-- PRIVASI -->
+                <div class="bg-purple-500/5 border border-purple-500/15 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-purple-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-lock"></i> Kebijakan Privasi
+                    </h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0"></i> Data yang dikumpulkan: nama, email, dan riwayat transaksi untuk keperluan layanan.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0"></i> Kami tidak menjual data pengguna ke pihak ketiga manapun.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0"></i> Autentikasi menggunakan Firebase Auth dengan enkripsi standar industri.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0"></i> Pengguna dapat meminta penghapusan akun dan data kapan saja.</li>
+                    </ul>
+                </div>
+
+                <!-- LARANGAN -->
+                <div class="bg-red-500/5 border border-red-500/15 rounded-2xl p-5">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-red-300 mb-3 flex items-center gap-2">
+                        <i class="fas fa-ban"></i> Hal yang Dilarang
+                    </h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0"></i> Penipuan, manipulasi harga, atau pemalsuan identitas.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0"></i> Transaksi di luar platform untuk menghindari sistem keamanan.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0"></i> Spam, pelecehan, atau perilaku tidak pantas kepada pengguna lain.</li>
+                        <li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0"></i> Akun ganda untuk tujuan manipulasi sistem atau review.</li>
+                    </ul>
+                </div>
+
+                <p class="text-center text-[10px] text-gray-600">Terakhir diperbarui: Maret 2025 · XREZZKY OFFICIAL STORE</p>
+                <button onclick="closeModal('modalPolicy')" class="btn-primary w-full !rounded-xl">Saya Mengerti</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: JADI SELLER -->
+    <div id="modalBecomeSeller" class="modal-overlay">
+        <div class="modal-content !max-w-lg p-0 overflow-hidden">
+            <div class="relative p-8 bg-gradient-to-b from-green-600/20 to-transparent">
+                <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="flex items-center gap-4 mb-1">
+                    <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center border border-green-500/30">
+                        <i class="fas fa-store text-green-400 text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-extrabold font-syne">Jadi Seller</h2>
+                        <p class="text-green-400 text-xs font-bold uppercase tracking-widest">XREZZKY OFFICIAL STORE</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-8 pb-8 overflow-y-auto max-h-[70vh] custom-scrollbar space-y-5">
+
+                <!-- KENAPA JADI SELLER -->
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    Bergabunglah bersama ratusan seller aktif di XREZZKY STORE dan mulai hasilkan uang dari produk digitalmu! Proses daftar cepat, gratis, dan langsung bisa jualan.
+                </p>
+
+                <!-- KEUNTUNGAN -->
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
+                        <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0">
+                            <i class="fas fa-wallet text-green-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold">Gratis Daftar, Langsung Jualan</p>
+                            <p class="text-xs text-gray-400">Tidak ada biaya registrasi. Langsung aktif setelah verifikasi.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
+                        <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
+                            <i class="fas fa-users text-blue-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold">Jangkau Ribuan Pembeli</p>
+                            <p class="text-xs text-gray-400">Produkmu tampil di marketplace yang dikunjungi ribuan user aktif.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
+                        <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0">
+                            <i class="fas fa-chart-line text-purple-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold">Dashboard Seller Lengkap</p>
+                            <p class="text-xs text-gray-400">Kelola produk, pantau penjualan & statistik toko secara real-time.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
+                        <div class="w-10 h-10 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0">
+                            <i class="fas fa-headset text-yellow-400"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold">Dukungan Admin Penuh</p>
+                            <p class="text-xs text-gray-400">Tim kami siap bantu kamu sukses berjualan 24/7.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SYARAT SELLER -->
+                <div class="bg-white/5 border border-white/5 rounded-2xl p-4">
+                    <p class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Syarat Menjadi Seller</p>
+                    <ul class="space-y-1.5 text-xs text-gray-400">
+                        <li class="flex items-center gap-2"><i class="fas fa-circle text-[4px] text-blue-400"></i> Memiliki akun XREZZKY yang terverifikasi</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-circle text-[4px] text-blue-400"></i> Produk yang dijual harus legal dan original</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-circle text-[4px] text-blue-400"></i> Menyetujui kebijakan & persyaratan seller</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-circle text-[4px] text-blue-400"></i> Menyediakan nomor WhatsApp aktif untuk koordinasi</li>
+                    </ul>
+                </div>
+
+                <!-- CTA -->
+                <button onclick="applyAsSeller()" class="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl font-extrabold text-sm hover:opacity-90 transition shadow-lg shadow-green-900/30">
+                    <i class="fas fa-store"></i> Daftar Jadi Seller Sekarang
+                </button>
+                <p class="text-center text-[10px] text-gray-600">Dengan mendaftar, kamu menyetujui <span onclick="closeModal('modalBecomeSeller'); openModal('modalPolicy')" class="text-blue-400 cursor-pointer">Kebijakan & Persyaratan</span> kami.</p>
             </div>
         </div>
     </div>
@@ -1052,6 +1547,19 @@
                 }
             });
         });
+    };
+
+    window.applyAsSeller = () => {
+        const waNumber = "6281234567890"; // ganti nomor admin
+        const msg = encodeURIComponent(
+            `Halo Admin XREZZKY,\n\nSaya ingin mendaftar sebagai Seller.\n\n` +
+            `*Nama:* ${currentUser?.displayName || '-'}\n` +
+            `*Email:* ${currentUser?.email || '-'}\n\n` +
+            `Mohon info selanjutnya untuk proses verifikasi. Terima kasih!`
+        );
+        closeModal('modalBecomeSeller');
+        window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+        showToast('Redirect WhatsApp 📲', 'Kamu akan dihubungkan ke admin untuk verifikasi seller.', 'info');
     };
 
     initApp();
