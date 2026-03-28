@@ -412,25 +412,24 @@
                                     <i class="fas fa-camera text-xs"></i>
                                 </label>
                                 <input type="file" id="avatarUpload" class="hidden" accept="image/*">
-<h2 id="userNameText" class="text-2xl font-bold">Memuat...</h2>
-<p id="userEmailText" class="text-gray-400 text-sm mb-6"></p>
-<div id="roleBadgeContainer" class="mb-6"></div>
-
-<div id="sellerBanner" class="glass-card p-5 mb-6 bg-blue-600/10 border-blue-500/20 relative overflow-hidden group cursor-pointer">
-
+                            <h2 id="userNameText" class="text-2xl font-bold font-syne italic">Memuat...</h2>
+                            <p id="userEmailText" class="text-gray-400 text-sm mb-4"></p>
                             
-                            <div class="grid grid-cols-2 gap-4 w-full">
-                                <div class="bg-white/5 p-4 rounded-2xl text-center">
-                                    <p class="text-xs text-gray-400 mb-1">Total Transaksi</p>
+                            <div id="roleBadgeContainer" class="mb-6"></div>
+
+                            <div class="grid grid-cols-2 gap-4 w-full mb-6">
+                                <div class="bg-white/5 p-4 rounded-2xl text-center border border-white/5">
+                                    <p class="text-[10px] text-gray-500 mb-1 uppercase font-bold">Total Transaksi</p>
                                     <p class="text-xl font-bold" id="statsTrx">0</p>
                                 </div>
-                                <div class="bg-white/5 p-4 rounded-2xl text-center">
-                                    <p class="text-xs text-gray-400 mb-1">Member Sejak</p>
+                                <div class="bg-white/5 p-4 rounded-2xl text-center border border-white/5">
+                                    <p class="text-[10px] text-gray-500 mb-1 uppercase font-bold">Member Sejak</p>
                                     <p class="text-sm font-bold text-blue-400" id="statsMember">-</p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+
+                            <div id="sellerBanner" class="w-full"></div>
+
 
                     <!-- SELLER CTA CARD -->
                     <div id="sellerCtaCard" class="relative rounded-[24px] overflow-hidden mb-5 border border-blue-500/30 cursor-pointer hover:border-blue-400 transition group" onclick="openModal('modalBecomeSeller')">
@@ -1647,15 +1646,16 @@
         }, 8000);
 
         // Auth state listener
-                onAuthStateChanged(auth, async (user) => {
+          onAuthStateChanged(auth, async (user) => {
             const authHeader = document.getElementById('authHeader');
             const sellerBanner = document.getElementById('sellerBanner');
             const badgeContainer = document.getElementById('roleBadgeContainer');
+            const sellerCtaCard = document.getElementById('sellerCtaCard'); // Kartu pendaftaran lama
 
             if (user) {
                 currentUser = user;
 
-                // 1. Ambil Data Role Realtime
+                // 1. Ambil Role dari Database
                 const userRef = ref(db, 'users/' + user.uid);
                 const snapshot = await get(userRef);
                 const userData = snapshot.val();
@@ -1668,56 +1668,62 @@
                     ? 'bg-red-500/20 text-red-500 border-red-500/50' 
                     : 'bg-blue-500/20 text-blue-400 border-blue-500/50';
 
-                // 2. Update Header (Kanan Atas) - Box Rapi
-                authHeader.innerHTML = `
-                    <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
-                        <div class="text-right hidden sm:block leading-none">
-                            <p class="text-[10px] font-bold text-gray-500 mb-1 uppercase">Profil</p>
-                            <div class="flex flex-col items-end gap-1">
-                                <p class="text-xs font-bold leading-none">${user.displayName || 'User'}</p>
-                                <span class="${badgeStyle} border px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter">${roleLabel}</span>
+                // 2. Update Header (Kanan Atas)
+                if(authHeader) {
+                    authHeader.innerHTML = `
+                        <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
+                            <div class="text-right hidden sm:block leading-none">
+                                <p class="text-xs font-bold mb-1 italic">${user.displayName || 'User'}</p>
+                                <span class="${badgeStyle} border px-1.5 py-0.5 rounded text-[9px] font-black uppercase italic">${roleLabel}</span>
                             </div>
-                        </div>
-                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold border-2 border-white/10 shadow-lg">${(user.displayName || 'U').charAt(0).toUpperCase()}</div>
-                    </div>
-                `;
-
-                // 3. Update Badge di Tengah Profil (Biar ga dobel)
-                if (badgeContainer) {
-                    badgeContainer.innerHTML = `<span class="${badgeStyle} border px-4 py-1 rounded-full text-[10px] font-black uppercase">${roleLabel}</span>`;
-                }
-
-                // 4. Ubah Tombol "Jadilah Seller" Jadi Dashboard Admin
-                if (isAdmin && sellerBanner) {
-                    sellerBanner.className = "w-full bg-gradient-to-r from-blue-700 to-indigo-900 p-6 rounded-[28px] flex items-center justify-between cursor-pointer hover:scale-[1.02] transition shadow-2xl border border-white/20 mb-6";
-                    sellerBanner.onclick = () => window.location.href = 'seller-dashboard.html';
-                    sellerBanner.innerHTML = `
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md">
-                                <i class="fas fa-user-shield text-white text-xl"></i>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-blue-200 uppercase tracking-widest leading-none mb-1">Owner Access</p>
-                                <h3 class="text-lg font-black text-white leading-none tracking-tight">DASHBOARD ADMIN</h3>
-                                <p class="text-xs text-white/50 mt-1 italic">Kelola Semua Stok & Produk</p>
-                            </div>
-                        </div>
-                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
-                            <i class="fas fa-chevron-right text-white"></i>
+                            <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold border-2 border-white/10 shadow-lg">${(user.displayName || 'U').charAt(0).toUpperCase()}</div>
                         </div>
                     `;
                 }
 
-                // Update data teks biasa
+                // 3. Update Badge Profil (Tengah)
+                if (badgeContainer) {
+                    badgeContainer.innerHTML = `<span class="${badgeStyle} border px-4 py-1 rounded-full text-[10px] font-black uppercase italic tracking-widest">${roleLabel}</span>`;
+                }
+
+                // 4. Update Banner/Tombol Dashboard
+                if (isAdmin) {
+                    // Sembunyikan kartu "Jadilah Seller" yang lama jika ada
+                    if(sellerCtaCard) sellerCtaCard.style.display = 'none';
+                    
+                    // Tampilkan Tombol Dashboard Admin yang Keren
+                    if (sellerBanner) {
+                        sellerBanner.innerHTML = `
+                            <div onclick="window.location.href='seller-dashboard.html'" class="w-full bg-gradient-to-r from-blue-600 to-indigo-800 p-5 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition shadow-xl border border-white/20">
+                                <div class="flex items-center gap-4 text-left">
+                                    <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
+                                        <i class="fas fa-user-shield text-white text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-blue-200 uppercase tracking-widest leading-none mb-1 italic">Console Owner</p>
+                                        <h3 class="text-lg font-black text-white leading-none italic uppercase">Dashboard Admin</h3>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-white/50"></i>
+                            </div>
+                        `;
+                    }
+                } else {
+                    // Jika bukan Admin, biarkan kartu "Jadilah Seller" muncul atau tampilkan banner daftar biasa
+                    if(sellerCtaCard) sellerCtaCard.style.display = 'block';
+                }
+
+                // Update info profil dasar
                 document.getElementById('userNameText').textContent = user.displayName;
                 document.getElementById('userEmailText').textContent = user.email;
-                document.getElementById('profileAvatar').textContent = (user.displayName || 'U').charAt(0).toUpperCase();
+                document.getElementById('avatarText').textContent = (user.displayName || 'U').charAt(0).toUpperCase();
 
             } else {
                 currentUser = null;
-                authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-6 !text-sm">Masuk</button>`;
+                if(authHeader) authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-6 !text-sm italic">Masuk</button>`;
             }
         });
+
 
 
         // Load products realtime
