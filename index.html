@@ -431,7 +431,7 @@
                     </div>
 
                     <!-- SELLER CTA CARD -->
-                    <div class="relative rounded-[24px] overflow-hidden mb-5 border border-blue-500/30 cursor-pointer hover:border-blue-400 transition group" onclick="openModal('modalBecomeSeller')">
+                    <div id="sellerCtaCard" class="relative rounded-[24px] overflow-hidden mb-5 border border-blue-500/30 cursor-pointer hover:border-blue-400 transition group" onclick="openModal('modalBecomeSeller')">
                         <div class="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-purple-900/40"></div>
                         <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[80px] opacity-10 font-black font-syne">SELLER</div>
                         <div class="relative z-10 p-5 flex items-center gap-4">
@@ -905,88 +905,189 @@
         </div>
     </div>
 
-    <!-- MODAL: JADI SELLER -->
+    <!-- MODAL: JADI SELLER — 2 STEP (Info → Form) -->
     <div id="modalBecomeSeller" class="modal-overlay">
         <div class="modal-content !max-w-lg p-0 overflow-hidden">
-            <div class="relative p-8 bg-gradient-to-b from-green-600/20 to-transparent">
+
+            <!-- STEP 1: INFO -->
+            <div id="sellerStep1">
+                <div class="relative p-8 bg-gradient-to-b from-green-600/20 to-transparent">
+                    <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="flex items-center gap-4 mb-1">
+                        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center border border-green-500/30">
+                            <i class="fas fa-store text-green-400 text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-extrabold font-syne">Jadi Seller</h2>
+                            <p class="text-green-400 text-xs font-bold uppercase tracking-widest">XREZZKY OFFICIAL STORE</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-8 pb-8 overflow-y-auto max-h-[70vh] custom-scrollbar space-y-4">
+                    <p class="text-gray-300 text-sm leading-relaxed">Bergabunglah bersama ratusan seller aktif di XREZZKY STORE. Proses daftar cepat, gratis, dan langsung bisa jualan setelah diverifikasi admin!</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
+                            <div class="w-9 h-9 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-wallet text-green-400 text-sm"></i></div>
+                            <div><p class="text-sm font-bold">Gratis Daftar</p><p class="text-xs text-gray-400">Tidak ada biaya registrasi apapun.</p></div>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
+                            <div class="w-9 h-9 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-users text-blue-400 text-sm"></i></div>
+                            <div><p class="text-sm font-bold">Ribuan Pembeli</p><p class="text-xs text-gray-400">Jangkau pembeli aktif setiap harinya.</p></div>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
+                            <div class="w-9 h-9 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-chart-line text-purple-400 text-sm"></i></div>
+                            <div><p class="text-sm font-bold">Dashboard Lengkap</p><p class="text-xs text-gray-400">Kelola produk & pantau penjualan real-time.</p></div>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
+                            <div class="w-9 h-9 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-headset text-yellow-400 text-sm"></i></div>
+                            <div><p class="text-sm font-bold">Support 24/7</p><p class="text-xs text-gray-400">Admin siap bantu kapanpun kamu butuh.</p></div>
+                        </div>
+                    </div>
+                    <button onclick="goToSellerForm()" class="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl font-extrabold text-sm hover:opacity-90 transition">
+                        <i class="fas fa-arrow-right"></i> Lanjut ke Form Pendaftaran
+                    </button>
+                    <p class="text-center text-[10px] text-gray-600">Dengan mendaftar, kamu menyetujui <span onclick="closeModal('modalBecomeSeller'); openModal('modalPolicy')" class="text-blue-400 cursor-pointer">Kebijakan Seller</span> kami.</p>
+                </div>
+            </div>
+
+            <!-- STEP 2: FORM -->
+            <div id="sellerStep2" class="hidden">
+                <div class="relative p-6 bg-gradient-to-b from-blue-600/20 to-transparent flex items-center gap-3">
+                    <button onclick="backToSellerInfo()" class="w-9 h-9 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition shrink-0">
+                        <i class="fas fa-arrow-left text-sm"></i>
+                    </button>
+                    <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-extrabold font-syne">Form Pendaftaran Seller</h2>
+                        <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">Isi data toko kamu dengan lengkap</p>
+                    </div>
+                </div>
+
+                <div class="px-8 pb-8 overflow-y-auto max-h-[75vh] custom-scrollbar space-y-4">
+
+                    <!-- SECTION: DATA TOKO -->
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i class="fas fa-store"></i> Data Toko</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Nama Toko <span class="text-red-400">*</span></label>
+                                <input id="sf_storeName" type="text" class="custom-input" placeholder="Contoh: RezzkySkins Store">
+                                <p class="text-[10px] text-gray-600 mt-1">Nama ini akan tampil di marketplace.</p>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Deskripsi Toko <span class="text-red-400">*</span></label>
+                                <textarea id="sf_storeDesc" class="custom-input !h-24 resize-none" placeholder="Ceritakan sedikit tentang toko dan produk yang akan kamu jual..."></textarea>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Kategori Produk Utama <span class="text-red-400">*</span></label>
+                                <select id="sf_category" class="custom-input appearance-none cursor-pointer">
+                                    <option value="" disabled selected>-- Pilih Kategori --</option>
+                                    <option value="Game Mobile">Game Mobile (skin, akun, dll)</option>
+                                    <option value="Premium Apps">Premium Apps & Software</option>
+                                    <option value="E-Voucher">E-Voucher & Gift Card</option>
+                                    <option value="Akun Sosmed">Akun Media Sosial</option>
+                                    <option value="Jasa Digital">Jasa Digital (boost, joki, dll)</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DIVIDER -->
+                    <div class="border-t border-white/5"></div>
+
+                    <!-- SECTION: DATA PRIBADI -->
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2"><i class="fas fa-user"></i> Data Pribadi Pemilik</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Nama Lengkap <span class="text-red-400">*</span></label>
+                                <input id="sf_ownerName" type="text" class="custom-input" placeholder="Nama sesuai KTP">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Nomor WhatsApp Aktif <span class="text-red-400">*</span></label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-bold">+62</span>
+                                    <input id="sf_whatsapp" type="tel" class="custom-input !pl-12" placeholder="8123456789">
+                                </div>
+                                <p class="text-[10px] text-gray-600 mt-1">Nomor ini dipakai admin untuk verifikasi & koordinasi.</p>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Kota / Domisili <span class="text-red-400">*</span></label>
+                                <input id="sf_city" type="text" class="custom-input" placeholder="Contoh: Jakarta, Padang, Surabaya">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DIVIDER -->
+                    <div class="border-t border-white/5"></div>
+
+                    <!-- SECTION: PENGALAMAN -->
+                    <div>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-yellow-400 mb-3 flex items-center gap-2"><i class="fas fa-star"></i> Pengalaman Jualan</p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Sudah pernah jualan digital sebelumnya?</label>
+                                <select id="sf_experience" class="custom-input appearance-none cursor-pointer">
+                                    <option value="Belum pernah">Belum pernah, ini pertama kali</option>
+                                    <option value="Pernah, informal">Pernah, tapi masih informal (WA, IG, dll)</option>
+                                    <option value="Pernah, marketplace lain">Pernah di marketplace lain (Tokopedia, dll)</option>
+                                    <option value="Sudah berpengalaman">Sudah cukup berpengalaman</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Perkiraan produk yang akan dijual pertama kali</label>
+                                <input id="sf_firstProduct" type="text" class="custom-input" placeholder="Contoh: Skin Mobile Legends Epic, Akun FF, dll">
+                            </div>
+                            <div>
+                                <label class="text-xs text-gray-400 mb-1.5 block">Pertanyaan / Pesan untuk Admin (opsional)</label>
+                                <textarea id="sf_notes" class="custom-input !h-20 resize-none" placeholder="Ada pertanyaan atau hal yang ingin disampaikan ke admin?"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AGREE CHECKBOX -->
+                    <div class="bg-white/5 border border-white/5 rounded-xl p-4 flex items-start gap-3">
+                        <input type="checkbox" id="sf_agree" class="mt-1 w-4 h-4 accent-blue-500 cursor-pointer shrink-0">
+                        <label for="sf_agree" class="text-xs text-gray-300 cursor-pointer leading-relaxed">
+                            Saya menyetujui <span onclick="closeModal('modalBecomeSeller'); openModal('modalPolicy')" class="text-blue-400 font-bold underline cursor-pointer">Kebijakan & Persyaratan Seller</span> XREZZKY OFFICIAL STORE dan menjamin bahwa semua data yang saya isi adalah benar dan dapat diverifikasi.
+                        </label>
+                    </div>
+
+                    <!-- SUBMIT -->
+                    <button onclick="submitSellerApplication()" id="btnSubmitSeller"
+                        class="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl font-extrabold text-sm hover:opacity-90 transition shadow-lg shadow-green-900/30">
+                        <i class="fas fa-paper-plane"></i> Kirim Pendaftaran
+                    </button>
+
+                    <p class="text-center text-[10px] text-gray-600">Setelah dikirim, admin akan memverifikasi data kamu dalam 1×24 jam. Status bisa dicek di halaman Profil.</p>
+                </div>
+            </div>
+
+            <!-- STEP 3: SUCCESS -->
+            <div id="sellerStep3" class="hidden p-10 text-center">
                 <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition">
                     <i class="fas fa-times"></i>
                 </button>
-                <div class="flex items-center gap-4 mb-1">
-                    <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center border border-green-500/30">
-                        <i class="fas fa-store text-green-400 text-lg"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-extrabold font-syne">Jadi Seller</h2>
-                        <p class="text-green-400 text-xs font-bold uppercase tracking-widest">XREZZKY OFFICIAL STORE</p>
+                <div class="w-20 h-20 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-check text-green-400 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold font-syne mb-2">Pendaftaran Terkirim! 🎉</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-6">Data kamu sudah masuk ke sistem admin. Proses verifikasi membutuhkan waktu <strong class="text-white">1×24 jam</strong>. Kamu akan dihubungi via WhatsApp setelah disetujui.</p>
+                <div class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 mb-6 text-left">
+                    <p class="text-xs font-black text-blue-400 uppercase tracking-widest mb-2">Status Aplikasi</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-pulse"></div>
+                        <span class="text-sm font-bold text-yellow-300">Menunggu Verifikasi Admin</span>
                     </div>
                 </div>
+                <button onclick="closeModal('modalBecomeSeller')" class="btn-primary w-full !rounded-xl">Kembali ke Beranda</button>
             </div>
 
-            <div class="px-8 pb-8 overflow-y-auto max-h-[70vh] custom-scrollbar space-y-5">
-
-                <!-- KENAPA JADI SELLER -->
-                <p class="text-gray-300 text-sm leading-relaxed">
-                    Bergabunglah bersama ratusan seller aktif di XREZZKY STORE dan mulai hasilkan uang dari produk digitalmu! Proses daftar cepat, gratis, dan langsung bisa jualan.
-                </p>
-
-                <!-- KEUNTUNGAN -->
-                <div class="space-y-3">
-                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
-                        <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0">
-                            <i class="fas fa-wallet text-green-400"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold">Gratis Daftar, Langsung Jualan</p>
-                            <p class="text-xs text-gray-400">Tidak ada biaya registrasi. Langsung aktif setelah verifikasi.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
-                        <div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0">
-                            <i class="fas fa-users text-blue-400"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold">Jangkau Ribuan Pembeli</p>
-                            <p class="text-xs text-gray-400">Produkmu tampil di marketplace yang dikunjungi ribuan user aktif.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
-                        <div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0">
-                            <i class="fas fa-chart-line text-purple-400"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold">Dashboard Seller Lengkap</p>
-                            <p class="text-xs text-gray-400">Kelola produk, pantau penjualan & statistik toko secara real-time.</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl">
-                        <div class="w-10 h-10 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0">
-                            <i class="fas fa-headset text-yellow-400"></i>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold">Dukungan Admin Penuh</p>
-                            <p class="text-xs text-gray-400">Tim kami siap bantu kamu sukses berjualan 24/7.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SYARAT SELLER -->
-                <div class="bg-white/5 border border-white/5 rounded-2xl p-4">
-                    <p class="text-xs font-black uppercase tracking-widest text-gray-400 mb-3">Syarat Menjadi Seller</p>
-                    <ul class="space-y-1.5 text-xs text-gray-400">
-                        <li class="flex items-center gap-2"><i class="fas fa-circle text-[4px] text-blue-400"></i> Memiliki akun XREZZKY yang terverifikasi</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-circle text-[4px] text-blue-400"></i> Produk yang dijual harus legal dan original</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-circle text-[4px] text-blue-400"></i> Menyetujui kebijakan & persyaratan seller</li>
-                        <li class="flex items-center gap-2"><i class="fas fa-circle text-[4px] text-blue-400"></i> Menyediakan nomor WhatsApp aktif untuk koordinasi</li>
-                    </ul>
-                </div>
-
-                <!-- CTA -->
-                <button onclick="applyAsSeller()" class="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl font-extrabold text-sm hover:opacity-90 transition shadow-lg shadow-green-900/30">
-                    <i class="fas fa-store"></i> Daftar Jadi Seller Sekarang
-                </button>
-                <p class="text-center text-[10px] text-gray-600">Dengan mendaftar, kamu menyetujui <span onclick="closeModal('modalBecomeSeller'); openModal('modalPolicy')" class="text-blue-400 cursor-pointer">Kebijakan & Persyaratan</span> kami.</p>
-            </div>
         </div>
     </div>
 
@@ -1151,6 +1252,49 @@
                 const d = new Date(created);
                 document.getElementById('statsMember').textContent = d.toLocaleDateString('id-ID', { year: 'numeric', month: 'short' });
             }
+
+            // Cek seller status dari Firebase
+            get(ref(db, `users/${currentUser.uid}`)).then(snap => {
+                if (!snap.exists()) return;
+                const userData = snap.val();
+                const sellerCta = document.getElementById('sellerCtaCard');
+
+                if (userData.role === 'seller') {
+                    // Sudah seller aktif — tampilkan badge seller & link dashboard
+                    if (sellerCta) sellerCta.innerHTML = `
+                        <div class="absolute inset-0 bg-gradient-to-r from-green-900/60 to-blue-900/40"></div>
+                        <div class="relative z-10 p-5 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-green-500/30 border border-green-400/40 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="fas fa-store text-green-300 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-green-300 mb-0.5">✅ Seller Aktif</p>
+                                <p class="font-extrabold font-syne text-base">${userData.storeName || 'Toko Kamu'}</p>
+                                <p class="text-gray-400 text-xs">Buka Seller Dashboard untuk kelola toko</p>
+                            </div>
+                            <a href="seller-dashboard.html" class="shrink-0 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition">Dashboard →</a>
+                        </div>
+                    `;
+                } else if (userData.sellerStatus === 'pending') {
+                    // Pending verifikasi
+                    if (sellerCta) sellerCta.innerHTML = `
+                        <div class="absolute inset-0 bg-gradient-to-r from-yellow-900/40 to-orange-900/30"></div>
+                        <div class="relative z-10 p-5 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-yellow-500/20 border border-yellow-400/30 rounded-xl flex items-center justify-center shrink-0">
+                                <i class="fas fa-clock text-yellow-300 text-lg animate-pulse"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-yellow-300 mb-0.5">⏳ Pending Verifikasi</p>
+                                <p class="font-extrabold font-syne text-base">Aplikasi Seller Dikirim</p>
+                                <p class="text-gray-400 text-xs">Admin sedang memverifikasi data kamu. 1×24 jam.</p>
+                            </div>
+                            <div class="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-pulse shrink-0"></div>
+                        </div>
+                    `;
+                }
+                // Kalau belum apply → tampilkan CTA default (sudah ada di HTML)
+            });
+
         } else {
             notLogged?.classList.remove('hidden');
             logged?.classList.add('hidden');
@@ -1312,7 +1456,7 @@
         }
         if (!selectedProduct) return;
 
-        const waNumber = "6281234567890"; // ← ganti nomor admin/seller
+        const waNumber = "6288293064112"; // ← ganti nomor admin/seller
         const msg = encodeURIComponent(
             `Halo XREZZKY STORE, saya ingin membeli:\n\n` +
             `*Produk:* ${selectedProduct.name}\n` +
@@ -1549,17 +1693,112 @@
         });
     };
 
-    window.applyAsSeller = () => {
-        const waNumber = "6288293064112"; // ganti nomor admin
-        const msg = encodeURIComponent(
-            `Halo Admin XREZZKY,\n\nSaya ingin mendaftar sebagai Seller.\n\n` +
-            `*Nama:* ${currentUser?.displayName || '-'}\n` +
-            `*Email:* ${currentUser?.email || '-'}\n\n` +
-            `Mohon info selanjutnya untuk proses verifikasi. Terima kasih!`
-        );
-        closeModal('modalBecomeSeller');
-        window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
-        showToast('Redirect WhatsApp 📲', 'Kamu akan dihubungkan ke admin untuk verifikasi seller.', 'info');
+    // =========================================================
+    //  SELLER APPLICATION FLOW
+    // =========================================================
+    window.goToSellerForm = () => {
+        if (!currentUser) {
+            closeModal('modalBecomeSeller');
+            openModal('modalAuth');
+            showToast('Info', 'Login dulu untuk daftar jadi seller!', 'info');
+            return;
+        }
+        // Cek apakah sudah punya aplikasi pending/approved
+        get(ref(db, `seller_applications/${currentUser.uid}`)).then(snap => {
+            if (snap.exists()) {
+                const data = snap.val();
+                if (data.status === 'approved') {
+                    closeModal('modalBecomeSeller');
+                    showToast('Info', 'Kamu sudah jadi seller aktif! 🎉', 'info');
+                    return;
+                }
+                if (data.status === 'pending') {
+                    closeModal('modalBecomeSeller');
+                    showToast('Info', 'Pendaftaran kamu sedang diproses admin. Sabar ya! ⏳', 'warning');
+                    return;
+                }
+            }
+            // Pre-fill nama dari akun
+            const ownerInput = document.getElementById('sf_ownerName');
+            if (ownerInput && currentUser.displayName) ownerInput.value = currentUser.displayName;
+
+            document.getElementById('sellerStep1').classList.add('hidden');
+            document.getElementById('sellerStep2').classList.remove('hidden');
+        });
+    };
+
+    window.backToSellerInfo = () => {
+        document.getElementById('sellerStep2').classList.add('hidden');
+        document.getElementById('sellerStep1').classList.remove('hidden');
+    };
+
+    window.submitSellerApplication = async () => {
+        if (!currentUser) return;
+
+        const storeName   = document.getElementById('sf_storeName').value.trim();
+        const storeDesc   = document.getElementById('sf_storeDesc').value.trim();
+        const category    = document.getElementById('sf_category').value;
+        const ownerName   = document.getElementById('sf_ownerName').value.trim();
+        const whatsapp    = document.getElementById('sf_whatsapp').value.trim();
+        const city        = document.getElementById('sf_city').value.trim();
+        const experience  = document.getElementById('sf_experience').value;
+        const firstProd   = document.getElementById('sf_firstProduct').value.trim();
+        const notes       = document.getElementById('sf_notes').value.trim();
+        const agreed      = document.getElementById('sf_agree').checked;
+
+        // Validasi wajib
+        if (!storeName)  return showToast('Error', 'Nama toko wajib diisi!', 'error');
+        if (!storeDesc)  return showToast('Error', 'Deskripsi toko wajib diisi!', 'error');
+        if (!category)   return showToast('Error', 'Pilih kategori produk!', 'error');
+        if (!ownerName)  return showToast('Error', 'Nama lengkap wajib diisi!', 'error');
+        if (!whatsapp)   return showToast('Error', 'Nomor WhatsApp wajib diisi!', 'error');
+        if (whatsapp.length < 9) return showToast('Error', 'Nomor WA tidak valid!', 'error');
+        if (!city)       return showToast('Error', 'Kota/domisili wajib diisi!', 'error');
+        if (!agreed)     return showToast('Error', 'Setujui kebijakan seller terlebih dahulu!', 'error');
+
+        const btn = document.getElementById('btnSubmitSeller');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+
+        const applicationData = {
+            // Data Toko
+            storeName, storeDesc, category,
+            // Data Pemilik
+            ownerName,
+            whatsapp: `+62${whatsapp}`,
+            city,
+            // Pengalaman
+            experience, firstProduct: firstProd || '-', notes: notes || '-',
+            // Meta
+            uid: currentUser.uid,
+            email: currentUser.email,
+            status: 'pending',
+            submittedAt: Date.now(),
+            reviewedAt: null,
+            rejectedReason: null
+        };
+
+        try {
+            // Simpan ke /seller_applications/{uid}
+            await set(ref(db, `seller_applications/${currentUser.uid}`), applicationData);
+
+            // Tandai di /users/{uid} bahwa sudah apply
+            await set(ref(db, `users/${currentUser.uid}/sellerStatus`), 'pending');
+
+            // Tampilkan step success
+            document.getElementById('sellerStep2').classList.add('hidden');
+            document.getElementById('sellerStep3').classList.remove('hidden');
+
+            // Refresh profile biar status pending muncul
+            refreshProfilePage();
+            showToast('Terkirim! 🎉', 'Pendaftaran seller berhasil dikirim!', 'success');
+
+        } catch (e) {
+            console.error(e);
+            showToast('Gagal', 'Gagal mengirim pendaftaran. Coba lagi!', 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Pendaftaran';
+        }
     };
 
     initApp();
