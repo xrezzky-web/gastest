@@ -1,1256 +1,1104 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XREZZKY STORE | Premium Digital Marketplace</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-dark: #05080f; --surface: #0f172a; --surface-light: #1e293b;
-            --primary: #3b82f6; --primary-glow: rgba(59,130,246,0.5);
-            --accent: #f59e0b; --text-main: #f8fafc; --text-dim: #94a3b8;
-            --border: rgba(255,255,255,0.08); --glass: rgba(15,23,42,0.8);
-        }
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg-dark); color:var(--text-main); overflow-x:hidden; line-height:1.6; }
-        h1,h2,h3,.font-syne { font-family:'Syne',sans-serif; }
-        ::-webkit-scrollbar { width:6px; } ::-webkit-scrollbar-track { background:var(--bg-dark); } ::-webkit-scrollbar-thumb { background:var(--surface-light); border-radius:10px; }
-        .glass-card { background:var(--glass); backdrop-filter:blur(12px); border:1px solid var(--border); border-radius:24px; }
-        .glow-blue { box-shadow:0 0 20px var(--primary-glow); }
-        #loader { position:fixed; inset:0; background:var(--bg-dark); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; transition:opacity 0.5s ease; }
-        .spinner { width:50px; height:50px; border:4px solid var(--border); border-top:4px solid var(--primary); border-radius:50%; animation:spin 1s linear infinite; }
-        @keyframes spin { to { transform:rotate(360deg); } }
-        .product-card { transition:all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); background:var(--surface); border:1px solid var(--border); border-radius:24px; cursor:pointer; }
-        .product-card:hover { transform:translateY(-10px); border-color:var(--primary); box-shadow:0 15px 30px rgba(0,0,0,0.5); }
-        .product-img-container { position:relative; overflow:hidden; border-radius:18px; }
-        .product-card:hover .product-img { transform:scale(1.1); }
-        .product-img { transition:transform 0.6s ease; width:100%; aspect-ratio:1/1; object-fit:cover; }
-        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:1000; display:none; align-items:center; justify-content:center; padding:20px; }
-        .modal-content { background:var(--surface); width:100%; max-width:600px; max-height:90vh; overflow-y:auto; border-radius:28px; border:1px solid var(--border); position:relative; animation:slideUp 0.3s ease-out; }
-        @keyframes slideUp { from { transform:translateY(50px); opacity:0; } to { transform:translateY(0); opacity:1; } }
-        .custom-input { width:100%; background:#0a0f1a; border:1px solid var(--border); padding:14px 18px; border-radius:14px; color:white; transition:0.3s; font-family:'Plus Jakarta Sans',sans-serif; }
-        .custom-input:focus { border-color:var(--primary); outline:none; box-shadow:0 0 10px rgba(59,130,246,0.2); }
-        .btn-primary { background:linear-gradient(135deg,#3b82f6,#2563eb); color:white; padding:14px 28px; border-radius:14px; font-weight:700; transition:0.3s; text-align:center; display:block; cursor:pointer; border:none; font-family:'Plus Jakarta Sans',sans-serif; }
-        .btn-primary:hover { opacity:0.9; } .btn-primary:active { transform:scale(0.95); }
-        .nav-link { color:var(--text-dim); transition:0.3s; font-size:0.8rem; font-weight:600; background:none; border:none; cursor:pointer; }
-        .nav-link.active { color:var(--primary); }
-        .badge-stock { color:white; padding:2px 10px; border-radius:20px; font-size:10px; font-weight:800; position:absolute; top:12px; right:12px; }
-        #fullImageView { z-index:9999!important; background:rgba(0,0,0,0.95); }
-        #fullImageView img { animation:zoomIn 0.3s ease-out; }
-        @keyframes zoomIn { from { transform:scale(0.8); opacity:0; } to { transform:scale(1); opacity:1; } }
-        .custom-scrollbar::-webkit-scrollbar { width:4px; } .custom-scrollbar::-webkit-scrollbar-thumb { background:#3b82f6; border-radius:10px; }
-        .no-scrollbar::-webkit-scrollbar { display:none; } .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
-        .line-clamp-1 { overflow:hidden; display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-        .fade-in { animation:fadeIn 0.4s ease-out; }
-        @keyframes ticker { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
-        .promo-ticker { animation:ticker 18s linear infinite; }
-        .promo-ticker:hover { animation-play-state:paused; }
-        select.custom-input option { background:#0f172a; color:white; }
-        .input-group { margin-bottom:16px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XREZZKY STORE | Premium Digital Marketplace</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--bg:#05080f;--surface:#0f172a;--surf2:#1e293b;--blue:#3b82f6;--blueglow:rgba(59,130,246,.5);--border:rgba(255,255,255,.08);--glass:rgba(15,23,42,.8)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:#f8fafc;overflow-x:hidden;line-height:1.6}
+h1,h2,h3,.syne{font-family:'Syne',sans-serif}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--surf2);border-radius:10px}
+.glass{background:var(--glass);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:20px}
+.glow{box-shadow:0 0 20px var(--blueglow)}
+#loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .5s}
+.spin{width:48px;height:48px;border:4px solid var(--border);border-top:4px solid var(--blue);border-radius:50%;animation:spinning 1s linear infinite}
+@keyframes spinning{to{transform:rotate(360deg)}}
+.pcard{transition:all .35s cubic-bezier(.175,.885,.32,1.275);background:var(--surface);border:1px solid var(--border);border-radius:20px;cursor:pointer}
+.pcard:hover{transform:translateY(-8px);border-color:var(--blue);box-shadow:0 12px 28px rgba(0,0,0,.5)}
+.pcard:hover .pimg{transform:scale(1.08)}
+.pimgwrap{position:relative;overflow:hidden;border-radius:16px}
+.pimg{transition:transform .5s;width:100%;aspect-ratio:1/1;object-fit:cover}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}
+.mbox{background:var(--surface);width:100%;max-width:580px;max-height:92vh;overflow-y:auto;border-radius:24px;border:1px solid var(--border);position:relative;animation:sup .3s ease-out}
+@keyframes sup{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.inp{width:100%;background:#0a0f1a;border:1px solid var(--border);padding:13px 16px;border-radius:12px;color:#fff;transition:.3s;font-family:'Plus Jakarta Sans',sans-serif}
+.inp:focus{border-color:var(--blue);outline:none;box-shadow:0 0 8px rgba(59,130,246,.25)}
+.btn{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;padding:13px 24px;border-radius:12px;font-weight:700;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:.25s;display:block;width:100%;text-align:center}
+.btn:hover{opacity:.9}.btn:active{transform:scale(.97)}
+.navlink{color:#94a3b8;transition:.3s;font-size:.78rem;font-weight:600;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.navlink.on{color:var(--blue)}
+.bstock{color:#fff;padding:2px 9px;border-radius:20px;font-size:9px;font-weight:800;position:absolute;top:10px;right:10px}
+#fimgv{z-index:9999!important;background:rgba(0,0,0,.96)}
+#fimgv img{animation:zin .3s ease-out}
+@keyframes zin{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+.cscroll::-webkit-scrollbar{width:3px}.cscroll::-webkit-scrollbar-thumb{background:var(--blue);border-radius:10px}
+.noscroll::-webkit-scrollbar{display:none}.noscroll{-ms-overflow-style:none;scrollbar-width:none}
+.clamp1{overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.clamp2{overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+@keyframes fin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fadein{animation:fin .35s ease-out}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker{animation:tick 18s linear infinite}.ticker:hover{animation-play-state:paused}
+
+/* STAR RATING */
+.stars-input{display:flex;flex-direction:row-reverse;gap:4px;justify-content:flex-end}
+.stars-input input{display:none}
+.stars-input label{font-size:28px;color:#374151;cursor:pointer;transition:.15s}
+.stars-input label:hover,.stars-input label:hover~label,
+.stars-input input:checked~label{color:#f59e0b}
+.stars-display{color:#f59e0b;letter-spacing:2px}
+.stars-display .empty{color:#374151}
+
+select.inp option{background:#0f172a;color:#fff}
+</style>
 </head>
 <body class="pb-24">
 
 <!-- LOADER -->
 <div id="loader">
-    <div class="spinner mb-4"></div>
-    <h2 class="text-2xl font-bold font-syne animate-pulse">XREZZKY</h2>
-    <p class="text-xs text-gray-500 mt-2 tracking-[0.3em] uppercase">Syncing with Firebase...</p>
+  <div class="spin mb-4"></div>
+  <h2 class="text-2xl font-bold syne animate-pulse">XREZZKY</h2>
+  <p class="text-xs text-gray-500 mt-2 tracking-widest uppercase">Syncing...</p>
 </div>
 
-<!-- BG GLOW -->
+<!-- BG -->
 <div class="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-900/20 blur-[120px] rounded-full z-[-1]"></div>
 <div class="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-900/20 blur-[120px] rounded-full z-[-1]"></div>
 
 <!-- HEADER -->
-<header class="sticky top-0 z-[100] glass-card !rounded-none border-t-0 border-x-0">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="navigate('home')">
-            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center glow-blue">
-                <i class="fas fa-bolt text-white"></i>
-            </div>
-            <span class="text-2xl font-extrabold font-syne hidden md:block">XREZZKY</span>
-        </div>
-        <div class="flex-1 max-w-xl relative">
-            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
-            <input type="text" id="globalSearch" placeholder="Cari produk atau toko..." class="custom-input !pl-10 !py-3 !rounded-full text-sm w-full">
-        </div>
-        <div id="authHeader" class="flex items-center gap-3 shrink-0"></div>
+<header class="sticky top-0 z-[100] glass !rounded-none border-t-0 border-x-0">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+    <div class="flex items-center gap-2 cursor-pointer shrink-0" onclick="nav('home')">
+      <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center glow"><i class="fas fa-bolt text-white"></i></div>
+      <span class="text-xl font-extrabold syne hidden md:block">XREZZKY</span>
     </div>
+    <div class="flex-1 relative">
+      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+      <input id="gsearch" type="text" placeholder="Cari produk atau toko..." class="inp !pl-9 !py-2.5 !rounded-full text-sm">
+    </div>
+    <div id="authHdr" class="shrink-0 flex items-center gap-2"></div>
+  </div>
 </header>
 
 <!-- MAIN -->
-<main class="max-w-7xl mx-auto px-4 mt-8">
+<main class="max-w-7xl mx-auto px-4 mt-6">
 
-    <!-- HOME PAGE -->
-    <section id="page-home" class="page-view fade-in">
+  <!-- HOME -->
+  <section id="pg-home" class="page fadein">
 
-        <!-- HERO -->
-        <div class="relative rounded-[32px] overflow-hidden mb-6" style="min-height:260px;">
-            <div class="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0d1f3c] to-[#05080f]"></div>
-            <div class="absolute top-[-30%] right-[-10%] w-[55%] h-[200%] bg-blue-600/20 blur-[80px] rounded-full"></div>
-            <div class="absolute bottom-[-40%] left-[20%] w-[40%] h-[150%] bg-purple-600/15 blur-[80px] rounded-full"></div>
-            <div class="absolute inset-0 opacity-[0.04]" style="background-image:linear-gradient(rgba(255,255,255,0.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.5) 1px,transparent 1px);background-size:32px 32px;"></div>
-            <div class="relative z-10 px-8 py-10 md:px-14 md:py-14 flex flex-col md:flex-row items-center justify-between gap-8">
-                <div class="flex-1">
-                    <div class="flex items-center gap-3 mb-4 flex-wrap">
-                        <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-blue-300 bg-blue-500/15 border border-blue-500/30 px-3 py-1.5 rounded-full"><i class="fas fa-shield-alt text-blue-400"></i> TERJAMIN</span>
-                        <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-green-300 bg-green-500/15 border border-green-500/30 px-3 py-1.5 rounded-full"><i class="fas fa-check-circle text-green-400"></i> TRUSTED</span>
-                        <span class="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-yellow-300 bg-yellow-500/15 border border-yellow-500/30 px-3 py-1.5 rounded-full"><i class="fas fa-star text-yellow-400"></i> #1 MARKETPLACE</span>
-                    </div>
-                    <h1 class="text-3xl md:text-5xl font-extrabold font-syne leading-tight mb-1">XREZZKY</h1>
-                    <h2 class="text-xl md:text-3xl font-extrabold font-syne text-blue-400 mb-4">OFFICIAL STORE</h2>
-                    <p class="text-gray-300 text-sm md:text-base mb-6 max-w-md leading-relaxed">
-                        Platform jual-beli produk digital paling aman & terpercaya.<br>
-                        <span class="text-blue-300 font-semibold">Transaksi dijamin aman</span> · <span class="text-green-300 font-semibold">Respon cepat 24/7</span> · <span class="text-yellow-300 font-semibold">100% anti-tipu</span>
-                    </p>
-                    <div class="flex gap-3 flex-wrap">
-                        <button onclick="document.getElementById('mainProductGrid').scrollIntoView({behavior:'smooth'})" class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-sm transition shadow-lg shadow-blue-900/40"><i class="fas fa-bolt"></i> Belanja Sekarang</button>
-                        <button onclick="openModal('modalAbout')" class="flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur rounded-xl font-bold text-sm transition border border-white/10"><i class="fas fa-info-circle"></i> Tentang Kami</button>
-                    </div>
-                </div>
-                <div class="flex flex-row md:flex-col gap-3 shrink-0">
-                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
-                        <p class="text-2xl font-extrabold text-blue-400">500+</p>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Produk</p>
-                    </div>
-                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
-                        <p class="text-2xl font-extrabold text-green-400">2K+</p>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Pembeli</p>
-                    </div>
-                    <div class="bg-white/5 border border-white/10 backdrop-blur px-5 py-4 rounded-2xl text-center min-w-[100px]">
-                        <p class="text-2xl font-extrabold text-yellow-400">4.9★</p>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Rating</p>
-                    </div>
-                </div>
+    <!-- HERO -->
+    <div class="relative rounded-[28px] overflow-hidden mb-5" style="min-height:240px">
+      <div class="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#0d1f3c] to-[#05080f]"></div>
+      <div class="absolute top-[-30%] right-[-10%] w-[55%] h-[200%] bg-blue-600/20 blur-[80px] rounded-full"></div>
+      <div class="absolute inset-0 opacity-[.04]" style="background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);background-size:32px 32px"></div>
+      <div class="relative z-10 px-7 py-9 md:px-12 flex flex-col md:flex-row items-center gap-7">
+        <div class="flex-1">
+          <div class="flex items-center gap-2 mb-3 flex-wrap">
+            <span class="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-blue-300 bg-blue-500/15 border border-blue-500/30 px-2.5 py-1 rounded-full"><i class="fas fa-shield-alt text-blue-400"></i> TERJAMIN</span>
+            <span class="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-green-300 bg-green-500/15 border border-green-500/30 px-2.5 py-1 rounded-full"><i class="fas fa-check-circle text-green-400"></i> TRUSTED</span>
+            <span class="flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-yellow-300 bg-yellow-500/15 border border-yellow-500/30 px-2.5 py-1 rounded-full"><i class="fas fa-star text-yellow-400"></i> #1 MARKETPLACE</span>
+          </div>
+          <h1 class="text-3xl md:text-4xl font-extrabold syne mb-0.5">XREZZKY</h1>
+          <h2 class="text-lg md:text-2xl font-extrabold syne text-blue-400 mb-3">OFFICIAL STORE</h2>
+          <p class="text-gray-300 text-sm mb-5 max-w-md leading-relaxed">Platform jual-beli produk digital paling aman & terpercaya.<br><span class="text-blue-300 font-semibold">Transaksi dijamin aman</span> · <span class="text-green-300 font-semibold">Respon 24/7</span> · <span class="text-yellow-300 font-semibold">100% anti-tipu</span></p>
+          <div class="flex gap-2 flex-wrap">
+            <button onclick="document.getElementById('pgrid').scrollIntoView({behavior:'smooth'})" class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-sm transition"><i class="fas fa-bolt"></i> Belanja</button>
+            <button onclick="openM('mAbout')" class="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 rounded-xl font-bold text-sm transition border border-white/10"><i class="fas fa-info-circle"></i> Tentang</button>
+          </div>
+        </div>
+        <div class="flex flex-row md:flex-col gap-2 shrink-0">
+          <div class="bg-white/5 border border-white/10 px-4 py-3 rounded-2xl text-center min-w-[88px]"><p class="text-xl font-extrabold text-blue-400">500+</p><p class="text-[9px] text-gray-400 font-bold uppercase">Produk</p></div>
+          <div class="bg-white/5 border border-white/10 px-4 py-3 rounded-2xl text-center min-w-[88px]"><p class="text-xl font-extrabold text-green-400">2K+</p><p class="text-[9px] text-gray-400 font-bold uppercase">Pembeli</p></div>
+          <div class="bg-white/5 border border-white/10 px-4 py-3 rounded-2xl text-center min-w-[88px]"><p class="text-xl font-extrabold text-yellow-400">4.9★</p><p class="text-[9px] text-gray-400 font-bold uppercase">Rating</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TICKER -->
+    <div class="overflow-hidden rounded-2xl mb-5 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-600/20 border border-white/10 py-2.5 px-3 flex items-center gap-2">
+      <span class="shrink-0 bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg">🔥 PROMO</span>
+      <div class="overflow-hidden flex-1">
+        <div class="ticker flex gap-10 whitespace-nowrap">
+          <span class="text-sm font-semibold text-gray-200">✨ Flash Sale skin Mobile Legends hingga 50% OFF setiap Jumat</span>
+          <span class="text-sm font-semibold text-gray-200">🎮 Gratis ongkir untuk pembelian pertama kamu</span>
+          <span class="text-sm font-semibold text-gray-200">🔐 Semua transaksi dijamin aman & bergaransi</span>
+          <span class="text-sm font-semibold text-gray-200">💎 Member Premium dapat akses early bird produk baru</span>
+          <span class="text-sm font-semibold text-gray-200">✨ Flash Sale skin Mobile Legends hingga 50% OFF setiap Jumat</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- FITUR -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div class="glass p-3 flex items-center gap-2.5"><div class="w-9 h-9 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-shield-alt text-blue-400 text-sm"></i></div><div><p class="text-xs font-extrabold">Transaksi Aman</p><p class="text-[10px] text-gray-500">Escrow & garansi</p></div></div>
+      <div class="glass p-3 flex items-center gap-2.5"><div class="w-9 h-9 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-bolt text-green-400 text-sm"></i></div><div><p class="text-xs font-extrabold">Proses Cepat</p><p class="text-[10px] text-gray-500">Pengiriman instan</p></div></div>
+      <div class="glass p-3 flex items-center gap-2.5"><div class="w-9 h-9 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-headset text-purple-400 text-sm"></i></div><div><p class="text-xs font-extrabold">CS 24/7</p><p class="text-[10px] text-gray-500">Siap bantu</p></div></div>
+      <div class="glass p-3 flex items-center gap-2.5"><div class="w-9 h-9 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-star text-yellow-400 text-sm"></i></div><div><p class="text-xs font-extrabold">Produk Premium</p><p class="text-[10px] text-gray-500">Kualitas terjamin</p></div></div>
+    </div>
+
+    <!-- SELLER CTA (hidden kalau sudah seller/admin/pending) -->
+    <div id="hSellerCta" class="relative rounded-[24px] overflow-hidden mb-6 border border-blue-500/30 cursor-pointer hover:border-blue-400 transition group" onclick="openM('mSeller')">
+      <div class="absolute inset-0 bg-gradient-to-r from-[#0d1f3c] to-[#0a1020]"></div>
+      <div class="relative z-10 flex items-center justify-between p-5 md:p-7 gap-4">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 bg-blue-500/20 border border-blue-500/40 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-blue-500/30 transition"><i class="fas fa-store text-blue-400 text-lg"></i></div>
+          <div><p class="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-0.5">Jadi Seller di XREZZKY</p><h3 class="text-base md:text-lg font-extrabold syne">Buka Toko Kamu Sekarang</h3><p class="text-gray-400 text-xs mt-0.5">Jangkau ribuan pembeli · Gratis daftar</p></div>
+        </div>
+        <div class="shrink-0 flex items-center gap-1 bg-blue-600 hover:bg-blue-500 px-4 py-2.5 rounded-xl font-bold text-sm transition whitespace-nowrap">Mulai <i class="fas fa-arrow-right ml-1"></i></div>
+      </div>
+    </div>
+
+    <!-- TOKO SECTION -->
+    <div class="mb-6">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-extrabold syne text-base">🏪 Semua Toko</h3>
+        <button onclick="nav('stores')" class="text-blue-400 text-xs font-bold hover:underline">Lihat Semua →</button>
+      </div>
+      <div id="storeChips" class="flex gap-3 overflow-x-auto noscroll pb-1"></div>
+    </div>
+
+    <!-- CATEGORY FILTER -->
+    <div class="flex gap-2 overflow-x-auto noscroll pb-3 mb-3" id="catFilter">
+      <div class="flex-none px-4 py-2 glass text-sm font-bold border-blue-500 bg-blue-500/10 cursor-pointer catbtn" data-cat="all">Semua</div>
+      <div class="flex-none px-4 py-2 glass text-sm font-bold cursor-pointer catbtn" data-cat="Game Mobile">Game Mobile</div>
+      <div class="flex-none px-4 py-2 glass text-sm font-bold cursor-pointer catbtn" data-cat="Premium Apps">Premium Apps</div>
+      <div class="flex-none px-4 py-2 glass text-sm font-bold cursor-pointer catbtn" data-cat="E-Voucher">E-Voucher</div>
+      <div class="flex-none px-4 py-2 glass text-sm font-bold cursor-pointer catbtn" data-cat="Akun Sosmed">Akun Sosmed</div>
+      <div class="flex-none px-4 py-2 glass text-sm font-bold cursor-pointer catbtn" data-cat="Jasa Digital">Jasa Digital</div>
+    </div>
+
+    <!-- PRODUCT GRID -->
+    <div id="pgrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+      <div class="animate-pulse glass h-60 rounded-2xl"></div>
+      <div class="animate-pulse glass h-60 rounded-2xl"></div>
+      <div class="animate-pulse glass h-60 rounded-2xl"></div>
+      <div class="animate-pulse glass h-60 rounded-2xl"></div>
+      <div class="animate-pulse glass h-60 rounded-2xl"></div>
+    </div>
+  </section>
+
+  <!-- STORES PAGE -->
+  <section id="pg-stores" class="page hidden fadein">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-center gap-3 mb-5">
+        <button onclick="nav('home')" class="w-10 h-10 glass flex items-center justify-center hover:bg-white/10 transition shrink-0"><i class="fas fa-arrow-left text-sm"></i></button>
+        <h2 class="text-xl font-extrabold syne">Semua Toko</h2>
+      </div>
+      <div class="relative mb-5">
+        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+        <input id="storeQ" type="text" placeholder="Cari nama toko atau kategori..." class="inp !pl-11 !py-3 !rounded-2xl">
+      </div>
+      <div id="storeGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+  </section>
+
+  <!-- ORDERS PAGE -->
+  <section id="pg-orders" class="page hidden fadein">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-xl font-extrabold syne mb-5">Riwayat Pesanan</h2>
+      <div id="ordersList"></div>
+    </div>
+  </section>
+
+  <!-- PROFILE PAGE -->
+  <section id="pg-profile" class="page hidden fadein">
+    <div class="max-w-3xl mx-auto">
+      <!-- NOT LOGGED IN -->
+      <div id="profGuest" class="hidden">
+        <div class="glass p-12 text-center mb-4">
+          <i class="fas fa-user-circle text-6xl text-gray-600 mb-4"></i>
+          <h3 class="text-xl font-bold mb-2">Kamu Belum Login</h3>
+          <p class="text-gray-400 text-sm mb-5">Login untuk akses profil & fitur lainnya.</p>
+          <button onclick="openM('mAuth')" class="btn !w-auto !inline-block !px-8">Login / Daftar</button>
+        </div>
+        <div class="space-y-3">
+          <button onclick="openM('mAbout')" class="w-full flex items-center justify-between p-4 glass hover:bg-white/5 transition rounded-2xl"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-cyan-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400 text-sm"></i></div><span class="font-semibold text-sm">Tentang XREZZKY</span></div><i class="fas fa-chevron-right text-gray-600 text-sm"></i></button>
+          <button onclick="openM('mPolicy')" class="w-full flex items-center justify-between p-4 glass hover:bg-white/5 transition rounded-2xl"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-orange-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-file-contract text-orange-400 text-sm"></i></div><span class="font-semibold text-sm">Kebijakan & Persyaratan</span></div><i class="fas fa-chevron-right text-gray-600 text-sm"></i></button>
+        </div>
+      </div>
+
+      <!-- LOGGED IN -->
+      <div id="profLogged" class="hidden">
+        <!-- USER CARD -->
+        <div class="glass p-7 mb-4">
+          <div class="flex flex-col items-center">
+            <div class="relative mb-3">
+              <div id="pAvatar" class="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-3xl font-bold border-4 border-blue-500/30 shadow-2xl overflow-hidden"><span id="pAvatarTxt">?</span></div>
+              <label for="avUp" class="absolute bottom-0 right-0 bg-white text-black w-7 h-7 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition shadow-lg"><i class="fas fa-camera text-xs"></i></label>
+              <input type="file" id="avUp" class="hidden" accept="image/*">
             </div>
-        </div>
-
-        <!-- PROMO TICKER -->
-        <div class="relative overflow-hidden rounded-2xl mb-6 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-blue-600/20 border border-white/10 py-3 px-4">
-            <div class="flex items-center gap-3">
-                <span class="shrink-0 bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-lg">🔥 PROMO</span>
-                <div class="overflow-hidden flex-1">
-                    <div class="promo-ticker flex gap-10 whitespace-nowrap">
-                        <span class="text-sm font-semibold text-gray-200">✨ Flash Sale skin Mobile Legends hingga 50% OFF setiap Jumat</span>
-                        <span class="text-sm font-semibold text-gray-200">🎮 Gratis ongkir untuk pembelian pertama kamu</span>
-                        <span class="text-sm font-semibold text-gray-200">🔐 Semua transaksi dijamin aman & bergaransi</span>
-                        <span class="text-sm font-semibold text-gray-200">💎 Member Premium dapat akses early bird produk baru</span>
-                        <span class="text-sm font-semibold text-gray-200">✨ Flash Sale skin Mobile Legends hingga 50% OFF setiap Jumat</span>
-                    </div>
-                </div>
+            <h2 id="pName" class="text-xl font-bold syne">...</h2>
+            <p id="pEmail" class="text-gray-400 text-xs mb-2">...</p>
+            <div id="pBadge" class="mb-4"></div>
+            <div class="grid grid-cols-2 gap-3 w-full">
+              <div class="bg-white/5 p-3 rounded-2xl text-center border border-white/5"><p class="text-[10px] text-gray-500 mb-1 uppercase font-bold">Transaksi</p><p class="text-lg font-bold" id="pTrx">0</p></div>
+              <div class="bg-white/5 p-3 rounded-2xl text-center border border-white/5"><p class="text-[10px] text-gray-500 mb-1 uppercase font-bold">Member Sejak</p><p class="text-sm font-bold text-blue-400" id="pSince">-</p></div>
             </div>
+          </div>
         </div>
 
-        <!-- FITUR -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-            <div class="glass-card p-4 flex items-center gap-3"><div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-shield-alt text-blue-400"></i></div><div><p class="text-xs font-extrabold">Transaksi Aman</p><p class="text-[10px] text-gray-500">Sistem escrow & garansi</p></div></div>
-            <div class="glass-card p-4 flex items-center gap-3"><div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-bolt text-green-400"></i></div><div><p class="text-xs font-extrabold">Proses Cepat</p><p class="text-[10px] text-gray-500">Pengiriman instan</p></div></div>
-            <div class="glass-card p-4 flex items-center gap-3"><div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-headset text-purple-400"></i></div><div><p class="text-xs font-extrabold">CS 24/7</p><p class="text-[10px] text-gray-500">Siap bantu kapanpun</p></div></div>
-            <div class="glass-card p-4 flex items-center gap-3"><div class="w-10 h-10 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-star text-yellow-400"></i></div><div><p class="text-xs font-extrabold">Produk Premium</p><p class="text-[10px] text-gray-500">Kualitas terjamin</p></div></div>
+        <!-- DYNAMIC ROLE CARD -->
+        <div id="roleCard" class="mb-4"></div>
+
+        <!-- MENU -->
+        <div class="space-y-2.5 mb-4">
+          <button onclick="openM('mEdit')" class="w-full flex items-center justify-between p-4 glass hover:bg-white/5 transition rounded-2xl"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-blue-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-edit text-blue-400 text-sm"></i></div><span class="font-semibold text-sm">Edit Profil</span></div><i class="fas fa-chevron-right text-gray-600 text-sm"></i></button>
+          <button onclick="nav('orders')" class="w-full flex items-center justify-between p-4 glass hover:bg-white/5 transition rounded-2xl"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-purple-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-history text-purple-400 text-sm"></i></div><span class="font-semibold text-sm">Riwayat Pembelian</span></div><i class="fas fa-chevron-right text-gray-600 text-sm"></i></button>
+          <button onclick="openM('mAbout')" class="w-full flex items-center justify-between p-4 glass hover:bg-white/5 transition rounded-2xl"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-cyan-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400 text-sm"></i></div><span class="font-semibold text-sm">Tentang XREZZKY</span></div><i class="fas fa-chevron-right text-gray-600 text-sm"></i></button>
+          <button onclick="openM('mPolicy')" class="w-full flex items-center justify-between p-4 glass hover:bg-white/5 transition rounded-2xl"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-orange-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-file-contract text-orange-400 text-sm"></i></div><span class="font-semibold text-sm">Kebijakan & Persyaratan</span></div><i class="fas fa-chevron-right text-gray-600 text-sm"></i></button>
+          <button onclick="doLogout()" class="w-full flex items-center justify-between p-4 glass border-red-500/20 hover:bg-red-500/10 transition rounded-2xl"><div class="flex items-center gap-3"><div class="w-9 h-9 bg-red-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-sign-out-alt text-red-400 text-sm"></i></div><span class="font-semibold text-sm text-red-400">Keluar</span></div></button>
         </div>
-
-        <!-- SELLER CTA (hidden kalau sudah seller/admin) -->
-        <div id="homeSellerCta" class="relative rounded-[28px] overflow-hidden mb-8 border border-blue-500/30 cursor-pointer hover:border-blue-400/60 transition group" onclick="openModal('modalBecomeSeller')">
-            <div class="absolute inset-0 bg-gradient-to-r from-[#0d1f3c] to-[#0a1020]"></div>
-            <div class="absolute right-0 top-0 h-full w-1/3 bg-blue-600/10 blur-2xl"></div>
-            <div class="relative z-10 flex items-center justify-between p-6 md:p-8 gap-4">
-                <div class="flex items-center gap-5">
-                    <div class="w-14 h-14 bg-blue-500/20 border border-blue-500/40 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-blue-500/30 transition"><i class="fas fa-store text-blue-400 text-xl"></i></div>
-                    <div>
-                        <p class="text-[11px] font-black uppercase tracking-widest text-blue-400 mb-1">Jadi Seller di XREZZKY</p>
-                        <h3 class="text-lg md:text-xl font-extrabold font-syne leading-tight">Buka Toko Kamu Sekarang</h3>
-                        <p class="text-gray-400 text-xs mt-1">Jangkau ribuan pembeli · Gratis daftar · Komisi kompetitif</p>
-                    </div>
-                </div>
-                <div class="shrink-0 flex items-center gap-2 bg-blue-600 hover:bg-blue-500 px-5 py-3 rounded-xl font-bold text-sm transition whitespace-nowrap">Mulai <i class="fas fa-arrow-right ml-1"></i></div>
-            </div>
-        </div>
-
-        <!-- SEARCH TOKO -->
-        <div class="mb-6">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="font-extrabold font-syne text-lg">Jelajahi Toko</h3>
-                <button onclick="navigate('stores')" class="text-blue-400 text-xs font-bold hover:underline">Lihat Semua →</button>
-            </div>
-            <div id="storeList" class="flex gap-3 overflow-x-auto no-scrollbar pb-2"></div>
-        </div>
-
-        <!-- CATEGORY FILTER -->
-        <div class="flex gap-3 overflow-x-auto pb-4 no-scrollbar mb-4" id="categoryFilter">
-            <div class="flex-none px-5 py-2.5 glass-card text-sm font-bold border-blue-500 bg-blue-500/10 cursor-pointer category-btn" data-cat="all">Semua</div>
-            <div class="flex-none px-5 py-2.5 glass-card text-sm font-bold cursor-pointer category-btn" data-cat="Game Mobile">Game Mobile</div>
-            <div class="flex-none px-5 py-2.5 glass-card text-sm font-bold cursor-pointer category-btn" data-cat="Premium Apps">Premium Apps</div>
-            <div class="flex-none px-5 py-2.5 glass-card text-sm font-bold cursor-pointer category-btn" data-cat="E-Voucher">E-Voucher</div>
-            <div class="flex-none px-5 py-2.5 glass-card text-sm font-bold cursor-pointer category-btn" data-cat="Akun Sosmed">Akun Sosmed</div>
-            <div class="flex-none px-5 py-2.5 glass-card text-sm font-bold cursor-pointer category-btn" data-cat="Jasa Digital">Jasa Digital</div>
-        </div>
-
-        <!-- PRODUCT GRID -->
-        <div id="mainProductGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mt-2">
-            <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
-            <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
-            <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
-            <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
-            <div class="animate-pulse glass-card h-64 rounded-3xl"></div>
-        </div>
-    </section>
-
-    <!-- ORDERS PAGE -->
-    <section id="page-orders" class="page-view hidden fade-in">
-        <div class="max-w-3xl mx-auto">
-            <h2 class="text-2xl font-extrabold font-syne mb-6">Riwayat Pesanan</h2>
-            <div class="glass-card p-12 text-center text-gray-500">
-                <i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i>
-                <p class="font-bold">Belum ada pesanan</p>
-                <p class="text-sm mt-1">Pesanan kamu akan muncul di sini setelah bertransaksi via WhatsApp</p>
-                <button onclick="navigate('home')" class="btn-primary mt-4 !inline-block">Mulai Belanja</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- STORES PAGE -->
-    <section id="page-stores" class="page-view hidden fade-in">
-        <div class="max-w-5xl mx-auto">
-            <div class="flex items-center gap-4 mb-6">
-                <button onclick="navigate('home')" class="w-10 h-10 glass-card flex items-center justify-center hover:bg-white/10 transition shrink-0"><i class="fas fa-arrow-left text-sm"></i></button>
-                <h2 class="text-2xl font-extrabold font-syne">Semua Toko</h2>
-            </div>
-            <div class="relative mb-6">
-                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
-                <input type="text" id="storeSearch" placeholder="Cari nama toko..." class="custom-input !pl-10 !py-3 !rounded-2xl w-full">
-            </div>
-            <div id="allStoreGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-        </div>
-    </section>
-
-    <!-- PROFILE PAGE -->
-    <section id="page-profile" class="page-view hidden fade-in">
-        <div class="max-w-3xl mx-auto">
-
-            <!-- NOT LOGGED IN -->
-            <div id="profileNotLoggedIn" class="hidden">
-                <div class="glass-card p-12 text-center mb-5">
-                    <i class="fas fa-user-circle text-6xl text-gray-600 mb-4"></i>
-                    <h3 class="text-xl font-bold mb-2">Kamu Belum Login</h3>
-                    <p class="text-gray-400 text-sm mb-6">Login untuk akses profil, riwayat transaksi, dan fitur lainnya.</p>
-                    <button onclick="openModal('modalAuth')" class="btn-primary !inline-block">Login / Daftar</button>
-                </div>
-                <div class="space-y-3">
-                    <button onclick="openModal('modalAbout')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400"></i></div><span class="font-semibold">Tentang XREZZKY</span></div>
-                        <i class="fas fa-chevron-right text-gray-600"></i>
-                    </button>
-                    <button onclick="openModal('modalPolicy')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-file-contract text-orange-400"></i></div><span class="font-semibold">Kebijakan & Persyaratan</span></div>
-                        <i class="fas fa-chevron-right text-gray-600"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- LOGGED IN -->
-            <div id="profileLoggedIn" class="hidden">
-                <!-- USER CARD -->
-                <div class="glass-card p-8 mb-5">
-                    <div class="flex flex-col items-center">
-                        <div class="relative mb-4">
-                            <div id="profileAvatar" class="w-24 h-24 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-4xl font-bold border-4 border-blue-500/30 shadow-2xl overflow-hidden">
-                                <span id="avatarText">?</span>
-                            </div>
-                            <label for="avatarUpload" class="absolute bottom-0 right-0 bg-white text-black w-8 h-8 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition shadow-lg">
-                                <i class="fas fa-camera text-xs"></i>
-                            </label>
-                            <input type="file" id="avatarUpload" class="hidden" accept="image/*">
-                        </div>
-                        <h2 id="userNameText" class="text-2xl font-bold font-syne">Memuat...</h2>
-                        <p id="userEmailText" class="text-gray-400 text-sm mb-2"></p>
-                        <div id="roleBadgeContainer" class="mb-5"></div>
-                        <div class="grid grid-cols-2 gap-4 w-full">
-                            <div class="bg-white/5 p-4 rounded-2xl text-center border border-white/5">
-                                <p class="text-[10px] text-gray-500 mb-1 uppercase font-bold">Total Transaksi</p>
-                                <p class="text-xl font-bold" id="statsTrx">0</p>
-                            </div>
-                            <div class="bg-white/5 p-4 rounded-2xl text-center border border-white/5">
-                                <p class="text-[10px] text-gray-500 mb-1 uppercase font-bold">Member Sejak</p>
-                                <p class="text-sm font-bold text-blue-400" id="statsMember">-</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- DYNAMIC SELLER/ADMIN CARD -->
-                <div id="sellerCtaCard" class="mb-5"></div>
-
-                <!-- MENU -->
-                <div class="space-y-3 mb-5">
-                    <button onclick="openEditProfile()" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-edit text-blue-400"></i></div><span class="font-semibold">Edit Profil</span></div>
-                        <i class="fas fa-chevron-right text-gray-600"></i>
-                    </button>
-                    <button onclick="navigate('orders')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-history text-purple-400"></i></div><span class="font-semibold">Riwayat Pembelian</span></div>
-                        <i class="fas fa-chevron-right text-gray-600"></i>
-                    </button>
-                    <button onclick="openModal('modalAbout')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-info-circle text-cyan-400"></i></div><span class="font-semibold">Tentang XREZZKY</span></div>
-                        <i class="fas fa-chevron-right text-gray-600"></i>
-                    </button>
-                    <button onclick="openModal('modalPolicy')" class="w-full flex items-center justify-between p-5 glass-card hover:bg-white/5 transition rounded-2xl">
-                        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-file-contract text-orange-400"></i></div><span class="font-semibold">Kebijakan & Persyaratan</span></div>
-                        <i class="fas fa-chevron-right text-gray-600"></i>
-                    </button>
-                    <button onclick="logoutUser()" class="w-full flex items-center justify-between p-5 glass-card border-red-500/20 hover:bg-red-500/10 transition rounded-2xl">
-                        <div class="flex items-center gap-4"><div class="w-10 h-10 bg-red-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-sign-out-alt text-red-400"></i></div><span class="font-semibold text-red-400">Keluar dari Akun</span></div>
-                    </button>
-                </div>
-                <p class="text-center text-[10px] text-gray-600 pb-2">XREZZKY STORE v1.0.0 · Made with ❤️</p>
-            </div>
-        </div>
-    </section>
+        <p class="text-center text-[10px] text-gray-600 pb-2">XREZZKY STORE v1.0.0 · Made with ❤️</p>
+      </div>
+    </div>
+  </section>
 
 </main>
 
 <!-- BOTTOM NAV -->
-<nav class="fixed bottom-0 inset-x-0 z-[100] glass-card !rounded-none border-x-0 border-b-0 px-4 py-2 flex justify-around items-center md:hidden">
-    <button onclick="navigate('home')" id="nav-home" class="nav-link active flex flex-col items-center gap-1"><i class="fas fa-home text-xl"></i><span>Beranda</span></button>
-    <button onclick="navigate('stores')" id="nav-stores" class="nav-link flex flex-col items-center gap-1"><i class="fas fa-store text-xl"></i><span>Toko</span></button>
-    <button onclick="navigate('orders')" id="nav-orders" class="nav-link flex flex-col items-center gap-1"><i class="fas fa-shopping-bag text-xl"></i><span>Pesanan</span></button>
-    <button onclick="navigate('profile')" id="nav-profile" class="nav-link flex flex-col items-center gap-1"><i class="fas fa-user-circle text-xl"></i><span>Profil</span></button>
+<nav class="fixed bottom-0 inset-x-0 z-[100] glass !rounded-none border-x-0 border-b-0 px-4 py-2 flex justify-around items-center md:hidden">
+  <button onclick="nav('home')" id="nb-home" class="navlink on"><i class="fas fa-home text-xl"></i><span>Beranda</span></button>
+  <button onclick="nav('stores')" id="nb-stores" class="navlink"><i class="fas fa-store text-xl"></i><span>Toko</span></button>
+  <button onclick="nav('orders')" id="nb-orders" class="navlink"><i class="fas fa-shopping-bag text-xl"></i><span>Pesanan</span></button>
+  <button onclick="nav('profile')" id="nb-profile" class="navlink"><i class="fas fa-user-circle text-xl"></i><span>Profil</span></button>
 </nav>
 
-<!-- ============================================================ -->
-<!-- MODALS -->
-<!-- ============================================================ -->
+<!-- ==================== MODALS ==================== -->
 
-<!-- MODAL PRODUCT DETAIL -->
-<div id="modalDetail" class="modal-overlay">
-    <div class="modal-content !max-w-4xl p-0 overflow-hidden">
-        <div class="flex flex-col md:flex-row">
-            <div class="w-full md:w-1/2 bg-black flex items-center justify-center p-4 relative min-h-[280px]">
-                <button onclick="closeModal('modalDetail')" class="absolute top-4 left-4 w-10 h-10 bg-black/50 backdrop-blur-xl rounded-full flex items-center justify-center z-10 hover:bg-white/10 transition"><i class="fas fa-arrow-left"></i></button>
-                <img id="detImg" src="" onclick="expandImg(this.src)" class="max-h-[400px] w-full object-contain cursor-zoom-in hover:scale-[1.02] transition-transform duration-300">
-            </div>
-            <div class="w-full md:w-1/2 p-8 overflow-y-auto">
-                <div class="flex justify-between items-start mb-4">
-                    <span id="detCat" class="text-xs font-bold text-blue-500 uppercase tracking-widest">KATEGORI</span>
-                    <div class="flex items-center gap-1 text-yellow-400 text-sm"><i class="fas fa-star"></i><span id="detRating">4.9</span></div>
-                </div>
-                <h2 id="detTitle" class="text-2xl font-extrabold mb-2 leading-tight">Product Title</h2>
-                <p id="detPrice" class="text-2xl font-bold text-blue-400 mb-1">Rp 0</p>
-                <p class="text-sm text-gray-500 mb-5">Stok: <span id="detStock" class="text-green-400 font-bold">-</span></p>
-                <div onclick="openStorePageFromDetail()" class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 mb-5 cursor-pointer hover:bg-white/10 transition border border-white/5">
-                    <div id="detSellerAvatar" class="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center font-bold text-lg shrink-0">S</div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-xs text-gray-400">Penjual Terverifikasi ✅</p>
-                        <p id="detSellerName" class="font-bold line-clamp-1">XREZZKY Official</p>
-                        <p id="detStoreName" class="text-xs text-blue-400 font-semibold line-clamp-1"></p>
-                    </div>
-                    <div class="flex items-center gap-1 text-blue-400 text-xs font-bold shrink-0">Lihat Toko <i class="fas fa-chevron-right ml-1"></i></div>
-                </div>
-                <div class="space-y-2 mb-6">
-                    <h4 class="font-bold border-l-4 border-blue-500 pl-3 text-sm">Deskripsi Produk</h4>
-                    <p id="detDesc" class="text-gray-400 text-sm leading-relaxed">-</p>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="copyLink()" class="flex-none w-12 h-12 glass-card flex items-center justify-center hover:bg-white/10 transition" title="Salin Link"><i class="fas fa-share-alt text-sm"></i></button>
-                    <button onclick="handleBuyNow()" class="flex-1 btn-primary !rounded-2xl flex items-center justify-center gap-2 !py-3"><i class="fas fa-shopping-cart"></i> Beli Sekarang</button>
-                </div>
-            </div>
+<!-- PRODUCT DETAIL -->
+<div id="mDetail" class="overlay">
+  <div class="mbox !max-w-4xl p-0 overflow-hidden">
+    <div class="flex flex-col md:flex-row">
+      <div class="w-full md:w-1/2 bg-black flex items-center justify-center p-4 relative min-h-[260px]">
+        <button onclick="closeM('mDetail')" class="absolute top-3 left-3 w-9 h-9 bg-black/50 rounded-full flex items-center justify-center z-10 hover:bg-white/10 transition"><i class="fas fa-arrow-left text-sm"></i></button>
+        <img id="dImg" src="" onclick="bigImg(this.src)" class="max-h-[380px] w-full object-contain cursor-zoom-in hover:scale-[1.02] transition-transform duration-300">
+      </div>
+      <div class="w-full md:w-1/2 p-6 overflow-y-auto">
+        <div class="flex justify-between items-start mb-3">
+          <span id="dCat" class="text-[10px] font-bold text-blue-500 uppercase tracking-widest">CAT</span>
+          <div id="dRatingDisplay" class="text-sm"></div>
         </div>
+        <h2 id="dTitle" class="text-2xl font-extrabold mb-1 leading-tight">Judul</h2>
+        <p id="dPrice" class="text-xl font-bold text-blue-400 mb-1">Rp 0</p>
+        <p class="text-sm text-gray-500 mb-4">Stok: <span id="dStock" class="text-green-400 font-bold">-</span></p>
+        <!-- SELLER CARD → klik buka halaman toko -->
+        <div id="dSellerCard" onclick="openStorePage(curProd?.sellerId)" class="flex items-center gap-3 p-4 rounded-2xl bg-white/5 mb-4 cursor-pointer hover:bg-white/10 transition border border-white/5">
+          <div id="dSellerAv" class="w-11 h-11 rounded-full bg-blue-600 flex items-center justify-center font-bold text-base shrink-0">S</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-[10px] text-gray-400">Penjual Terverifikasi ✅</p>
+            <p id="dSellerName" class="font-bold text-sm clamp1">-</p>
+            <p id="dStoreName" class="text-[10px] text-blue-400 font-semibold clamp1">-</p>
+          </div>
+          <span class="text-[10px] text-blue-400 font-bold shrink-0 flex items-center gap-1">Lihat Toko <i class="fas fa-chevron-right"></i></span>
+        </div>
+        <div class="mb-5">
+          <h4 class="font-bold border-l-4 border-blue-500 pl-3 text-sm mb-2">Deskripsi</h4>
+          <p id="dDesc" class="text-gray-400 text-sm leading-relaxed">-</p>
+        </div>
+        <!-- REVIEWS -->
+        <div id="dReviews" class="mb-5"></div>
+        <div class="flex gap-2">
+          <button onclick="copyLink()" class="w-11 h-11 glass flex items-center justify-center hover:bg-white/10 transition shrink-0" title="Salin Link"><i class="fas fa-share-alt text-sm"></i></button>
+          <button onclick="doBuy()" class="flex-1 btn !rounded-2xl flex items-center justify-center gap-2 !py-3 !px-4"><i class="fas fa-shopping-cart"></i> Beli Sekarang</button>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
 
-<!-- MODAL AUTH -->
-<div id="modalAuth" class="modal-overlay">
-    <div class="modal-content !max-w-md p-8">
-        <button onclick="closeModal('modalAuth')" class="absolute top-4 right-4 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-        <div id="loginForm">
-            <h2 class="text-3xl font-extrabold mb-2 font-syne">Selamat Datang</h2>
-            <p class="text-gray-400 text-sm mb-6">Masuk ke akun XREZZKY STORE Anda</p>
-            <div class="input-group"><input type="email" id="authEmail" class="custom-input" placeholder="Alamat Email"></div>
-            <div class="input-group"><input type="password" id="authPass" class="custom-input" placeholder="Password"></div>
-            <button onclick="processLogin()" class="btn-primary w-full mb-5">Masuk Sekarang</button>
-            <p class="text-center text-sm text-gray-500">Belum punya akun? <span onclick="toggleAuthForm()" class="text-blue-400 font-bold cursor-pointer hover:underline">Daftar</span></p>
+<!-- STORE PAGE MODAL -->
+<div id="mStore" class="overlay">
+  <div class="mbox !max-w-3xl p-0 overflow-hidden">
+    <div class="relative p-7 bg-gradient-to-b from-blue-600/20 to-transparent">
+      <button onclick="closeM('mStore')" class="absolute top-4 right-4 w-9 h-9 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+      <div class="flex flex-col items-center">
+        <div id="stAv" class="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-2xl font-bold border-4 border-blue-500/30 mb-3">S</div>
+        <h2 id="stName" class="text-xl font-extrabold syne mb-0.5">Nama Toko</h2>
+        <p id="stOwner" class="text-gray-400 text-xs mb-1">oleh -</p>
+        <span class="text-[10px] text-blue-400 font-black uppercase tracking-widest mb-3">✅ Verified Seller</span>
+        <p id="stDesc" class="text-gray-400 text-xs text-center max-w-md mb-4 leading-relaxed">-</p>
+        <div class="grid grid-cols-3 gap-2 w-full max-w-sm">
+          <div class="bg-white/5 p-2.5 rounded-xl text-center border border-white/5"><p class="text-[9px] text-gray-400 uppercase font-bold mb-0.5">Item</p><p id="stItem" class="text-sm font-bold">0</p></div>
+          <div class="bg-white/5 p-2.5 rounded-xl text-center border border-white/5"><p class="text-[9px] text-gray-400 uppercase font-bold mb-0.5">Stok</p><p id="stStock" class="text-sm font-bold text-green-400">0</p></div>
+          <div class="bg-white/5 p-2.5 rounded-xl text-center border border-white/5"><p class="text-[9px] text-gray-400 uppercase font-bold mb-0.5">Terjual</p><p id="stSold" class="text-sm font-bold text-orange-400">0</p></div>
         </div>
-        <div id="regForm" class="hidden">
-            <h2 class="text-3xl font-extrabold mb-2 font-syne">Buat Akun</h2>
-            <p class="text-gray-400 text-sm mb-6">Daftar untuk mulai belanja produk premium</p>
-            <div class="input-group"><input type="text" id="regName" class="custom-input" placeholder="Nama Lengkap"></div>
-            <div class="input-group"><input type="email" id="regEmail" class="custom-input" placeholder="Alamat Email"></div>
-            <div class="input-group"><input type="password" id="regPass" class="custom-input" placeholder="Password (min. 6 karakter)"></div>
-            <button onclick="processRegister()" class="btn-primary w-full mb-5">Daftar Akun</button>
-            <p class="text-center text-sm text-gray-500">Sudah punya akun? <span onclick="toggleAuthForm()" class="text-blue-400 font-bold cursor-pointer hover:underline">Login</span></p>
-        </div>
+      </div>
     </div>
+    <div class="px-5 pb-5">
+      <h4 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center gap-2"><i class="fas fa-th-large text-blue-500"></i> Semua Produk Toko</h4>
+      <div id="stProds" class="grid grid-cols-2 md:grid-cols-3 gap-2.5 max-h-[380px] overflow-y-auto pr-1 cscroll"></div>
+    </div>
+    <div class="px-5 pb-5 border-t border-white/5 pt-4">
+      <button onclick="closeM('mStore')" class="btn !rounded-xl !py-3">Tutup</button>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL EDIT PROFILE -->
-<div id="modalEditProfile" class="modal-overlay">
-    <div class="modal-content !max-w-md p-8">
-        <button onclick="closeModal('modalEditProfile')" class="absolute top-4 right-4 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-        <h2 class="text-2xl font-extrabold mb-6 font-syne">Edit Profil</h2>
-        <div class="space-y-4">
-            <div>
-                <label class="text-xs text-gray-400 mb-1.5 block font-bold uppercase tracking-wider">Nama Tampilan</label>
-                <input type="text" id="editName" class="custom-input" placeholder="Nama Lengkap">
-            </div>
-            <div>
-                <label class="text-xs text-gray-400 mb-1.5 block font-bold uppercase tracking-wider">Nomor WA untuk Order <span class="text-blue-400">(dipakai tombol Beli)</span></label>
-                <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-bold">+62</span>
-                    <input type="tel" id="editWaNumber" class="custom-input !pl-12" placeholder="8123456789">
-                </div>
-                <p class="text-[10px] text-gray-600 mt-1">Nomor ini akan dipakai ketika kamu order produk via WA.</p>
-            </div>
-            <div class="border-t border-white/5 pt-4">
-                <label class="text-xs text-gray-400 mb-1.5 block font-bold uppercase tracking-wider">Ganti Password <span class="text-gray-600">(opsional)</span></label>
-                <input type="password" id="editPassOld" class="custom-input mb-3" placeholder="Password Lama">
-                <input type="password" id="editPassNew" class="custom-input mb-3" placeholder="Password Baru (min. 6 karakter)">
-                <input type="password" id="editPassConfirm" class="custom-input" placeholder="Konfirmasi Password Baru">
-            </div>
-        </div>
-        <button onclick="saveEditProfile()" class="btn-primary w-full mt-6">Simpan Perubahan</button>
-        <p class="text-center text-[10px] text-gray-600 mt-3">Email tidak dapat diubah.</p>
+<!-- AUTH -->
+<div id="mAuth" class="overlay">
+  <div class="mbox !max-w-md p-7">
+    <button onclick="closeM('mAuth')" class="absolute top-4 right-4 w-9 h-9 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+    <div id="loginF">
+      <h2 class="text-2xl font-extrabold syne mb-1">Selamat Datang</h2>
+      <p class="text-gray-400 text-sm mb-5">Masuk ke akun XREZZKY STORE</p>
+      <input type="email" id="aEmail" class="inp mb-3" placeholder="Email">
+      <input type="password" id="aPass" class="inp mb-4" placeholder="Password">
+      <button onclick="doLogin()" class="btn mb-4">Masuk</button>
+      <p class="text-center text-sm text-gray-500">Belum punya akun? <span onclick="toggleAuth()" class="text-blue-400 font-bold cursor-pointer">Daftar</span></p>
     </div>
+    <div id="regF" class="hidden">
+      <h2 class="text-2xl font-extrabold syne mb-1">Buat Akun</h2>
+      <p class="text-gray-400 text-sm mb-5">Daftar untuk mulai belanja</p>
+      <input type="text" id="rName" class="inp mb-3" placeholder="Nama Lengkap">
+      <input type="email" id="rEmail" class="inp mb-3" placeholder="Email">
+      <input type="password" id="rPass" class="inp mb-4" placeholder="Password (min. 6 karakter)">
+      <button onclick="doReg()" class="btn mb-4">Daftar Akun</button>
+      <p class="text-center text-sm text-gray-500">Sudah punya akun? <span onclick="toggleAuth()" class="text-blue-400 font-bold cursor-pointer">Login</span></p>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL STORE PAGE (halaman toko lengkap) -->
-<div id="modalStorePage" class="modal-overlay">
-    <div class="modal-content !max-w-3xl p-0 overflow-hidden">
-        <!-- HEADER TOKO -->
-        <div class="relative p-8 bg-gradient-to-b from-blue-600/20 to-transparent">
-            <button onclick="closeModal('modalStorePage')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-            <div class="flex flex-col items-center">
-                <div id="spAvatar" class="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-3xl font-bold border-4 border-blue-500/30 shadow-2xl mb-4">S</div>
-                <h2 id="spStoreName" class="text-2xl font-extrabold font-syne mb-0.5">Nama Toko</h2>
-                <p id="spSellerName" class="text-gray-400 text-xs mb-1">oleh Seller</p>
-                <p class="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-3">✅ Verified Seller</p>
-                <p id="spDesc" class="text-gray-400 text-sm text-center max-w-md mb-5 leading-relaxed">-</p>
-                <div class="grid grid-cols-3 gap-3 w-full max-w-sm">
-                    <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center">
-                        <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Item</p>
-                        <p id="spTotalItem" class="text-sm font-bold text-white">0</p>
-                    </div>
-                    <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center">
-                        <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Total Stok</p>
-                        <p id="spTotalStock" class="text-sm font-bold text-green-400">0</p>
-                    </div>
-                    <div class="bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/5 text-center">
-                        <p class="text-[9px] text-gray-400 uppercase font-bold mb-1">Terjual</p>
-                        <p id="spTotalSold" class="text-sm font-bold text-orange-400">0</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- PRODUK TOKO -->
-        <div class="p-6">
-            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2"><i class="fas fa-th-large text-blue-500"></i> Semua Produk Toko</h4>
-            <div id="spProductList" class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[380px] overflow-y-auto pr-2 custom-scrollbar"></div>
-        </div>
-        <div class="p-6 border-t border-white/5 bg-black/20">
-            <button onclick="closeModal('modalStorePage')" class="btn-primary w-full !rounded-xl !py-3">Tutup</button>
-        </div>
+<!-- EDIT PROFILE -->
+<div id="mEdit" class="overlay">
+  <div class="mbox !max-w-md p-7">
+    <button onclick="closeM('mEdit')" class="absolute top-4 right-4 w-9 h-9 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+    <h2 class="text-xl font-extrabold syne mb-5">Edit Profil</h2>
+    <div class="space-y-3">
+      <div>
+        <label class="text-xs text-gray-400 mb-1 block font-bold uppercase tracking-wider">Nama Tampilan</label>
+        <input type="text" id="eName" class="inp" placeholder="Nama Lengkap">
+      </div>
+      <div>
+        <label class="text-xs text-gray-400 mb-1 block font-bold uppercase tracking-wider">No. WA untuk Order <span class="text-blue-400 normal-case font-normal">(ditampilkan ke seller)</span></label>
+        <div class="relative"><span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-bold">+62</span><input type="tel" id="eWa" class="inp !pl-11" placeholder="8123456789"></div>
+      </div>
+      <div class="border-t border-white/5 pt-3">
+        <label class="text-xs text-gray-400 mb-2 block font-bold uppercase tracking-wider">Ganti Password <span class="text-gray-600 normal-case font-normal">(kosongkan jika tidak ingin ganti)</span></label>
+        <input type="password" id="eOldP" class="inp mb-2" placeholder="Password Lama">
+        <input type="password" id="eNewP" class="inp mb-2" placeholder="Password Baru (min. 6 karakter)">
+        <input type="password" id="eConP" class="inp" placeholder="Konfirmasi Password Baru">
+      </div>
     </div>
+    <button onclick="saveEdit()" class="btn mt-5">Simpan Perubahan</button>
+    <p class="text-center text-[10px] text-gray-600 mt-2">Email tidak dapat diubah.</p>
+  </div>
 </div>
 
-<!-- FULL IMAGE VIEWER -->
-<div id="fullImageView" class="fixed inset-0 hidden items-center justify-center cursor-pointer" onclick="closeFullScreen()">
-    <button class="absolute top-6 right-6 text-white text-4xl hover:text-red-500 transition pointer-events-none"><i class="fas fa-times"></i></button>
-    <img id="imgExpanded" src="" class="max-w-[95%] max-h-[95%] object-contain">
+<!-- RATING MODAL -->
+<div id="mRating" class="overlay">
+  <div class="mbox !max-w-sm p-7">
+    <button onclick="closeM('mRating')" class="absolute top-4 right-4 w-9 h-9 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+    <h2 class="text-xl font-extrabold syne mb-1">Beri Rating</h2>
+    <p id="rProdName" class="text-gray-400 text-sm mb-4 clamp1">Produk</p>
+    <!-- BINTANG INTERAKTIF -->
+    <div class="stars-input mb-4" id="starInput">
+      <input type="radio" id="s5" name="stars" value="5"><label for="s5" title="5 bintang">★</label>
+      <input type="radio" id="s4" name="stars" value="4"><label for="s4" title="4 bintang">★</label>
+      <input type="radio" id="s3" name="stars" value="3"><label for="s3" title="3 bintang">★</label>
+      <input type="radio" id="s2" name="stars" value="2"><label for="s2" title="2 bintang">★</label>
+      <input type="radio" id="s1" name="stars" value="1"><label for="s1" title="1 bintang">★</label>
+    </div>
+    <textarea id="rComment" class="inp mb-4" style="height:90px;resize:none" placeholder="Tulis ulasan kamu (opsional)..."></textarea>
+    <button onclick="submitRating()" class="btn">Kirim Rating</button>
+  </div>
+</div>
+
+<!-- FULL IMAGE -->
+<div id="fimgv" class="fixed inset-0 hidden items-center justify-center cursor-pointer" onclick="closeBigImg()">
+  <button class="absolute top-5 right-5 text-white text-3xl hover:text-red-400 transition pointer-events-none"><i class="fas fa-times"></i></button>
+  <img id="fimg" src="" class="max-w-[95%] max-h-[95%] object-contain">
 </div>
 
 <!-- TOAST -->
-<div id="toast" class="fixed top-24 right-4 z-[9999] transform translate-x-[150%] transition-transform duration-500">
-    <div class="glass-card !rounded-2xl p-4 flex items-center gap-4 min-w-[300px] border-l-4 border-l-blue-500">
-        <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-500" id="toastIcon"><i class="fas fa-info-circle"></i></div>
-        <div><p class="font-bold text-sm" id="toastTitle">Info</p><p class="text-xs text-gray-400" id="toastMsg">-</p></div>
-    </div>
+<div id="toast" class="fixed top-20 right-4 z-[9999] translate-x-[150%] transition-transform duration-500">
+  <div class="glass !rounded-2xl p-4 flex items-center gap-3 min-w-[280px] border-l-4 border-l-blue-500">
+    <div id="toastIco" class="w-9 h-9 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400"><i class="fas fa-info-circle text-sm"></i></div>
+    <div><p class="font-bold text-sm" id="toastT">Info</p><p class="text-xs text-gray-400" id="toastM">-</p></div>
+  </div>
 </div>
 
-<!-- MODAL TENTANG -->
-<div id="modalAbout" class="modal-overlay">
-    <div class="modal-content !max-w-2xl p-0 overflow-hidden">
-        <div class="relative p-8 bg-gradient-to-b from-blue-600/20 to-transparent">
-            <button onclick="closeModal('modalAbout')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-            <div class="flex items-center gap-4 mb-2">
-                <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center glow-blue"><i class="fas fa-bolt text-white text-lg"></i></div>
-                <div><h2 class="text-2xl font-extrabold font-syne">XREZZKY OFFICIAL STORE</h2><p class="text-blue-400 text-xs font-bold uppercase tracking-widest">Terjamin · Trusted · #1 Digital Marketplace</p></div>
-            </div>
-        </div>
-        <div class="px-8 pb-8 overflow-y-auto max-h-[65vh] custom-scrollbar space-y-6">
-            <div><h3 class="text-xs font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i class="fas fa-store"></i> Tentang Kami</h3><p class="text-gray-300 text-sm leading-relaxed">XREZZKY OFFICIAL STORE adalah platform marketplace digital yang hadir untuk menghubungkan penjual dan pembeli produk digital secara aman, cepat, dan terpercaya. Kami berkomitmen menghadirkan pengalaman belanja digital yang menyenangkan dan bebas risiko untuk semua kalangan.</p></div>
-            <div class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-5"><h3 class="text-xs font-black uppercase tracking-widest text-blue-300 mb-3 flex items-center gap-2"><i class="fas fa-eye"></i> Visi</h3><p class="text-gray-200 text-sm leading-relaxed font-medium">"Menjadi marketplace digital paling aman, terpercaya, dan inovatif di Indonesia — tempat di mana setiap transaksi digital terasa mudah, cepat, dan menyenangkan bagi semua pihak."</p></div>
-            <div>
-                <h3 class="text-xs font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2"><i class="fas fa-bullseye"></i> Misi</h3>
-                <div class="space-y-3">
-                    <div class="flex items-start gap-3"><div class="w-6 h-6 bg-blue-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-blue-400 text-xs font-black">1</span></div><p class="text-gray-300 text-sm">Menyediakan platform yang <strong class="text-white">aman & terpercaya</strong> melalui sistem escrow dan verifikasi seller ketat.</p></div>
-                    <div class="flex items-start gap-3"><div class="w-6 h-6 bg-purple-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-purple-400 text-xs font-black">2</span></div><p class="text-gray-300 text-sm">Memberdayakan <strong class="text-white">seller lokal</strong> agar bisa menjangkau pasar yang lebih luas dengan biaya minimum.</p></div>
-                    <div class="flex items-start gap-3"><div class="w-6 h-6 bg-green-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-green-400 text-xs font-black">3</span></div><p class="text-gray-300 text-sm">Menghadirkan <strong class="text-white">layanan pelanggan 24/7</strong> yang responsif dan solutif untuk setiap kendala transaksi.</p></div>
-                    <div class="flex items-start gap-3"><div class="w-6 h-6 bg-yellow-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-yellow-400 text-xs font-black">4</span></div><p class="text-gray-300 text-sm">Terus berinovasi menghadirkan <strong class="text-white">fitur-fitur terdepan</strong> yang memudahkan ekosistem jual-beli digital Indonesia.</p></div>
-                    <div class="flex items-start gap-3"><div class="w-6 h-6 bg-orange-500/20 rounded-lg flex items-center justify-center shrink-0 mt-0.5"><span class="text-orange-400 text-xs font-black">5</span></div><p class="text-gray-300 text-sm">Membangun <strong class="text-white">komunitas digital</strong> yang saling mendukung antara gamer, kreator, dan pelaku usaha digital.</p></div>
-                </div>
-            </div>
-            <div>
-                <h3 class="text-xs font-black uppercase tracking-widest text-green-400 mb-3 flex items-center gap-2"><i class="fas fa-gem"></i> Nilai Kami</h3>
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center"><i class="fas fa-shield-alt text-blue-400 text-xl mb-2"></i><p class="text-xs font-bold">Kepercayaan</p></div>
-                    <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center"><i class="fas fa-bolt text-yellow-400 text-xl mb-2"></i><p class="text-xs font-bold">Kecepatan</p></div>
-                    <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center"><i class="fas fa-heart text-red-400 text-xl mb-2"></i><p class="text-xs font-bold">Integritas</p></div>
-                    <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center"><i class="fas fa-lightbulb text-purple-400 text-xl mb-2"></i><p class="text-xs font-bold">Inovasi</p></div>
-                    <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center"><i class="fas fa-users text-green-400 text-xl mb-2"></i><p class="text-xs font-bold">Komunitas</p></div>
-                    <div class="bg-white/5 border border-white/5 rounded-xl p-3 text-center"><i class="fas fa-star text-orange-400 text-xl mb-2"></i><p class="text-xs font-bold">Kualitas</p></div>
-                </div>
-            </div>
-            <button onclick="closeModal('modalAbout')" class="btn-primary w-full !rounded-xl">Tutup</button>
-        </div>
+<!-- MODAL ABOUT -->
+<div id="mAbout" class="overlay">
+  <div class="mbox !max-w-2xl p-0 overflow-hidden">
+    <div class="relative p-7 bg-gradient-to-b from-blue-600/20 to-transparent">
+      <button onclick="closeM('mAbout')" class="absolute top-4 right-4 w-9 h-9 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+      <div class="flex items-center gap-3"><div class="w-11 h-11 bg-blue-600 rounded-xl flex items-center justify-center glow"><i class="fas fa-bolt text-white"></i></div><div><h2 class="text-xl font-extrabold syne">XREZZKY OFFICIAL STORE</h2><p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">Terjamin · Trusted · #1 Digital Marketplace</p></div></div>
     </div>
+    <div class="px-7 pb-7 overflow-y-auto max-h-[65vh] cscroll space-y-5">
+      <p class="text-gray-300 text-sm leading-relaxed">XREZZKY OFFICIAL STORE adalah platform marketplace digital yang hadir untuk menghubungkan penjual dan pembeli produk digital secara aman, cepat, dan terpercaya.</p>
+      <div class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4"><h3 class="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-2 flex items-center gap-2"><i class="fas fa-eye"></i> Visi</h3><p class="text-gray-200 text-sm leading-relaxed">"Menjadi marketplace digital paling aman, terpercaya, dan inovatif di Indonesia."</p></div>
+      <div><h3 class="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2"><i class="fas fa-bullseye"></i> Misi</h3><div class="space-y-2">
+        <div class="flex items-start gap-2"><div class="w-5 h-5 bg-blue-500/20 rounded-md flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-black text-blue-400">1</div><p class="text-gray-300 text-sm">Menyediakan platform <strong class="text-white">aman & terpercaya</strong> melalui sistem escrow dan verifikasi seller ketat.</p></div>
+        <div class="flex items-start gap-2"><div class="w-5 h-5 bg-purple-500/20 rounded-md flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-black text-purple-400">2</div><p class="text-gray-300 text-sm">Memberdayakan <strong class="text-white">seller lokal</strong> agar bisa menjangkau pasar yang lebih luas.</p></div>
+        <div class="flex items-start gap-2"><div class="w-5 h-5 bg-green-500/20 rounded-md flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-black text-green-400">3</div><p class="text-gray-300 text-sm">Menghadirkan <strong class="text-white">layanan 24/7</strong> yang responsif untuk setiap kendala transaksi.</p></div>
+        <div class="flex items-start gap-2"><div class="w-5 h-5 bg-yellow-500/20 rounded-md flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-black text-yellow-400">4</div><p class="text-gray-300 text-sm">Terus berinovasi menghadirkan <strong class="text-white">fitur terdepan</strong> untuk ekosistem digital Indonesia.</p></div>
+        <div class="flex items-start gap-2"><div class="w-5 h-5 bg-orange-500/20 rounded-md flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-black text-orange-400">5</div><p class="text-gray-300 text-sm">Membangun <strong class="text-white">komunitas digital</strong> yang saling mendukung.</p></div>
+      </div></div>
+      <div><h3 class="text-[10px] font-black uppercase tracking-widest text-green-400 mb-3 flex items-center gap-2"><i class="fas fa-gem"></i> Nilai Kami</h3>
+        <div class="grid grid-cols-3 gap-2">
+          <div class="bg-white/5 rounded-xl p-2.5 text-center"><i class="fas fa-shield-alt text-blue-400 text-lg mb-1"></i><p class="text-[10px] font-bold">Kepercayaan</p></div>
+          <div class="bg-white/5 rounded-xl p-2.5 text-center"><i class="fas fa-bolt text-yellow-400 text-lg mb-1"></i><p class="text-[10px] font-bold">Kecepatan</p></div>
+          <div class="bg-white/5 rounded-xl p-2.5 text-center"><i class="fas fa-heart text-red-400 text-lg mb-1"></i><p class="text-[10px] font-bold">Integritas</p></div>
+          <div class="bg-white/5 rounded-xl p-2.5 text-center"><i class="fas fa-lightbulb text-purple-400 text-lg mb-1"></i><p class="text-[10px] font-bold">Inovasi</p></div>
+          <div class="bg-white/5 rounded-xl p-2.5 text-center"><i class="fas fa-users text-green-400 text-lg mb-1"></i><p class="text-[10px] font-bold">Komunitas</p></div>
+          <div class="bg-white/5 rounded-xl p-2.5 text-center"><i class="fas fa-star text-orange-400 text-lg mb-1"></i><p class="text-[10px] font-bold">Kualitas</p></div>
+        </div>
+      </div>
+      <button onclick="closeM('mAbout')" class="btn !rounded-xl">Tutup</button>
+    </div>
+  </div>
 </div>
 
-<!-- MODAL KEBIJAKAN -->
-<div id="modalPolicy" class="modal-overlay">
-    <div class="modal-content !max-w-2xl p-0 overflow-hidden">
-        <div class="relative p-8 bg-gradient-to-b from-orange-600/20 to-transparent">
-            <button onclick="closeModal('modalPolicy')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-            <div class="flex items-center gap-4"><div class="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center border border-orange-500/30"><i class="fas fa-file-contract text-orange-400 text-lg"></i></div><div><h2 class="text-2xl font-extrabold font-syne">Kebijakan & Persyaratan</h2><p class="text-orange-400 text-xs font-bold uppercase tracking-widest">XREZZKY OFFICIAL STORE</p></div></div>
-        </div>
-        <div class="px-8 pb-8 overflow-y-auto max-h-[65vh] custom-scrollbar space-y-5">
-            <div><h3 class="text-xs font-black uppercase tracking-widest text-orange-400 mb-2 flex items-center gap-2"><i class="fas fa-scroll"></i> Ketentuan Umum</h3><p class="text-gray-300 text-sm leading-relaxed">Dengan menggunakan layanan XREZZKY OFFICIAL STORE, kamu dianggap telah membaca, memahami, dan menyetujui seluruh ketentuan yang berlaku. Pastikan kamu berusia minimal 13 tahun atau mendapat izin dari orang tua/wali.</p></div>
-            <div class="bg-blue-500/5 border border-blue-500/15 rounded-2xl p-5"><h3 class="text-xs font-black uppercase tracking-widest text-blue-300 mb-3 flex items-center gap-2"><i class="fas fa-user"></i> Kebijakan Pembeli</h3><ul class="space-y-2 text-sm text-gray-300"><li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i>Pembeli wajib melakukan pembayaran sesuai nominal yang disepakati.</li><li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i>Komplain wajib disampaikan maksimal 1×24 jam setelah produk diterima.</li><li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i>Pembeli dilarang melakukan chargeback tanpa persetujuan admin.</li><li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-1 shrink-0"></i>Refund hanya berlaku jika produk terbukti cacat atau tidak sesuai deskripsi.</li></ul></div>
-            <div class="bg-green-500/5 border border-green-500/15 rounded-2xl p-5"><h3 class="text-xs font-black uppercase tracking-widest text-green-300 mb-3 flex items-center gap-2"><i class="fas fa-store"></i> Kebijakan Seller</h3><ul class="space-y-2 text-sm text-gray-300"><li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i>Seller wajib memastikan stok produk tersedia sebelum listing aktif.</li><li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i>Dilarang menjual produk ilegal, bajakan, atau yang melanggar hak cipta.</li><li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i>Seller wajib merespons order maksimal 2 jam di jam operasional.</li><li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-1 shrink-0"></i>Pelanggaran berulang dapat mengakibatkan suspend atau banned permanen.</li></ul></div>
-            <div class="bg-purple-500/5 border border-purple-500/15 rounded-2xl p-5"><h3 class="text-xs font-black uppercase tracking-widest text-purple-300 mb-3 flex items-center gap-2"><i class="fas fa-lock"></i> Kebijakan Privasi</h3><ul class="space-y-2 text-sm text-gray-300"><li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0"></i>Data yang dikumpulkan hanya untuk keperluan layanan.</li><li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0"></i>Kami tidak menjual data pengguna ke pihak ketiga manapun.</li><li class="flex items-start gap-2"><i class="fas fa-check text-purple-400 mt-1 shrink-0"></i>Pengguna dapat meminta penghapusan akun dan data kapan saja.</li></ul></div>
-            <div class="bg-red-500/5 border border-red-500/15 rounded-2xl p-5"><h3 class="text-xs font-black uppercase tracking-widest text-red-300 mb-3 flex items-center gap-2"><i class="fas fa-ban"></i> Hal yang Dilarang</h3><ul class="space-y-2 text-sm text-gray-300"><li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0"></i>Penipuan, manipulasi harga, atau pemalsuan identitas.</li><li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0"></i>Transaksi di luar platform untuk menghindari sistem keamanan.</li><li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0"></i>Spam, pelecehan, atau perilaku tidak pantas kepada pengguna lain.</li><li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-1 shrink-0"></i>Akun ganda untuk tujuan manipulasi sistem atau review.</li></ul></div>
-            <p class="text-center text-[10px] text-gray-600">Terakhir diperbarui: Maret 2025 · XREZZKY OFFICIAL STORE</p>
-            <button onclick="closeModal('modalPolicy')" class="btn-primary w-full !rounded-xl">Saya Mengerti</button>
-        </div>
+<!-- MODAL POLICY -->
+<div id="mPolicy" class="overlay">
+  <div class="mbox !max-w-2xl p-0 overflow-hidden">
+    <div class="relative p-7 bg-gradient-to-b from-orange-600/20 to-transparent">
+      <button onclick="closeM('mPolicy')" class="absolute top-4 right-4 w-9 h-9 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+      <div class="flex items-center gap-3"><div class="w-11 h-11 bg-orange-500/20 rounded-xl flex items-center justify-center border border-orange-500/30"><i class="fas fa-file-contract text-orange-400"></i></div><div><h2 class="text-xl font-extrabold syne">Kebijakan & Persyaratan</h2><p class="text-orange-400 text-[10px] font-bold uppercase tracking-widest">XREZZKY OFFICIAL STORE</p></div></div>
     </div>
+    <div class="px-7 pb-7 overflow-y-auto max-h-[65vh] cscroll space-y-4">
+      <p class="text-gray-300 text-sm leading-relaxed">Dengan menggunakan layanan XREZZKY OFFICIAL STORE, kamu dianggap telah membaca, memahami, dan menyetujui seluruh ketentuan yang berlaku.</p>
+      <div class="bg-blue-500/5 border border-blue-500/15 rounded-2xl p-4"><h3 class="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-2 flex items-center gap-2"><i class="fas fa-user"></i> Kebijakan Pembeli</h3><ul class="space-y-1.5 text-sm text-gray-300"><li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-0.5 shrink-0 text-xs"></i>Pembayaran sesuai nominal yang disepakati.</li><li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-0.5 shrink-0 text-xs"></i>Komplain maksimal 1×24 jam setelah produk diterima.</li><li class="flex items-start gap-2"><i class="fas fa-check text-blue-400 mt-0.5 shrink-0 text-xs"></i>Refund hanya berlaku jika produk cacat atau tidak sesuai.</li></ul></div>
+      <div class="bg-green-500/5 border border-green-500/15 rounded-2xl p-4"><h3 class="text-[10px] font-black uppercase tracking-widest text-green-300 mb-2 flex items-center gap-2"><i class="fas fa-store"></i> Kebijakan Seller</h3><ul class="space-y-1.5 text-sm text-gray-300"><li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-0.5 shrink-0 text-xs"></i>Stok produk harus tersedia sebelum listing aktif.</li><li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-0.5 shrink-0 text-xs"></i>Dilarang menjual produk ilegal atau bajakan.</li><li class="flex items-start gap-2"><i class="fas fa-check text-green-400 mt-0.5 shrink-0 text-xs"></i>Pelanggaran berulang berakibat suspend atau banned.</li></ul></div>
+      <div class="bg-red-500/5 border border-red-500/15 rounded-2xl p-4"><h3 class="text-[10px] font-black uppercase tracking-widest text-red-300 mb-2 flex items-center gap-2"><i class="fas fa-ban"></i> Hal yang Dilarang</h3><ul class="space-y-1.5 text-sm text-gray-300"><li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-0.5 shrink-0 text-xs"></i>Penipuan, manipulasi harga, atau pemalsuan identitas.</li><li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-0.5 shrink-0 text-xs"></i>Transaksi di luar platform.</li><li class="flex items-start gap-2"><i class="fas fa-times text-red-400 mt-0.5 shrink-0 text-xs"></i>Akun ganda untuk manipulasi sistem.</li></ul></div>
+      <p class="text-center text-[10px] text-gray-600">Terakhir diperbarui: Maret 2025 · XREZZKY OFFICIAL STORE</p>
+      <button onclick="closeM('mPolicy')" class="btn !rounded-xl">Saya Mengerti</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL JADI SELLER -->
-<div id="modalBecomeSeller" class="modal-overlay">
-    <div class="modal-content !max-w-lg p-0 overflow-hidden">
-        <!-- STEP 1 INFO -->
-        <div id="sellerStep1">
-            <div class="relative p-8 bg-gradient-to-b from-green-600/20 to-transparent">
-                <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-                <div class="flex items-center gap-4"><div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center border border-green-500/30"><i class="fas fa-store text-green-400 text-lg"></i></div><div><h2 class="text-2xl font-extrabold font-syne">Jadi Seller</h2><p class="text-green-400 text-xs font-bold uppercase tracking-widest">XREZZKY OFFICIAL STORE</p></div></div>
-            </div>
-            <div class="px-8 pb-8 overflow-y-auto max-h-[70vh] custom-scrollbar space-y-3">
-                <p class="text-gray-300 text-sm leading-relaxed">Bergabunglah bersama ratusan seller aktif di XREZZKY STORE. Proses daftar cepat, gratis, dan langsung bisa jualan setelah diverifikasi admin!</p>
-                <div class="space-y-2">
-                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl"><div class="w-9 h-9 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-wallet text-green-400 text-sm"></i></div><div><p class="text-sm font-bold">Gratis Daftar</p><p class="text-xs text-gray-400">Tidak ada biaya registrasi apapun.</p></div></div>
-                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl"><div class="w-9 h-9 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-users text-blue-400 text-sm"></i></div><div><p class="text-sm font-bold">Ribuan Pembeli</p><p class="text-xs text-gray-400">Jangkau pembeli aktif setiap harinya.</p></div></div>
-                    <div class="flex items-center gap-3 bg-white/5 p-4 rounded-xl"><div class="w-9 h-9 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-chart-line text-purple-400 text-sm"></i></div><div><p class="text-sm font-bold">Dashboard Lengkap</p><p class="text-xs text-gray-400">Kelola produk & pantau penjualan real-time.</p></div></div>
-                </div>
-                <button onclick="goToSellerForm()" class="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl font-extrabold text-sm hover:opacity-90 transition"><i class="fas fa-arrow-right"></i> Lanjut ke Form Pendaftaran</button>
-                <p class="text-center text-[10px] text-gray-600">Dengan mendaftar, kamu menyetujui <span onclick="closeModal('modalBecomeSeller');openModal('modalPolicy')" class="text-blue-400 cursor-pointer">Kebijakan Seller</span> kami.</p>
-            </div>
+<div id="mSeller" class="overlay">
+  <div class="mbox !max-w-lg p-0 overflow-hidden">
+    <!-- STEP 1 -->
+    <div id="ss1">
+      <div class="relative p-7 bg-gradient-to-b from-green-600/20 to-transparent">
+        <button onclick="closeM('mSeller')" class="absolute top-4 right-4 w-9 h-9 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+        <div class="flex items-center gap-3"><div class="w-11 h-11 bg-green-500/20 rounded-xl flex items-center justify-center border border-green-500/30"><i class="fas fa-store text-green-400"></i></div><div><h2 class="text-xl font-extrabold syne">Jadi Seller</h2><p class="text-green-400 text-[10px] font-bold uppercase tracking-widest">XREZZKY OFFICIAL STORE</p></div></div>
+      </div>
+      <div class="px-7 pb-7 overflow-y-auto max-h-[70vh] cscroll space-y-3">
+        <p class="text-gray-300 text-sm">Bergabunglah bersama ratusan seller aktif. Proses daftar cepat, gratis, langsung bisa jualan setelah verifikasi!</p>
+        <div class="space-y-2">
+          <div class="flex items-center gap-3 bg-white/5 p-3.5 rounded-xl"><div class="w-8 h-8 bg-green-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-wallet text-green-400 text-xs"></i></div><div><p class="text-sm font-bold">Gratis Daftar</p><p class="text-xs text-gray-400">Tidak ada biaya registrasi.</p></div></div>
+          <div class="flex items-center gap-3 bg-white/5 p-3.5 rounded-xl"><div class="w-8 h-8 bg-blue-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-users text-blue-400 text-xs"></i></div><div><p class="text-sm font-bold">Ribuan Pembeli</p><p class="text-xs text-gray-400">Jangkau pembeli aktif setiap harinya.</p></div></div>
+          <div class="flex items-center gap-3 bg-white/5 p-3.5 rounded-xl"><div class="w-8 h-8 bg-purple-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-chart-line text-purple-400 text-xs"></i></div><div><p class="text-sm font-bold">Dashboard Lengkap</p><p class="text-xs text-gray-400">Kelola produk & pantau penjualan real-time.</p></div></div>
         </div>
-        <!-- STEP 2 FORM -->
-        <div id="sellerStep2" class="hidden">
-            <div class="relative p-6 bg-gradient-to-b from-blue-600/20 to-transparent flex items-center gap-3">
-                <button onclick="document.getElementById('sellerStep2').classList.add('hidden');document.getElementById('sellerStep1').classList.remove('hidden')" class="w-9 h-9 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition shrink-0"><i class="fas fa-arrow-left text-sm"></i></button>
-                <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-                <div><h2 class="text-xl font-extrabold font-syne">Form Pendaftaran Seller</h2><p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">Isi data toko kamu dengan lengkap</p></div>
-            </div>
-            <div class="px-8 pb-8 overflow-y-auto max-h-[75vh] custom-scrollbar space-y-4">
-                <div>
-                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-3 flex items-center gap-2"><i class="fas fa-store"></i> Data Toko</p>
-                    <div class="space-y-3">
-                        <div><label class="text-xs text-gray-400 mb-1.5 block">Nama Toko <span class="text-red-400">*</span></label><input id="sf_storeName" type="text" class="custom-input" placeholder="Contoh: RezzkySkins Store"></div>
-                        <div><label class="text-xs text-gray-400 mb-1.5 block">Deskripsi Toko <span class="text-red-400">*</span></label><textarea id="sf_storeDesc" class="custom-input" style="height:96px;resize:none;" placeholder="Ceritakan tentang toko dan produk yang akan kamu jual..."></textarea></div>
-                        <div><label class="text-xs text-gray-400 mb-1.5 block">Kategori Produk Utama <span class="text-red-400">*</span></label>
-                        <select id="sf_category" class="custom-input"><option value="" disabled selected>-- Pilih Kategori --</option><option value="Game Mobile">Game Mobile</option><option value="Premium Apps">Premium Apps & Software</option><option value="E-Voucher">E-Voucher & Gift Card</option><option value="Akun Sosmed">Akun Media Sosial</option><option value="Jasa Digital">Jasa Digital</option><option value="Lainnya">Lainnya</option></select></div>
-                    </div>
-                </div>
-                <div class="border-t border-white/5"></div>
-                <div>
-                    <p class="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-3 flex items-center gap-2"><i class="fas fa-user"></i> Data Pribadi Pemilik</p>
-                    <div class="space-y-3">
-                        <div><label class="text-xs text-gray-400 mb-1.5 block">Nama Lengkap <span class="text-red-400">*</span></label><input id="sf_ownerName" type="text" class="custom-input" placeholder="Nama sesuai KTP"></div>
-                        <div><label class="text-xs text-gray-400 mb-1.5 block">Nomor WhatsApp Aktif <span class="text-red-400">*</span></label><div class="relative"><span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-bold">+62</span><input id="sf_whatsapp" type="tel" class="custom-input !pl-12" placeholder="8123456789"></div></div>
-                        <div><label class="text-xs text-gray-400 mb-1.5 block">Kota / Domisili <span class="text-red-400">*</span></label><input id="sf_city" type="text" class="custom-input" placeholder="Contoh: Jakarta, Padang, Surabaya"></div>
-                    </div>
-                </div>
-                <div class="border-t border-white/5"></div>
-                <div>
-                    <p class="text-[10px] font-black uppercase tracking-widest text-yellow-400 mb-3 flex items-center gap-2"><i class="fas fa-star"></i> Pengalaman Jualan</p>
-                    <div class="space-y-3">
-                        <div><label class="text-xs text-gray-400 mb-1.5 block">Pengalaman sebelumnya</label><select id="sf_experience" class="custom-input"><option value="Belum pernah">Belum pernah, ini pertama kali</option><option value="Pernah, informal">Pernah, tapi masih informal (WA, IG, dll)</option><option value="Pernah, marketplace lain">Pernah di marketplace lain</option><option value="Sudah berpengalaman">Sudah cukup berpengalaman</option></select></div>
-                        <div><label class="text-xs text-gray-400 mb-1.5 block">Produk pertama yang akan dijual</label><input id="sf_firstProduct" type="text" class="custom-input" placeholder="Contoh: Skin Mobile Legends Epic"></div>
-                        <div><label class="text-xs text-gray-400 mb-1.5 block">Catatan untuk Admin (opsional)</label><textarea id="sf_notes" class="custom-input" style="height:80px;resize:none;" placeholder="Ada pertanyaan?"></textarea></div>
-                    </div>
-                </div>
-                <div class="bg-white/5 border border-white/5 rounded-xl p-4 flex items-start gap-3">
-                    <input type="checkbox" id="sf_agree" class="mt-1 w-4 h-4 accent-blue-500 cursor-pointer shrink-0">
-                    <label for="sf_agree" class="text-xs text-gray-300 cursor-pointer leading-relaxed">Saya menyetujui <span onclick="closeModal('modalBecomeSeller');openModal('modalPolicy')" class="text-blue-400 font-bold underline cursor-pointer">Kebijakan & Persyaratan Seller</span> XREZZKY OFFICIAL STORE dan menjamin semua data yang saya isi adalah benar.</label>
-                </div>
-                <button onclick="submitSellerApplication()" id="btnSubmitSeller" class="w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl font-extrabold text-sm hover:opacity-90 transition shadow-lg shadow-green-900/30"><i class="fas fa-paper-plane"></i> Kirim Pendaftaran</button>
-                <p class="text-center text-[10px] text-gray-600">Admin akan memverifikasi dalam 1×24 jam. Status cek di halaman Profil.</p>
-            </div>
-        </div>
-        <!-- STEP 3 SUCCESS -->
-        <div id="sellerStep3" class="hidden p-10 text-center relative">
-            <button onclick="closeModal('modalBecomeSeller')" class="absolute top-4 right-4 w-10 h-10 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times"></i></button>
-            <div class="w-20 h-20 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-check text-green-400 text-3xl"></i></div>
-            <h3 class="text-2xl font-extrabold font-syne mb-2">Pendaftaran Terkirim! 🎉</h3>
-            <p class="text-gray-400 text-sm leading-relaxed mb-6">Data kamu sudah masuk ke sistem admin. Proses verifikasi <strong class="text-white">1×24 jam</strong>. Kamu akan dihubungi via WhatsApp setelah disetujui.</p>
-            <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 mb-6 text-left">
-                <p class="text-xs font-black text-yellow-400 uppercase tracking-widest mb-2">Status Aplikasi</p>
-                <div class="flex items-center gap-3"><div class="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-pulse"></div><span class="text-sm font-bold text-yellow-300">Menunggu Verifikasi Admin</span></div>
-            </div>
-            <button onclick="closeModal('modalBecomeSeller')" class="btn-primary w-full !rounded-xl">Kembali ke Beranda</button>
-        </div>
+        <button onclick="goForm()" class="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl font-extrabold text-sm hover:opacity-90 transition"><i class="fas fa-arrow-right"></i> Lanjut ke Form</button>
+        <p class="text-center text-[10px] text-gray-600">Dengan mendaftar, kamu menyetujui <span onclick="closeM('mSeller');openM('mPolicy')" class="text-blue-400 cursor-pointer">Kebijakan Seller</span> kami.</p>
+      </div>
     </div>
+    <!-- STEP 2 FORM -->
+    <div id="ss2" class="hidden">
+      <div class="relative p-5 bg-gradient-to-b from-blue-600/20 to-transparent flex items-center gap-2">
+        <button onclick="document.getElementById('ss2').classList.add('hidden');document.getElementById('ss1').classList.remove('hidden')" class="w-8 h-8 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition shrink-0"><i class="fas fa-arrow-left text-xs"></i></button>
+        <button onclick="closeM('mSeller')" class="absolute top-4 right-4 w-9 h-9 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+        <div><h2 class="text-lg font-extrabold syne">Form Pendaftaran Seller</h2><p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">Isi data toko kamu lengkap</p></div>
+      </div>
+      <div class="px-6 pb-6 overflow-y-auto max-h-[75vh] cscroll space-y-3">
+        <p class="text-[10px] font-black uppercase tracking-widest text-blue-400 flex items-center gap-1"><i class="fas fa-store"></i> Data Toko</p>
+        <div><label class="text-xs text-gray-400 mb-1 block">Nama Toko <span class="text-red-400">*</span></label><input id="sf_nm" type="text" class="inp" placeholder="Contoh: RezzkySkins Store"></div>
+        <div><label class="text-xs text-gray-400 mb-1 block">Deskripsi Toko <span class="text-red-400">*</span></label><textarea id="sf_dc" class="inp" style="height:80px;resize:none" placeholder="Tentang toko dan produkmu..."></textarea></div>
+        <div><label class="text-xs text-gray-400 mb-1 block">Kategori <span class="text-red-400">*</span></label><select id="sf_ct" class="inp"><option value="" disabled selected>-- Pilih --</option><option value="Game Mobile">Game Mobile</option><option value="Premium Apps">Premium Apps</option><option value="E-Voucher">E-Voucher</option><option value="Akun Sosmed">Akun Sosmed</option><option value="Jasa Digital">Jasa Digital</option><option value="Lainnya">Lainnya</option></select></div>
+        <div class="border-t border-white/5 pt-2"></div>
+        <p class="text-[10px] font-black uppercase tracking-widest text-purple-400 flex items-center gap-1"><i class="fas fa-user"></i> Data Pemilik</p>
+        <div><label class="text-xs text-gray-400 mb-1 block">Nama Lengkap <span class="text-red-400">*</span></label><input id="sf_on" type="text" class="inp" placeholder="Nama sesuai KTP"></div>
+        <div><label class="text-xs text-gray-400 mb-1 block">WhatsApp Aktif <span class="text-red-400">*</span></label><div class="relative"><span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-bold">+62</span><input id="sf_wa" type="tel" class="inp !pl-10" placeholder="8123456789"></div></div>
+        <div><label class="text-xs text-gray-400 mb-1 block">Kota <span class="text-red-400">*</span></label><input id="sf_cy" type="text" class="inp" placeholder="Jakarta, Padang, dll"></div>
+        <div class="border-t border-white/5 pt-2"></div>
+        <div><label class="text-xs text-gray-400 mb-1 block">Produk pertama yang akan dijual</label><input id="sf_fp" type="text" class="inp" placeholder="Contoh: Skin ML Epic, Akun FF"></div>
+        <div><label class="text-xs text-gray-400 mb-1 block">Catatan untuk Admin (opsional)</label><textarea id="sf_nt" class="inp" style="height:60px;resize:none" placeholder="Ada pertanyaan?"></textarea></div>
+        <div class="bg-white/5 border border-white/5 rounded-xl p-3 flex items-start gap-2">
+          <input type="checkbox" id="sf_ag" class="mt-0.5 w-4 h-4 accent-blue-500 cursor-pointer shrink-0">
+          <label for="sf_ag" class="text-xs text-gray-300 cursor-pointer leading-relaxed">Saya menyetujui <span onclick="closeM('mSeller');openM('mPolicy')" class="text-blue-400 font-bold underline cursor-pointer">Kebijakan Seller</span> XREZZKY dan menjamin data saya benar.</label>
+        </div>
+        <button onclick="submitSeller()" id="btnSub" class="w-full flex items-center justify-center gap-2 py-3.5 bg-gradient-to-r from-green-600 to-blue-600 rounded-2xl font-extrabold text-sm hover:opacity-90 transition"><i class="fas fa-paper-plane"></i> Kirim Pendaftaran</button>
+        <p class="text-center text-[10px] text-gray-600">Admin verifikasi dalam 1×24 jam. Status cek di Profil.</p>
+      </div>
+    </div>
+    <!-- STEP 3 SUCCESS -->
+    <div id="ss3" class="hidden p-10 text-center relative">
+      <button onclick="closeM('mSeller')" class="absolute top-4 right-4 w-9 h-9 bg-black/20 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+      <div class="w-16 h-16 bg-green-500/20 border border-green-500/30 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-check text-green-400 text-2xl"></i></div>
+      <h3 class="text-xl font-extrabold syne mb-2">Pendaftaran Terkirim! 🎉</h3>
+      <p class="text-gray-400 text-sm mb-5">Data kamu sudah masuk ke sistem admin. Verifikasi <strong class="text-white">1×24 jam</strong>. Kamu akan dihubungi via WhatsApp.</p>
+      <div class="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-3 mb-5 flex items-center gap-2"><div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse"></div><span class="text-sm font-bold text-yellow-300">Menunggu Verifikasi Admin</span></div>
+      <button onclick="closeM('mSeller')" class="btn !rounded-xl">Kembali ke Beranda</button>
+    </div>
+  </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getDatabase, ref, onValue, set, get, push } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+import { getDatabase, ref, onValue, set, get, push, update } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
-    authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
-    databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "xrezzkystore-marketplace-83bc0",
-    storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
-    messagingSenderId: "604900856944",
-    appId: "1:604900856944:web:c48c973da45214c68a10b5"
-};
-
-const app = initializeApp(firebaseConfig);
+const FB = { apiKey:"AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88", authDomain:"xrezzkystore-marketplace-83bc0.firebaseapp.com", databaseURL:"https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app", projectId:"xrezzkystore-marketplace-83bc0", storageBucket:"xrezzkystore-marketplace-83bc0.firebasestorage.app", messagingSenderId:"604900856944", appId:"1:604900856944:web:c48c973da45214c68a10b5" };
+const app  = initializeApp(FB);
 const auth = getAuth(app);
-const db = getDatabase(app);
+const db   = getDatabase(app);
 
-// ─── STATE ───────────────────────────────────────────────
-let currentUser = null;
-let currentUserData = null;
-let allProducts = [];
-let allSellers = [];   // list seller approved
-let selectedProduct = null;
-let currentFilter = 'all';
-let toastTimer = null;
+// ─── STATE ───
+let CU = null;          // currentUser
+let CUD = null;         // currentUserData
+let prods = [];         // all products
+let sellers = [];       // approved sellers
+let curProd = null;     // selected product
+let ratingTarget = null;// {orderId, productId, productName}
+let toastTmr = null;
+window.curProd = null;
 
-// ─── UTILS ───────────────────────────────────────────────
-window.showToast = (title, msg, type = 'success') => {
-    const toast = document.getElementById('toast');
-    const icon  = document.getElementById('toastIcon');
-    const card  = toast.querySelector('.glass-card');
-    document.getElementById('toastTitle').textContent = title;
-    document.getElementById('toastMsg').textContent   = msg;
-    const m = { success:{b:'border-l-green-500',bg:'bg-green-500/20',t:'text-green-400',i:'fa-check-circle'}, error:{b:'border-l-red-500',bg:'bg-red-500/20',t:'text-red-400',i:'fa-times-circle'}, info:{b:'border-l-blue-500',bg:'bg-blue-500/20',t:'text-blue-400',i:'fa-info-circle'}, warning:{b:'border-l-yellow-500',bg:'bg-yellow-500/20',t:'text-yellow-400',i:'fa-exclamation-circle'} };
-    const c = m[type] || m.info;
-    card.className = card.className.replace(/border-l-\S+/,c.b);
-    icon.className = `w-10 h-10 ${c.bg} rounded-full flex items-center justify-center ${c.t}`;
-    icon.innerHTML = `<i class="fas ${c.i}"></i>`;
-    toast.classList.remove('translate-x-[150%]');
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.add('translate-x-[150%]'), 4000);
+// ─── UTILS ───
+const $ = id => document.getElementById(id);
+const toast = (t,m,type='success') => {
+  const map={success:{b:'border-l-green-500',bg:'bg-green-500/20',cl:'text-green-400',i:'fa-check-circle'},error:{b:'border-l-red-500',bg:'bg-red-500/20',cl:'text-red-400',i:'fa-times-circle'},info:{b:'border-l-blue-500',bg:'bg-blue-500/20',cl:'text-blue-400',i:'fa-info-circle'},warning:{b:'border-l-yellow-500',bg:'bg-yellow-500/20',cl:'text-yellow-400',i:'fa-exclamation-circle'}};
+  const c=map[type]||map.info;
+  const el=$('toast'); const card=el.querySelector('.glass');
+  $('toastT').textContent=t; $('toastM').textContent=m;
+  card.className=card.className.replace(/border-l-\S+/,c.b);
+  $('toastIco').className=`w-9 h-9 ${c.bg} rounded-full flex items-center justify-center ${c.cl}`;
+  $('toastIco').innerHTML=`<i class="fas ${c.i} text-sm"></i>`;
+  el.classList.remove('translate-x-[150%]');
+  if(toastTmr) clearTimeout(toastTmr);
+  toastTmr=setTimeout(()=>el.classList.add('translate-x-[150%]'),4000);
 };
 
-window.navigate = (page) => {
-    document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
-    const t = document.getElementById(`page-${page}`);
-    if (t) { t.classList.remove('hidden'); t.classList.add('fade-in'); }
-    document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-    document.getElementById(`nav-${page}`)?.classList.add('active');
-    window.scrollTo({ top:0, behavior:'smooth' });
-    if (page === 'profile') refreshProfilePage();
-    if (page === 'stores') renderAllStores();
+window.nav = (page) => {
+  document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+  const t=$(`pg-${page}`); if(t){t.classList.remove('hidden');t.classList.add('fadein');}
+  document.querySelectorAll('.navlink').forEach(n=>n.classList.remove('on'));
+  $(`nb-${page}`)?.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(page==='profile') drawProfile();
+  if(page==='orders') drawOrders();
+  if(page==='stores') drawStoreGrid();
 };
 
-window.openModal  = (id) => { const e=document.getElementById(id); if(e){e.style.display='flex'; document.body.style.overflow='hidden';} };
-window.closeModal = (id) => { const e=document.getElementById(id); if(e){e.style.display='none'; document.body.style.overflow='auto';} };
+window.openM = (id) => { const e=$(id); if(e){e.style.display='flex';document.body.style.overflow='hidden';} };
+window.closeM = (id) => { const e=$(id); if(e){e.style.display='none';document.body.style.overflow='auto';} };
 
-// ─── AUTH ─────────────────────────────────────────────────
-window.toggleAuthForm = () => {
-    document.getElementById('loginForm').classList.toggle('hidden');
-    document.getElementById('regForm').classList.toggle('hidden');
+// ─── AUTH ───
+window.toggleAuth = () => { $('loginF').classList.toggle('hidden'); $('regF').classList.toggle('hidden'); };
+
+window.doLogin = async () => {
+  const email=$('aEmail').value.trim(), pass=$('aPass').value;
+  if(!email||!pass) return toast('Error','Email & password wajib!','error');
+  try { await signInWithEmailAndPassword(auth,email,pass); closeM('mAuth'); toast('Berhasil!','Selamat datang kembali! 👋'); }
+  catch { toast('Gagal','Email atau password salah!','error'); }
 };
 
-window.processRegister = async () => {
-    const name  = document.getElementById('regName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const pass  = document.getElementById('regPass').value;
-    if (!name)           return showToast('Error','Nama tidak boleh kosong!','error');
-    if (!email)          return showToast('Error','Email tidak boleh kosong!','error');
-    if (pass.length < 6) return showToast('Error','Password minimal 6 karakter!','error');
-    try {
-        const cred = await createUserWithEmailAndPassword(auth, email, pass);
-        await updateProfile(cred.user, { displayName: name });
-        await set(ref(db,'users/'+cred.user.uid), { name, email, role:'buyer', createdAt:Date.now() });
-        closeModal('modalAuth');
-        showToast('Berhasil! 🎉','Akun berhasil dibuat!','success');
-    } catch(e) { showToast('Gagal', e.code==='auth/email-already-in-use'?'Email sudah dipakai!':e.message, 'error'); }
+window.doReg = async () => {
+  const name=$('rName').value.trim(), email=$('rEmail').value.trim(), pass=$('rPass').value;
+  if(!name) return toast('Error','Nama kosong!','error');
+  if(!email) return toast('Error','Email kosong!','error');
+  if(pass.length<6) return toast('Error','Password min. 6 karakter!','error');
+  try {
+    const cr = await createUserWithEmailAndPassword(auth,email,pass);
+    await updateProfile(cr.user,{displayName:name});
+    await set(ref(db,'users/'+cr.user.uid),{name,email,role:'buyer',createdAt:Date.now()});
+    closeM('mAuth'); toast('Berhasil! 🎉','Akun berhasil dibuat!');
+  } catch(e){ toast('Gagal',e.code==='auth/email-already-in-use'?'Email sudah dipakai!':e.message,'error'); }
 };
 
-window.processLogin = async () => {
-    const email = document.getElementById('authEmail').value.trim();
-    const pass  = document.getElementById('authPass').value;
-    if (!email || !pass) return showToast('Error','Email & password wajib diisi!','error');
-    try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        closeModal('modalAuth');
-        showToast('Berhasil!','Selamat datang kembali! 👋','success');
-    } catch(e) { showToast('Gagal','Email atau password salah!','error'); }
+window.doLogout = () => {
+  if(!confirm('Yakin mau logout?')) return;
+  signOut(auth).then(()=>{ nav('home'); toast('Logout','Sampai jumpa! 👋','info'); });
 };
 
-window.logoutUser = () => {
-    if (!confirm('Yakin mau logout?')) return;
-    signOut(auth).then(() => { navigate('home'); showToast('Logout','Sampai jumpa lagi! 👋','info'); });
+// ─── PROFILE RENDER ───
+const drawProfile = () => {
+  if(!CU){ $('profGuest').classList.remove('hidden'); $('profLogged').classList.add('hidden'); return; }
+  $('profGuest').classList.add('hidden'); $('profLogged').classList.remove('hidden');
+  $('pName').textContent  = CU.displayName||'User';
+  $('pEmail').textContent = CU.email;
+  $('pAvatarTxt').textContent = (CU.displayName||'U').charAt(0).toUpperCase();
+  const cr = CU.metadata?.creationTime;
+  if(cr) $('pSince').textContent = new Date(cr).toLocaleDateString('id-ID',{year:'numeric',month:'short'});
+  drawRoleCard();
 };
 
-// ─── PROFILE ──────────────────────────────────────────────
-const refreshProfilePage = () => {
-    if (!currentUser) {
-        document.getElementById('profileNotLoggedIn')?.classList.remove('hidden');
-        document.getElementById('profileLoggedIn')?.classList.add('hidden');
-        return;
+const drawRoleCard = () => {
+  if(!CUD) return;
+  const role=CUD.role||'buyer', status=CUD.sellerStatus;
+  const rc=$('roleCard'), hc=$('hSellerCta'), badge=$('pBadge');
+  // badge
+  const bm={admin:{l:'Admin',c:'bg-red-500/20 text-red-400 border-red-500/40'},seller:{l:'Seller',c:'bg-green-500/20 text-green-400 border-green-500/40'},buyer:{l:'Buyer',c:'bg-blue-500/20 text-blue-400 border-blue-500/40'}};
+  const b=bm[role]||bm.buyer;
+  if(badge) badge.innerHTML=`<span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${b.c}">${b.l} Tier</span>`;
+
+  if(role==='admin'){
+    if(rc) rc.innerHTML=`
+      <div class="relative rounded-[20px] overflow-hidden border border-red-500/30 cursor-pointer hover:border-red-400 transition mb-3" onclick="window.location.href='admin-panel.html'">
+        <div class="absolute inset-0 bg-gradient-to-r from-red-900/60 to-purple-900/40"></div>
+        <div class="relative z-10 p-4 flex items-center gap-3">
+          <div class="w-10 h-10 bg-red-500/30 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-user-shield text-red-300"></i></div>
+          <div class="flex-1"><p class="text-[9px] font-black uppercase tracking-widest text-red-300">Owner Access</p><p class="font-extrabold syne text-sm">Admin Panel</p></div>
+          <span class="bg-red-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Buka →</span>
+        </div>
+      </div>
+      <div class="relative rounded-[20px] overflow-hidden border border-green-500/30 cursor-pointer hover:border-green-400 transition mb-3" onclick="window.location.href='seller-dashboard.html'">
+        <div class="absolute inset-0 bg-gradient-to-r from-green-900/50 to-blue-900/30"></div>
+        <div class="relative z-10 p-4 flex items-center gap-3">
+          <div class="w-10 h-10 bg-green-500/30 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-store text-green-300"></i></div>
+          <div class="flex-1"><p class="text-[9px] font-black uppercase tracking-widest text-green-300">Seller Mode</p><p class="font-extrabold syne text-sm">Seller Dashboard</p></div>
+          <span class="bg-green-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Buka →</span>
+        </div>
+      </div>`;
+    if(hc) hc.classList.add('hidden');
+  } else if(role==='seller'){
+    const sn=CUD.storeName||'Toko Kamu';
+    if(rc) rc.innerHTML=`
+      <div class="relative rounded-[20px] overflow-hidden border border-green-500/30 cursor-pointer hover:border-green-400 transition mb-3" onclick="window.location.href='seller-dashboard.html'">
+        <div class="absolute inset-0 bg-gradient-to-r from-green-900/60 to-blue-900/40"></div>
+        <div class="relative z-10 p-4 flex items-center gap-3">
+          <div class="w-10 h-10 bg-green-500/30 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-store text-green-300"></i></div>
+          <div class="flex-1"><p class="text-[9px] font-black uppercase tracking-widest text-green-300">✅ Seller Aktif</p><p class="font-extrabold syne text-sm">${sn}</p></div>
+          <span class="bg-green-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">Dashboard →</span>
+        </div>
+      </div>`;
+    if(hc) hc.classList.add('hidden');
+  } else if(status==='pending'){
+    if(rc) rc.innerHTML=`
+      <div class="relative rounded-[20px] overflow-hidden border border-yellow-500/30 mb-3">
+        <div class="absolute inset-0 bg-gradient-to-r from-yellow-900/40 to-orange-900/30"></div>
+        <div class="relative z-10 p-4 flex items-center gap-3">
+          <div class="w-10 h-10 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-clock text-yellow-300 animate-pulse"></i></div>
+          <div class="flex-1"><p class="text-[9px] font-black uppercase tracking-widest text-yellow-300">⏳ Pending Verifikasi</p><p class="font-extrabold syne text-sm">Aplikasi Dikirim</p><p class="text-gray-400 text-xs">Admin sedang verifikasi. 1×24 jam.</p></div>
+          <div class="w-2 h-2 bg-yellow-400 rounded-full animate-pulse shrink-0"></div>
+        </div>
+      </div>`;
+    if(hc) hc.classList.add('hidden');
+  } else {
+    if(rc) rc.innerHTML=`
+      <div class="relative rounded-[20px] overflow-hidden border border-blue-500/30 cursor-pointer hover:border-blue-400 transition mb-3 group" onclick="openM('mSeller')">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-purple-900/40"></div>
+        <div class="relative z-10 p-4 flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-500/30 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-store text-blue-300"></i></div>
+          <div class="flex-1"><p class="text-[9px] font-black uppercase tracking-widest text-blue-300">Upgrade Akun</p><p class="font-extrabold syne text-sm">Jadilah Seller XREZZKY</p><p class="text-gray-400 text-xs">Jual produk digitalmu ke ribuan pembeli</p></div>
+          <i class="fas fa-chevron-right text-blue-400 shrink-0 text-sm"></i>
+        </div>
+      </div>`;
+    if(hc) hc.classList.remove('hidden');
+  }
+};
+
+// ─── EDIT PROFILE ───
+window.saveEdit = async () => {
+  if(!CU) return;
+  const nm=$('eName').value.trim(), wa=$('eWa').value.trim();
+  const op=$('eOldP').value, np=$('eNewP').value, cp=$('eConP').value;
+  if(!nm) return toast('Error','Nama kosong!','error');
+  try {
+    await updateProfile(CU,{displayName:nm});
+    const upd={name:nm}; if(wa) upd.waNumber=`+62${wa}`;
+    await update(ref(db,`users/${CU.uid}`),upd);
+    if(CUD){CUD.name=nm; if(wa) CUD.waNumber=`+62${wa}`;}
+    if(op||np||cp){
+      if(!op) return toast('Error','Isi password lama!','error');
+      if(np.length<6) return toast('Error','Password baru min. 6 karakter!','error');
+      if(np!==cp) return toast('Error','Konfirmasi password tidak cocok!','error');
+      const cred=EmailAuthProvider.credential(CU.email,op);
+      await reauthenticateWithCredential(CU,cred);
+      await updatePassword(CU,np);
     }
-    document.getElementById('profileNotLoggedIn')?.classList.add('hidden');
-    document.getElementById('profileLoggedIn')?.classList.remove('hidden');
-
-    document.getElementById('userNameText').textContent  = currentUser.displayName || 'User';
-    document.getElementById('userEmailText').textContent = currentUser.email;
-    document.getElementById('avatarText').textContent    = (currentUser.displayName||'U').charAt(0).toUpperCase();
-
-    const created = currentUser.metadata?.creationTime;
-    if (created) document.getElementById('statsMember').textContent = new Date(created).toLocaleDateString('id-ID',{year:'numeric',month:'short'});
-
-    // Badge + Seller Card dari data yang sudah di-load
-    renderSellerCtaCard();
+    drawProfile(); updateHdr(); closeM('mEdit');
+    toast('Berhasil!','Profil diperbarui!');
+  } catch(e){ toast('Gagal',e.code==='auth/wrong-password'?'Password lama salah!':e.message,'error'); }
 };
 
-const renderSellerCtaCard = () => {
-    if (!currentUserData) return;
-    const role   = currentUserData.role || 'buyer';
-    const status = currentUserData.sellerStatus;
-    const card   = document.getElementById('sellerCtaCard');
-    const homeCtaBanner = document.getElementById('homeSellerCta');
-    const badge  = document.getElementById('roleBadgeContainer');
+window.openM('mEdit'); // just to expose
 
-    // Badge role
-    const badgeMap = {
-        admin:  { label:'Admin', cls:'bg-red-500/20 text-red-400 border border-red-500/40' },
-        seller: { label:'Seller', cls:'bg-green-500/20 text-green-400 border border-green-500/40' },
-        buyer:  { label:'Buyer', cls:'bg-blue-500/20 text-blue-400 border border-blue-500/40' },
-    };
-    const b = badgeMap[role] || badgeMap.buyer;
-    if (badge) badge.innerHTML = `<span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${b.cls}">${b.label} Tier</span>`;
-
-    // Seller CTA card di profil
-    if (role === 'admin') {
-        if (card) card.innerHTML = `
-            <div class="relative rounded-[24px] overflow-hidden border border-red-500/30 cursor-pointer hover:border-red-400 transition mb-5" onclick="window.location.href='admin-panel.html'">
-                <div class="absolute inset-0 bg-gradient-to-r from-red-900/60 to-purple-900/40"></div>
-                <div class="relative z-10 p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 bg-red-500/30 border border-red-400/40 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-user-shield text-red-300 text-lg"></i></div>
-                    <div class="flex-1"><p class="text-[10px] font-black uppercase tracking-widest text-red-300 mb-0.5">Owner Access</p><p class="font-extrabold font-syne text-base">Admin Panel</p><p class="text-gray-400 text-xs">Kelola seluruh toko, produk, & seller</p></div>
-                    <span class="shrink-0 bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-xl text-xs font-bold">Buka →</span>
-                </div>
-            </div>
-            <div class="relative rounded-[24px] overflow-hidden border border-green-500/30 cursor-pointer hover:border-green-400 transition mb-5" onclick="window.location.href='seller-dashboard.html'">
-                <div class="absolute inset-0 bg-gradient-to-r from-green-900/50 to-blue-900/30"></div>
-                <div class="relative z-10 p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 bg-green-500/30 border border-green-400/40 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-store text-green-300 text-lg"></i></div>
-                    <div class="flex-1"><p class="text-[10px] font-black uppercase tracking-widest text-green-300 mb-0.5">Seller Mode</p><p class="font-extrabold font-syne text-base">Seller Dashboard</p><p class="text-gray-400 text-xs">Kelola produk tokomu</p></div>
-                    <span class="shrink-0 bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-xl text-xs font-bold">Buka →</span>
-                </div>
-            </div>`;
-        if (homeCtaBanner) homeCtaBanner.classList.add('hidden');
-
-    } else if (role === 'seller') {
-        const storeName = currentUserData.storeName || 'Toko Kamu';
-        if (card) card.innerHTML = `
-            <div class="relative rounded-[24px] overflow-hidden border border-green-500/30 cursor-pointer hover:border-green-400 transition mb-5" onclick="window.location.href='seller-dashboard.html'">
-                <div class="absolute inset-0 bg-gradient-to-r from-green-900/60 to-blue-900/40"></div>
-                <div class="relative z-10 p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 bg-green-500/30 border border-green-400/40 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-store text-green-300 text-lg"></i></div>
-                    <div class="flex-1"><p class="text-[10px] font-black uppercase tracking-widest text-green-300 mb-0.5">✅ Seller Aktif</p><p class="font-extrabold font-syne text-base">${storeName}</p><p class="text-gray-400 text-xs">Buka Seller Dashboard untuk kelola toko</p></div>
-                    <span class="shrink-0 bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Dashboard →</span>
-                </div>
-            </div>`;
-        if (homeCtaBanner) homeCtaBanner.classList.add('hidden');
-
-    } else if (status === 'pending') {
-        if (card) card.innerHTML = `
-            <div class="relative rounded-[24px] overflow-hidden border border-yellow-500/30 mb-5">
-                <div class="absolute inset-0 bg-gradient-to-r from-yellow-900/40 to-orange-900/30"></div>
-                <div class="relative z-10 p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 bg-yellow-500/20 border border-yellow-400/30 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-clock text-yellow-300 text-lg animate-pulse"></i></div>
-                    <div class="flex-1"><p class="text-[10px] font-black uppercase tracking-widest text-yellow-300 mb-0.5">⏳ Pending Verifikasi</p><p class="font-extrabold font-syne text-base">Aplikasi Seller Dikirim</p><p class="text-gray-400 text-xs">Admin sedang memverifikasi. 1×24 jam.</p></div>
-                    <div class="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-pulse shrink-0"></div>
-                </div>
-            </div>`;
-        if (homeCtaBanner) homeCtaBanner.classList.add('hidden');
-
-    } else {
-        // buyer biasa
-        if (card) card.innerHTML = `
-            <div class="relative rounded-[24px] overflow-hidden border border-blue-500/30 cursor-pointer hover:border-blue-400 transition mb-5 group" onclick="openModal('modalBecomeSeller')">
-                <div class="absolute inset-0 bg-gradient-to-r from-blue-900/60 to-purple-900/40"></div>
-                <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[80px] opacity-10 font-black font-syne">SELLER</div>
-                <div class="relative z-10 p-5 flex items-center gap-4">
-                    <div class="w-12 h-12 bg-blue-500/30 border border-blue-400/40 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-store text-blue-300 text-lg"></i></div>
-                    <div class="flex-1"><p class="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-0.5">Upgrade Akun</p><p class="font-extrabold font-syne text-base">Jadilah Seller XREZZKY</p><p class="text-gray-400 text-xs">Buka toko & jual produk digitalmu ke ribuan pembeli</p></div>
-                    <i class="fas fa-chevron-right text-blue-400 shrink-0"></i>
-                </div>
-            </div>`;
-        if (homeCtaBanner) homeCtaBanner.classList.remove('hidden');
-    }
-};
-
-window.openEditProfile = () => {
-    if (!currentUser) return;
-    document.getElementById('editName').value   = currentUser.displayName || '';
-    const wa = currentUserData?.waNumber || '';
-    document.getElementById('editWaNumber').value = wa.replace('+62','');
-    document.getElementById('editPassOld').value     = '';
-    document.getElementById('editPassNew').value     = '';
-    document.getElementById('editPassConfirm').value = '';
-    openModal('modalEditProfile');
-};
-
-window.saveEditProfile = async () => {
-    const newName    = document.getElementById('editName').value.trim();
-    const waRaw      = document.getElementById('editWaNumber').value.trim();
-    const passOld    = document.getElementById('editPassOld').value;
-    const passNew    = document.getElementById('editPassNew').value;
-    const passConf   = document.getElementById('editPassConfirm').value;
-
-    if (!newName) return showToast('Error','Nama tidak boleh kosong!','error');
-
-    try {
-        // Update nama
-        await updateProfile(currentUser, { displayName: newName });
-        await set(ref(db,`users/${currentUser.uid}/name`), newName);
-
-        // Update nomor WA order
-        if (waRaw) {
-            await set(ref(db,`users/${currentUser.uid}/waNumber`), `+62${waRaw}`);
-            if (currentUserData) currentUserData.waNumber = `+62${waRaw}`;
-        }
-
-        // Update password kalau diisi
-        if (passOld || passNew || passConf) {
-            if (!passOld)            return showToast('Error','Isi password lama dulu!','error');
-            if (passNew.length < 6)  return showToast('Error','Password baru min. 6 karakter!','error');
-            if (passNew !== passConf) return showToast('Error','Konfirmasi password tidak cocok!','error');
-
-            const cred = EmailAuthProvider.credential(currentUser.email, passOld);
-            await reauthenticateWithCredential(currentUser, cred);
-            await updatePassword(currentUser, passNew);
-            showToast('Password','Password berhasil diubah! 🔒','success');
-        }
-
-        refreshProfilePage();
-        updateAuthHeader();
-        closeModal('modalEditProfile');
-        showToast('Berhasil!','Profil berhasil diperbarui!','success');
-    } catch(e) {
-        const msg = e.code==='auth/wrong-password'?'Password lama salah!':e.message;
-        showToast('Gagal', msg, 'error');
-    }
-};
-
-// ─── PRODUCTS ─────────────────────────────────────────────
-const renderProducts = (products) => {
-    const grid = document.getElementById('mainProductGrid');
-    grid.innerHTML = '';
-    if (!products || products.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500"><i class="fas fa-search text-4xl mb-4 opacity-30"></i><p class="font-bold">Produk tidak ditemukan</p></div>`;
-        return;
-    }
-    products.forEach(p => {
-        const isLow  = Number(p.stock)>0 && Number(p.stock)<5;
-        const isOut  = Number(p.stock)<=0;
-        const card = document.createElement('div');
-        card.className = 'glass-card product-card p-3';
-        card.onclick = () => showDetail(p);
-        card.innerHTML = `
-            <div class="product-img-container mb-3">
-                <img src="${p.images?.[0]||'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'}" class="product-img" loading="lazy" onerror="this.src='https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'">
-                ${isOut?'<span class="badge-stock bg-gray-600">Habis</span>':isLow?'<span class="badge-stock bg-amber-500">Stok Limit</span>':''}
-            </div>
-            <p class="text-[10px] text-blue-400 font-bold uppercase tracking-tighter mb-1">${p.category||'General'}</p>
-            <h3 class="text-sm font-bold line-clamp-1 mb-2">${p.name||'Produk'}</h3>
-            <div class="flex justify-between items-center">
-                <p class="text-sm font-extrabold">Rp ${Number(p.price||0).toLocaleString('id-ID')}</p>
-                <div class="text-[10px] text-gray-500"><i class="fas fa-box mr-1"></i>${p.stock??'-'}</div>
-            </div>`;
-        grid.appendChild(card);
+// ─── ORDERS ───
+const drawOrders = async () => {
+  const el=$('ordersList');
+  if(!CU){ el.innerHTML=`<div class="glass p-10 text-center text-gray-500"><i class="fas fa-lock text-4xl mb-3 opacity-30"></i><p class="font-bold">Login dulu untuk lihat pesanan</p><button onclick="openM('mAuth')" class="btn !inline-block !w-auto !px-8 mt-4">Login</button></div>`; return; }
+  el.innerHTML=`<div class="text-center py-10"><div class="spin w-8 h-8 mx-auto mb-2"></div><p class="text-sm text-gray-500">Memuat pesanan...</p></div>`;
+  try {
+    const snap = await get(ref(db,`orders/${CU.uid}`));
+    if(!snap.exists()){ el.innerHTML=`<div class="glass p-10 text-center text-gray-500"><i class="fas fa-shopping-bag text-4xl mb-3 opacity-30"></i><p class="font-bold">Belum ada pesanan</p><p class="text-sm mt-1">Pesanan akan muncul di sini setelah transaksi via WhatsApp dikonfirmasi admin.</p><button onclick="nav('home')" class="btn !inline-block !w-auto !px-8 mt-4">Mulai Belanja</button></div>`; return; }
+    const orders = snap.val();
+    el.innerHTML='';
+    Object.keys(orders).sort((a,b)=>orders[b].createdAt-orders[a].createdAt).forEach(oid=>{
+      const o=orders[oid];
+      const statusMap={pending:{l:'Menunggu Konfirmasi',c:'text-yellow-400 bg-yellow-500/10 border-yellow-500/30'},processing:{l:'Diproses',c:'text-blue-400 bg-blue-500/10 border-blue-500/30'},completed:{l:'Selesai',c:'text-green-400 bg-green-500/10 border-green-500/30'},cancelled:{l:'Dibatalkan',c:'text-red-400 bg-red-500/10 border-red-500/30'}};
+      const st=statusMap[o.status]||statusMap.pending;
+      const dt=new Date(o.createdAt).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+      const rated=o.rated||false;
+      const card=document.createElement('div');
+      card.className='glass p-4 mb-3 rounded-2xl';
+      card.innerHTML=`
+        <div class="flex items-start justify-between mb-3 gap-2">
+          <div class="flex-1 min-w-0">
+            <p class="font-extrabold syne text-sm clamp1">${o.productName||'-'}</p>
+            <p class="text-[10px] text-gray-500">${dt} · ID: ${oid.slice(-6).toUpperCase()}</p>
+          </div>
+          <span class="text-[10px] font-black px-2.5 py-1 rounded-full border shrink-0 ${st.c}">${st.l}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-bold text-blue-400">Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}</p>
+            <p class="text-[10px] text-gray-500">${o.storeName||'XREZZKY Store'}</p>
+          </div>
+          ${o.status==='completed'&&!rated?`<button onclick="openRating('${oid}','${o.productId}','${(o.productName||'').replace(/'/g,"\\'")}','${CU.uid}')" class="btn !w-auto !py-2 !px-4 !text-xs !rounded-xl flex items-center gap-1"><i class="fas fa-star"></i> Beri Rating</button>`:''}
+          ${o.status==='completed'&&rated?`<div class="flex items-center gap-1 text-yellow-400 text-xs font-bold"><i class="fas fa-star"></i> Sudah Dirating</div>`:''}
+        </div>`;
+      el.appendChild(card);
     });
+  } catch(e){ el.innerHTML=`<div class="glass p-10 text-center text-gray-500"><p class="font-bold">Gagal memuat pesanan</p></div>`; }
 };
 
-// ─── STORES ───────────────────────────────────────────────
-const renderStoreChips = (sellers) => {
-    const list = document.getElementById('storeList');
-    if (!list) return;
-    list.innerHTML = '';
-    if (sellers.length === 0) {
-        list.innerHTML = `<p class="text-gray-500 text-sm">Belum ada toko aktif</p>`;
-        return;
+// ─── RATING ───
+window.openRating = (orderId, productId, productName, userId) => {
+  ratingTarget={orderId,productId,productName,userId};
+  $('rProdName').textContent=productName;
+  // reset bintang
+  document.querySelectorAll('#starInput input').forEach(i=>i.checked=false);
+  $('rComment').value='';
+  openM('mRating');
+};
+
+window.submitRating = async () => {
+  if(!ratingTarget||!CU) return;
+  const starEl=[...document.querySelectorAll('#starInput input')].find(i=>i.checked);
+  if(!starEl) return toast('Error','Pilih bintang dulu!','error');
+  const stars=parseInt(starEl.value);
+  const comment=$('rComment').value.trim();
+  try {
+    // Simpan rating ke produk
+    const ratingData={userId:CU.uid,userName:CU.displayName||'User',stars,comment,createdAt:Date.now()};
+    const rRef=ref(db,`products/${ratingTarget.productId}/reviews/${CU.uid}`);
+    await set(rRef,ratingData);
+    // Hitung ulang rata-rata
+    const snapR=await get(ref(db,`products/${ratingTarget.productId}/reviews`));
+    if(snapR.exists()){
+      const rv=snapR.val(); const vals=Object.values(rv).map(r=>r.stars);
+      const avg=(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1);
+      await update(ref(db,`products/${ratingTarget.productId}`),{rating:avg,ratingCount:vals.length});
     }
-    sellers.slice(0,8).forEach(s => {
-        const chip = document.createElement('div');
-        chip.className = 'shrink-0 glass-card px-4 py-3 flex items-center gap-3 cursor-pointer hover:border-blue-500 transition min-w-[160px]';
-        chip.onclick = () => openStorePage(s.uid);
-        chip.innerHTML = `
-            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-sm shrink-0">${(s.storeName||'S').charAt(0).toUpperCase()}</div>
-            <div class="min-w-0"><p class="text-xs font-bold line-clamp-1">${s.storeName||'-'}</p><p class="text-[10px] text-gray-500">${s.category||'General'}</p></div>`;
-        list.appendChild(chip);
+    // Tandai order sudah dirating
+    await update(ref(db,`orders/${CU.uid}/${ratingTarget.orderId}`),{rated:true});
+    closeM('mRating'); toast('Terima kasih! ⭐','Rating berhasil dikirim!');
+    drawOrders();
+    // refresh produk
+    const p=prods.find(x=>x.id===ratingTarget.productId);
+    if(p&&curProd?.id===p.id){ const snap2=await get(ref(db,`products/${p.id}`)); if(snap2.exists()){ curProd={...curProd,...snap2.val()}; loadProductReviews(p.id); } }
+  } catch(e){ toast('Gagal',e.message,'error'); }
+};
+
+// ─── RENDER PRODUCTS ───
+const renderProds = (list) => {
+  const g=$('pgrid'); g.innerHTML='';
+  if(!list||list.length===0){ g.innerHTML=`<div class="col-span-full text-center py-16 text-gray-500"><i class="fas fa-search text-4xl mb-3 opacity-30"></i><p class="font-bold">Produk tidak ditemukan</p></div>`; return; }
+  list.forEach(p=>{
+    const low=Number(p.stock)>0&&Number(p.stock)<5, out=Number(p.stock)<=0;
+    const avg=p.rating?`<span class="text-yellow-400 text-[10px] font-bold">★ ${p.rating}</span>`:'';
+    const c=document.createElement('div');
+    c.className='glass pcard p-2.5';
+    c.onclick=()=>showDetail(p);
+    c.innerHTML=`
+      <div class="pimgwrap mb-2.5">
+        <img src="${p.images?.[0]||'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'}" class="pimg" loading="lazy" onerror="this.src='https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'">
+        ${out?'<span class="bstock bg-gray-600">Habis</span>':low?'<span class="bstock bg-amber-500">Stok Limit</span>':''}
+      </div>
+      <p class="text-[9px] text-blue-400 font-bold uppercase tracking-tighter mb-0.5">${p.category||'General'}</p>
+      <h3 class="text-xs font-bold clamp1 mb-1.5">${p.name||'Produk'}</h3>
+      <div class="flex justify-between items-center">
+        <p class="text-sm font-extrabold">Rp ${Number(p.price||0).toLocaleString('id-ID')}</p>
+        ${avg}
+      </div>`;
+    g.appendChild(c);
+  });
+};
+
+// ─── STORES ───
+const renderStoreChips = () => {
+  const el=$('storeChips'); if(!el) return;
+  el.innerHTML='';
+  if(sellers.length===0){ el.innerHTML=`<p class="text-gray-500 text-sm py-2">Belum ada toko aktif</p>`; return; }
+  sellers.forEach(s=>{
+    const chip=document.createElement('div');
+    chip.className='shrink-0 glass px-4 py-2.5 flex items-center gap-2.5 cursor-pointer hover:border-blue-500 transition min-w-[150px] rounded-2xl';
+    chip.onclick=()=>openStorePage(s.uid);
+    chip.innerHTML=`<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-xs shrink-0">${(s.storeName||'S').charAt(0).toUpperCase()}</div><div class="min-w-0"><p class="text-xs font-bold clamp1">${s.storeName||'-'}</p><p class="text-[9px] text-gray-500">${s.category||'-'}</p></div>`;
+    el.appendChild(chip);
+  });
+};
+
+const drawStoreGrid = () => {
+  const g=$('storeGrid'); if(!g) return;
+  const q=($('storeQ')?.value||'').toLowerCase();
+  const list=q?sellers.filter(s=>(s.storeName||'').toLowerCase().includes(q)||(s.category||'').toLowerCase().includes(q)||(s.ownerName||'').toLowerCase().includes(q)):sellers;
+  g.innerHTML='';
+  if(list.length===0){ g.innerHTML=`<div class="col-span-full text-center py-16 text-gray-500"><i class="fas fa-store text-4xl mb-3 opacity-30"></i><p class="font-bold">Toko tidak ditemukan</p></div>`; return; }
+  list.forEach(s=>{
+    const sp=prods.filter(p=>p.sellerId===s.uid);
+    let totStk=0; sp.forEach(p=>totStk+=Number(p.stock||0));
+    const card=document.createElement('div');
+    card.className='glass p-5 cursor-pointer hover:border-blue-500 transition rounded-2xl';
+    card.onclick=()=>openStorePage(s.uid);
+    card.innerHTML=`
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-xl font-bold shrink-0">${(s.storeName||'S').charAt(0).toUpperCase()}</div>
+        <div class="flex-1 min-w-0">
+          <p class="font-extrabold syne clamp1 text-sm">${s.storeName||'-'}</p>
+          <p class="text-[10px] text-blue-400 font-bold uppercase">${s.category||'General'}</p>
+        </div>
+        <span class="text-[9px] bg-green-500/20 text-green-400 border border-green-500/30 px-2 py-0.5 rounded-full font-bold shrink-0">✅ Verified</span>
+      </div>
+      <p class="text-gray-400 text-xs leading-relaxed clamp2 mb-3">${s.storeDesc||'-'}</p>
+      <div class="grid grid-cols-3 gap-2 text-center">
+        <div class="bg-white/5 rounded-xl py-2"><p class="text-xs font-bold">${sp.length}</p><p class="text-[9px] text-gray-500">Produk</p></div>
+        <div class="bg-white/5 rounded-xl py-2"><p class="text-xs font-bold text-green-400">${totStk}</p><p class="text-[9px] text-gray-500">Stok</p></div>
+        <div class="bg-white/5 rounded-xl py-2 flex items-center justify-center"><span class="text-xs font-bold text-blue-400">Lihat →</span></div>
+      </div>`;
+    g.appendChild(card);
+  });
+};
+
+// ─── OPEN STORE PAGE ───
+window.openStorePage = (sellerId) => {
+  if(!sellerId){ toast('Info','Info toko tidak tersedia','info'); return; }
+  const s=sellers.find(x=>x.uid===sellerId);
+  if(!s){ toast('Info','Toko belum terverifikasi','info'); return; }
+  const sp=prods.filter(p=>p.sellerId===sellerId);
+  let totStk=0, totSold=0;
+  sp.forEach(p=>{ totStk+=Number(p.stock||0); totSold+=Number(p.sold||0); });
+
+  $('stAv').textContent=(s.storeName||'S').charAt(0).toUpperCase();
+  $('stName').textContent=s.storeName||'-';
+  $('stOwner').textContent=`oleh ${s.ownerName||s.name||'Seller'} · ${s.city||''}`;
+  $('stDesc').textContent=s.storeDesc||'Tidak ada deskripsi.';
+  $('stItem').textContent=sp.length;
+  $('stStock').textContent=totStk;
+  $('stSold').textContent=totSold;
+
+  const pl=$('stProds'); pl.innerHTML='';
+  if(sp.length===0){ pl.innerHTML=`<div class="col-span-full text-center py-8 text-gray-500 text-sm">Belum ada produk</div>`; }
+  else {
+    sp.forEach(p=>{
+      const it=document.createElement('div');
+      it.className='bg-white/5 border border-white/5 rounded-xl p-2 cursor-pointer hover:border-blue-500/50 transition';
+      it.onclick=()=>{ closeM('mStore'); showDetail(p); };
+      it.innerHTML=`<img src="${p.images?.[0]||'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'}" class="w-full aspect-square object-cover rounded-lg mb-1.5" onerror="this.src='https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'"><p class="text-[10px] font-bold clamp1">${p.name}</p><div class="flex justify-between mt-0.5"><p class="text-[10px] text-blue-400 font-bold">Rp ${Number(p.price||0).toLocaleString('id-ID')}</p><p class="text-[9px] text-gray-500">Stok:${p.stock??'-'}</p></div>`;
+      pl.appendChild(it);
     });
+  }
+  closeM('mDetail');
+  openM('mStore');
 };
 
-const renderAllStores = () => {
-    const grid = document.getElementById('allStoreGrid');
-    if (!grid) return;
-    const q = document.getElementById('storeSearch')?.value.toLowerCase() || '';
-    const filtered = q ? allSellers.filter(s => (s.storeName||'').toLowerCase().includes(q) || (s.category||'').toLowerCase().includes(q)) : allSellers;
-    grid.innerHTML = '';
-    if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full text-center py-20 text-gray-500"><i class="fas fa-store text-4xl mb-4 opacity-30"></i><p class="font-bold">Toko tidak ditemukan</p></div>`;
-        return;
-    }
-    filtered.forEach(s => {
-        const prods = allProducts.filter(p => p.sellerId === s.uid);
-        const card = document.createElement('div');
-        card.className = 'glass-card p-5 cursor-pointer hover:border-blue-500 transition';
-        card.onclick = () => openStorePage(s.uid);
-        card.innerHTML = `
-            <div class="flex items-center gap-4 mb-4">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-xl font-bold shrink-0">${(s.storeName||'S').charAt(0).toUpperCase()}</div>
-                <div class="flex-1 min-w-0">
-                    <p class="font-extrabold font-syne line-clamp-1">${s.storeName||'-'}</p>
-                    <p class="text-[10px] text-blue-400 font-bold uppercase">${s.category||'General'}</p>
-                </div>
-                <span class="text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 px-2 py-1 rounded-full font-bold shrink-0">✅ Verified</span>
-            </div>
-            <p class="text-gray-400 text-xs leading-relaxed line-clamp-2 mb-4">${s.storeDesc||'-'}</p>
-            <div class="grid grid-cols-3 gap-2 text-center">
-                <div class="bg-white/5 rounded-xl py-2"><p class="text-xs font-bold">${prods.length}</p><p class="text-[9px] text-gray-500">Produk</p></div>
-                <div class="bg-white/5 rounded-xl py-2"><p class="text-xs font-bold">${s.city||'-'}</p><p class="text-[9px] text-gray-500">Kota</p></div>
-                <div class="bg-white/5 rounded-xl py-2 flex items-center justify-center"><span class="text-xs font-bold text-blue-400">Lihat →</span></div>
-            </div>`;
-        grid.appendChild(card);
+// ─── PRODUCT DETAIL ───
+const starsHtml = (rating, count) => {
+  if(!rating) return '<span class="text-gray-500 text-xs">Belum ada rating</span>';
+  const r=parseFloat(rating); let html='';
+  for(let i=1;i<=5;i++) html+=`<span class="${i<=Math.round(r)?'text-yellow-400':'text-gray-600'}">★</span>`;
+  return `<span>${html}</span><span class="text-xs text-gray-400 ml-1">${r} (${count||0} ulasan)</span>`;
+};
+
+const loadProductReviews = async (productId) => {
+  const el=$('dReviews'); if(!el) return;
+  try {
+    const snap=await get(ref(db,`products/${productId}/reviews`));
+    if(!snap.exists()){ el.innerHTML=`<p class="text-xs text-gray-500 italic">Belum ada ulasan untuk produk ini.</p>`; return; }
+    const reviews=snap.val();
+    const list=Object.values(reviews).sort((a,b)=>b.createdAt-a.createdAt).slice(0,5);
+    let h=`<h4 class="font-bold border-l-4 border-blue-500 pl-3 text-sm mb-3">Ulasan Pembeli</h4>`;
+    list.forEach(r=>{
+      const dt=new Date(r.createdAt).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+      let stars='';
+      for(let i=1;i<=5;i++) stars+=`<span class="${i<=r.stars?'text-yellow-400':'text-gray-600'} text-xs">★</span>`;
+      h+=`<div class="bg-white/5 rounded-xl p-3 mb-2">
+        <div class="flex items-center justify-between mb-1">
+          <p class="text-xs font-bold">${r.userName||'User'}</p>
+          <div class="flex items-center gap-1">${stars}<span class="text-[9px] text-gray-500 ml-1">${dt}</span></div>
+        </div>
+        ${r.comment?`<p class="text-xs text-gray-400 leading-relaxed">${r.comment}</p>`:''}
+      </div>`;
     });
+    el.innerHTML=h;
+  } catch { el.innerHTML=''; }
 };
 
-// Buka halaman toko di modal
-const openStorePage = (sellerId) => {
-    const seller = allSellers.find(s => s.uid === sellerId);
-    if (!seller) return;
-    const prods = allProducts.filter(p => p.sellerId === sellerId);
-    let totalStock = 0, totalSold = 0;
-    prods.forEach(p => { totalStock += Number(p.stock||0); totalSold += Number(p.sold||0); });
-
-    document.getElementById('spAvatar').textContent    = (seller.storeName||'S').charAt(0).toUpperCase();
-    document.getElementById('spStoreName').textContent = seller.storeName || '-';
-    document.getElementById('spSellerName').textContent= `oleh ${seller.ownerName||seller.name||'Seller'}`;
-    document.getElementById('spDesc').textContent      = seller.storeDesc || 'Tidak ada deskripsi.';
-    document.getElementById('spTotalItem').textContent = prods.length;
-    document.getElementById('spTotalStock').textContent= totalStock;
-    document.getElementById('spTotalSold').textContent = totalSold;
-
-    const list = document.getElementById('spProductList');
-    list.innerHTML = '';
-    if (prods.length === 0) {
-        list.innerHTML = `<div class="col-span-full text-center py-10 text-gray-500 text-sm">Belum ada produk</div>`;
-    } else {
-        prods.forEach(p => {
-            const item = document.createElement('div');
-            item.className = 'bg-white/5 border border-white/5 rounded-xl p-2 cursor-pointer hover:border-blue-500/50 transition';
-            item.onclick = () => { closeModal('modalStorePage'); showDetail(p); };
-            item.innerHTML = `
-                <img src="${p.images?.[0]||'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'}" class="w-full aspect-square object-cover rounded-lg mb-2" onerror="this.src='https://placehold.co/400x400/0f172a/3b82f6?text=No+Img'">
-                <p class="text-[11px] font-bold line-clamp-1">${p.name}</p>
-                <div class="flex justify-between mt-1"><p class="text-[10px] text-blue-400 font-bold">Rp ${Number(p.price||0).toLocaleString('id-ID')}</p><p class="text-[9px] text-gray-500">Sisa:${p.stock??'-'}</p></div>`;
-            list.appendChild(item);
-        });
-    }
-    openModal('modalStorePage');
-};
-
-// Dari detail produk klik seller → buka store page
-window.openStorePageFromDetail = () => {
-    if (!selectedProduct) return;
-    closeModal('modalDetail');
-    if (selectedProduct.sellerId) {
-        openStorePage(selectedProduct.sellerId);
-    } else {
-        showToast('Info','Info toko belum tersedia','info');
-    }
-};
-
-// ─── FILTER & SEARCH ──────────────────────────────────────
-document.getElementById('categoryFilter')?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.category-btn');
-    if (!btn) return;
-    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('border-blue-500','bg-blue-500/10'));
-    btn.classList.add('border-blue-500','bg-blue-500/10');
-    currentFilter = btn.dataset.cat;
-    applyFilters();
-});
-
-document.getElementById('globalSearch')?.addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase();
-    // jika sedang di halaman toko, filter toko juga
-    if (!document.getElementById('page-stores').classList.contains('hidden')) {
-        document.getElementById('storeSearch').value = q;
-        renderAllStores();
-    }
-    applyFilters(q);
-});
-
-document.getElementById('storeSearch')?.addEventListener('input', (e) => {
-    renderAllStores();
-});
-
-const applyFilters = (searchVal = '') => {
-    const q = searchVal || document.getElementById('globalSearch')?.value.toLowerCase() || '';
-    let filtered = allProducts;
-    if (currentFilter !== 'all') filtered = filtered.filter(p => p.category === currentFilter);
-    if (q) filtered = filtered.filter(p => (p.name||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q) || (p.sellerName||'').toLowerCase().includes(q));
-    renderProducts(filtered);
-};
-
-// ─── PRODUCT DETAIL ───────────────────────────────────────
 window.showDetail = (product) => {
-    selectedProduct = product;
-    document.getElementById('detImg').src               = product.images?.[0] || 'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img';
-    document.getElementById('detTitle').textContent     = product.name || '-';
-    document.getElementById('detPrice').textContent     = `Rp ${Number(product.price||0).toLocaleString('id-ID')}`;
-    document.getElementById('detDesc').textContent      = product.description || 'Tidak ada deskripsi.';
-    document.getElementById('detCat').textContent       = product.category || 'Digital Asset';
-    document.getElementById('detRating').textContent    = product.rating || '4.8';
-    document.getElementById('detStock').textContent     = product.stock ?? '-';
+  curProd=product; window.curProd=product;
+  $('dImg').src=product.images?.[0]||'https://placehold.co/400x400/0f172a/3b82f6?text=No+Img';
+  $('dTitle').textContent=product.name||'-';
+  $('dPrice').textContent=`Rp ${Number(product.price||0).toLocaleString('id-ID')}`;
+  $('dDesc').textContent=product.description||'Tidak ada deskripsi.';
+  $('dCat').textContent=product.category||'Digital Asset';
+  $('dStock').textContent=product.stock??'-';
+  $('dRatingDisplay').innerHTML=starsHtml(product.rating,product.ratingCount);
 
-    // Seller info
-    const seller = allSellers.find(s => s.uid === product.sellerId);
-    const sellerName = seller?.ownerName || product.sellerName || 'XREZZKY Official';
-    const storeName  = seller?.storeName || product.storeName  || '';
-    document.getElementById('detSellerName').textContent = sellerName;
-    document.getElementById('detStoreName').textContent  = storeName;
-    document.getElementById('detSellerAvatar').textContent = (storeName||sellerName).charAt(0).toUpperCase();
+  const s=sellers.find(x=>x.uid===product.sellerId);
+  const sName=s?.ownerName||product.sellerName||'XREZZKY Official';
+  const stName=s?.storeName||product.storeName||'';
+  $('dSellerAv').textContent=(stName||sName).charAt(0).toUpperCase();
+  $('dSellerName').textContent=sName;
+  $('dStoreName').textContent=stName?`🏪 ${stName}`:'';
+  // update seller card onclick
+  $('dSellerCard').onclick=()=>openStorePage(product.sellerId);
 
-    openModal('modalDetail');
+  $('dReviews').innerHTML=`<p class="text-xs text-gray-500">Memuat ulasan...</p>`;
+  loadProductReviews(product.id);
+  openM('mDetail');
 };
 
-// ─── BUY NOW ──────────────────────────────────────────────
-window.handleBuyNow = () => {
-    if (!currentUser) {
-        closeModal('modalDetail');
-        openModal('modalAuth');
-        showToast('Info','Silakan login untuk bertransaksi','info');
-        return;
-    }
-    if (!selectedProduct) return;
-
-    // Nomor WA: prioritas nomor WA custom user, lalu seller, lalu admin default
-    const seller = allSellers.find(s => s.uid === selectedProduct.sellerId);
-    const waNumber = seller?.whatsapp?.replace('+','') || '6288293064112';
-
-    const buyerWa   = currentUserData?.waNumber || '-';
-    const msg = encodeURIComponent(
-        `Halo ${seller?.storeName||'XREZZKY STORE'}, saya ingin membeli:\n\n` +
-        `*Produk:* ${selectedProduct.name}\n` +
-        `*Harga:* Rp ${Number(selectedProduct.price||0).toLocaleString('id-ID')}\n` +
-        `*ID Produk:* ${selectedProduct.id}\n\n` +
-        `*Pembeli:* ${currentUser.displayName}\n` +
-        `*Email:* ${currentUser.email}\n` +
-        `*No WA Pembeli:* ${buyerWa}\n\n` +
-        `Mohon instruksi selanjutnya untuk pembayaran.`
-    );
-    window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+// ─── BUY NOW ───
+window.doBuy = () => {
+  if(!CU){ closeM('mDetail'); openM('mAuth'); toast('Info','Login dulu untuk bertransaksi','info'); return; }
+  if(!curProd) return;
+  const s=sellers.find(x=>x.uid===curProd.sellerId);
+  const wa=(s?.whatsapp||'6281234567890').replace(/\D/g,'');
+  const buyerWa=CUD?.waNumber||'-';
+  const msg=encodeURIComponent(
+    `Halo ${s?.storeName||'XREZZKY STORE'}, saya ingin membeli:\n\n`+
+    `*Produk:* ${curProd.name}\n`+
+    `*Harga:* Rp ${Number(curProd.price||0).toLocaleString('id-ID')}\n`+
+    `*ID Produk:* ${curProd.id}\n\n`+
+    `*Pembeli:* ${CU.displayName}\n`+
+    `*Email:* ${CU.email}\n`+
+    `*No WA:* ${buyerWa}\n\n`+
+    `Mohon instruksi pembayaran.`
+  );
+  window.open(`https://wa.me/${wa}?text=${msg}`,'_blank');
 };
 
-// ─── COPY LINK ────────────────────────────────────────────
+// ─── COPY LINK ───
 window.copyLink = () => {
-    if (!selectedProduct) return;
-    const url = `${location.origin}${location.pathname}?id=${selectedProduct.id}`;
-    navigator.clipboard?.writeText(url).then(() => showToast('Link Disalin! 🔗','Tautan produk berhasil disalin','success')).catch(() => {
-        const ta = document.createElement('textarea');
-        ta.value = url; ta.style.position='fixed'; ta.style.opacity='0';
-        document.body.appendChild(ta); ta.focus(); ta.select();
-        try { document.execCommand('copy'); showToast('Link Disalin! 🔗','Tautan produk berhasil disalin','success'); } catch {}
-        document.body.removeChild(ta);
-    });
+  if(!curProd) return;
+  const url=`${location.origin}${location.pathname}?id=${curProd.id}`;
+  navigator.clipboard?.writeText(url).then(()=>toast('Link Disalin! 🔗','Tautan produk berhasil disalin')).catch(()=>{
+    const t=document.createElement('textarea'); t.value=url; t.style.position='fixed'; t.style.opacity='0';
+    document.body.appendChild(t); t.focus(); t.select();
+    try{document.execCommand('copy');toast('Link Disalin! 🔗','Tautan berhasil disalin');}catch{}
+    document.body.removeChild(t);
+  });
 };
 
-// ─── FULL IMAGE ───────────────────────────────────────────
-window.expandImg = (src) => {
-    document.getElementById('imgExpanded').src = src;
-    const v = document.getElementById('fullImageView');
-    v.classList.remove('hidden'); v.classList.add('flex');
-    document.body.style.overflow = 'hidden';
-};
-window.closeFullScreen = () => {
-    const v = document.getElementById('fullImageView');
-    v.classList.add('hidden'); v.classList.remove('flex');
-    document.body.style.overflow = 'auto';
-};
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeFullScreen(); });
+// ─── BIG IMAGE ───
+window.bigImg = (src) => { $('fimg').src=src; const v=$('fimgv'); v.classList.remove('hidden'); v.classList.add('flex'); document.body.style.overflow='hidden'; };
+window.closeBigImg = () => { const v=$('fimgv'); v.classList.add('hidden'); v.classList.remove('flex'); document.body.style.overflow='auto'; };
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeBigImg(); });
 
-// ─── AUTH HEADER ──────────────────────────────────────────
-const updateAuthHeader = () => {
-    const h = document.getElementById('authHeader');
-    if (currentUser) {
-        const role  = currentUserData?.role || 'buyer';
-        const label = role==='admin'?'Admin':role==='seller'?'Seller':'Buyer';
-        const cls   = role==='admin'?'text-red-400':role==='seller'?'text-green-400':'text-blue-400';
-        h.innerHTML = `
-            <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
-                <div class="text-right hidden sm:block leading-none">
-                    <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Profil</p>
-                    <p class="text-xs font-bold">${currentUser.displayName||'User'}</p>
-                    <p class="text-[9px] ${cls} font-black uppercase">${label} Tier</p>
-                </div>
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold border-2 border-white/10 text-sm">${(currentUser.displayName||'U').charAt(0).toUpperCase()}</div>
-            </div>`;
-    } else {
-        h.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-5 !text-sm"><i class="fas fa-sign-in-alt mr-2"></i>Masuk</button>`;
+// ─── FILTER & SEARCH ───
+document.getElementById('catFilter')?.addEventListener('click',e=>{
+  const b=e.target.closest('.catbtn'); if(!b) return;
+  document.querySelectorAll('.catbtn').forEach(x=>x.classList.remove('border-blue-500','bg-blue-500/10'));
+  b.classList.add('border-blue-500','bg-blue-500/10');
+  window._cat=b.dataset.cat; applyF();
+});
+document.getElementById('gsearch')?.addEventListener('input',e=>{ window._q=e.target.value.toLowerCase(); applyF(); if(!$('pg-stores').classList.contains('hidden')) drawStoreGrid(); });
+document.getElementById('storeQ')?.addEventListener('input',()=>drawStoreGrid());
+window._cat='all'; window._q='';
+const applyF=()=>{
+  let f=prods;
+  if(window._cat&&window._cat!=='all') f=f.filter(p=>p.category===window._cat);
+  if(window._q) f=f.filter(p=>(p.name||'').toLowerCase().includes(window._q)||(p.category||'').toLowerCase().includes(window._q)||(p.sellerName||'').toLowerCase().includes(window._q));
+  renderProds(f);
+};
+
+// ─── HEADER ───
+const updateHdr = () => {
+  const h=$('authHdr');
+  if(CU){
+    const role=CUD?.role||'buyer'; const lbl=role==='admin'?'Admin':role==='seller'?'Seller':'Buyer';
+    const cl=role==='admin'?'text-red-400':role==='seller'?'text-green-400':'text-blue-400';
+    h.innerHTML=`<div class="flex items-center gap-2 cursor-pointer" onclick="nav('profile')"><div class="text-right hidden sm:block"><p class="text-xs font-bold">${CU.displayName||'User'}</p><p class="text-[9px] ${cl} font-black uppercase">${lbl} Tier</p></div><div class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-sm border-2 border-white/10">${(CU.displayName||'U').charAt(0).toUpperCase()}</div></div>`;
+  } else {
+    h.innerHTML=`<button onclick="openM('mAuth')" class="btn !py-2 !px-5 !text-sm !w-auto"><i class="fas fa-sign-in-alt mr-1"></i>Masuk</button>`;
+  }
+};
+
+// ─── LOADER ───
+const dismissLoader = () => { const l=$('loader'); if(l&&!l.dataset.ok){l.dataset.ok='1';l.style.opacity='0';setTimeout(()=>l.remove(),500);} };
+
+// ─── SELLER FLOW ───
+window.goForm = () => {
+  if(!CU){ closeM('mSeller'); openM('mAuth'); toast('Info','Login dulu!','info'); return; }
+  get(ref(db,`seller_applications/${CU.uid}`)).then(snap=>{
+    if(snap.exists()){
+      const d=snap.val();
+      if(d.status==='approved'){ closeM('mSeller'); toast('Info','Kamu sudah seller aktif! 🎉'); return; }
+      if(d.status==='pending'){ closeM('mSeller'); toast('Info','Aplikasimu sedang diproses. Sabar ya! ⏳','warning'); return; }
     }
+    const own=$('sf_on'); if(own&&CU.displayName) own.value=CU.displayName;
+    $('ss1').classList.add('hidden'); $('ss2').classList.remove('hidden');
+  });
 };
 
-// ─── LOADER ───────────────────────────────────────────────
-const dismissLoader = () => {
-    const l = document.getElementById('loader');
-    if (l && !l.dataset.dismissed) { l.dataset.dismissed='1'; l.style.opacity='0'; setTimeout(()=>l.remove(),500); }
+window.submitSeller = async () => {
+  if(!CU) return;
+  const nm=$('sf_nm').value.trim(), dc=$('sf_dc').value.trim(), ct=$('sf_ct').value;
+  const on=$('sf_on').value.trim(), wa=$('sf_wa').value.trim(), cy=$('sf_cy').value.trim();
+  const fp=$('sf_fp').value.trim(), nt=$('sf_nt').value.trim(), ag=$('sf_ag').checked;
+  if(!nm) return toast('Error','Nama toko wajib!','error');
+  if(!dc) return toast('Error','Deskripsi toko wajib!','error');
+  if(!ct) return toast('Error','Pilih kategori!','error');
+  if(!on) return toast('Error','Nama lengkap wajib!','error');
+  if(!wa||wa.length<9) return toast('Error','Nomor WA tidak valid!','error');
+  if(!cy) return toast('Error','Kota wajib diisi!','error');
+  if(!ag) return toast('Error','Setujui kebijakan dulu!','error');
+  const btn=$('btnSub'); btn.disabled=true; btn.innerHTML='<i class="fas fa-spinner fa-spin mr-1"></i>Mengirim...';
+  try {
+    await set(ref(db,`seller_applications/${CU.uid}`),{storeName:nm,storeDesc:dc,category:ct,ownerName:on,whatsapp:`+62${wa}`,city:cy,firstProduct:fp||'-',notes:nt||'-',uid:CU.uid,email:CU.email,status:'pending',submittedAt:Date.now(),reviewedAt:null});
+    await update(ref(db,`users/${CU.uid}`),{sellerStatus:'pending'});
+    if(CUD) CUD.sellerStatus='pending';
+    $('ss2').classList.add('hidden'); $('ss3').classList.remove('hidden');
+    drawRoleCard(); toast('Terkirim! 🎉','Pendaftaran seller dikirim!');
+  } catch(e){ toast('Gagal','Gagal kirim. Coba lagi!','error'); btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane mr-1"></i>Kirim Pendaftaran'; }
 };
 
-// ─── SELLER FLOW ──────────────────────────────────────────
-window.goToSellerForm = () => {
-    if (!currentUser) { closeModal('modalBecomeSeller'); openModal('modalAuth'); showToast('Info','Login dulu!','info'); return; }
-    get(ref(db,`seller_applications/${currentUser.uid}`)).then(snap => {
-        if (snap.exists()) {
-            const d = snap.val();
-            if (d.status==='approved') { closeModal('modalBecomeSeller'); showToast('Info','Kamu sudah jadi seller aktif! 🎉','info'); return; }
-            if (d.status==='pending')  { closeModal('modalBecomeSeller'); showToast('Info','Pendaftaran kamu sedang diproses. Sabar ya! ⏳','warning'); return; }
-        }
-        const own = document.getElementById('sf_ownerName');
-        if (own && currentUser.displayName) own.value = currentUser.displayName;
-        document.getElementById('sellerStep1').classList.add('hidden');
-        document.getElementById('sellerStep2').classList.remove('hidden');
-    });
-};
-
-window.submitSellerApplication = async () => {
-    if (!currentUser) return;
-    const storeName  = document.getElementById('sf_storeName').value.trim();
-    const storeDesc  = document.getElementById('sf_storeDesc').value.trim();
-    const category   = document.getElementById('sf_category').value;
-    const ownerName  = document.getElementById('sf_ownerName').value.trim();
-    const whatsapp   = document.getElementById('sf_whatsapp').value.trim();
-    const city       = document.getElementById('sf_city').value.trim();
-    const experience = document.getElementById('sf_experience').value;
-    const firstProd  = document.getElementById('sf_firstProduct').value.trim();
-    const notes      = document.getElementById('sf_notes').value.trim();
-    const agreed     = document.getElementById('sf_agree').checked;
-
-    if (!storeName)        return showToast('Error','Nama toko wajib diisi!','error');
-    if (!storeDesc)        return showToast('Error','Deskripsi toko wajib diisi!','error');
-    if (!category)         return showToast('Error','Pilih kategori produk!','error');
-    if (!ownerName)        return showToast('Error','Nama lengkap wajib diisi!','error');
-    if (!whatsapp || whatsapp.length<9) return showToast('Error','Nomor WA tidak valid!','error');
-    if (!city)             return showToast('Error','Kota/domisili wajib diisi!','error');
-    if (!agreed)           return showToast('Error','Setujui kebijakan seller dulu!','error');
-
-    const btn = document.getElementById('btnSubmitSeller');
-    btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Mengirim...';
-
-    try {
-        await set(ref(db,`seller_applications/${currentUser.uid}`), {
-            storeName, storeDesc, category, ownerName,
-            whatsapp:`+62${whatsapp}`, city, experience,
-            firstProduct: firstProd||'-', notes: notes||'-',
-            uid: currentUser.uid, email: currentUser.email,
-            status:'pending', submittedAt:Date.now(), reviewedAt:null, rejectedReason:null
-        });
-        await set(ref(db,`users/${currentUser.uid}/sellerStatus`), 'pending');
-        document.getElementById('sellerStep2').classList.add('hidden');
-        document.getElementById('sellerStep3').classList.remove('hidden');
-        if (currentUserData) currentUserData.sellerStatus = 'pending';
-        renderSellerCtaCard();
-        showToast('Terkirim! 🎉','Pendaftaran seller berhasil dikirim!','success');
-    } catch(e) {
-        showToast('Gagal','Gagal mengirim pendaftaran. Coba lagi!','error');
-        btn.disabled=false; btn.innerHTML='<i class="fas fa-paper-plane mr-2"></i>Kirim Pendaftaran';
-    }
-};
-
-// ─── INIT ─────────────────────────────────────────────────
+// ─── INIT ───
 const initApp = () => {
-    const loaderTimeout = setTimeout(() => {
-        dismissLoader();
-        renderProducts([]);
-        showToast('Peringatan','Firebase lambat/tidak merespons.','warning');
-    }, 8000);
+  const loaderTO=setTimeout(()=>{ dismissLoader(); renderProds([]); toast('Peringatan','Firebase lambat.','warning'); },9000);
 
-    // Auth listener
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            currentUser = user;
-            try {
-                const snap = await get(ref(db,`users/${user.uid}`));
-                currentUserData = snap.exists() ? snap.val() : { role:'buyer' };
-            } catch { currentUserData = { role:'buyer' }; }
-        } else {
-            currentUser = null;
-            currentUserData = null;
-        }
-        updateAuthHeader();
-        if (!document.getElementById('page-profile').classList.contains('hidden')) refreshProfilePage();
-        // Update home seller CTA visibility
-        renderSellerCtaCard();
-    });
+  onAuthStateChanged(auth,async user=>{
+    if(user){
+      CU=user;
+      try{ const s=await get(ref(db,`users/${user.uid}`)); CUD=s.exists()?s.val():{role:'buyer'}; }catch{ CUD={role:'buyer'}; }
+      // prefill edit
+      $('eName').value=CU.displayName||'';
+      if(CUD?.waNumber) $('eWa').value=CUD.waNumber.replace('+62','');
+    } else { CU=null; CUD=null; }
+    updateHdr();
+    if(!$('pg-profile').classList.contains('hidden')) drawProfile();
+    drawRoleCard();
+  });
 
-    // Load products realtime
-    onValue(ref(db,'products'), (snap) => {
-        clearTimeout(loaderTimeout);
-        allProducts = [];
-        const data = snap.val();
-        if (data) Object.keys(data).forEach(k => allProducts.push({ id:k, ...data[k] }));
-        applyFilters();
+  // Products realtime
+  onValue(ref(db,'products'),(snap)=>{
+    clearTimeout(loaderTO);
+    prods=[];
+    if(snap.val()) Object.keys(snap.val()).forEach(k=>prods.push({id:k,...snap.val()[k]}));
+    applyF();
+    const id=new URLSearchParams(location.search).get('id');
+    if(id){ const t=prods.find(p=>p.id===id); if(t) showDetail(t); }
+    dismissLoader();
+  },(err)=>{ clearTimeout(loaderTO); const l=$('loader'); if(l&&!l.dataset.ok){l.innerHTML=`<i class="fas fa-exclamation-triangle text-yellow-400 text-4xl mb-3"></i><p class="text-yellow-300 font-bold">Akses database ditolak</p><p class="text-gray-500 text-sm mt-1 text-center px-8">Periksa Firebase Rules</p><button onclick="location.reload()" class="mt-5 px-6 py-2 bg-blue-600 rounded-xl text-sm font-bold">Coba Lagi</button>`;} renderProds([]); });
 
-        // Deep link
-        const id = new URLSearchParams(location.search).get('id');
-        if (id) { const t = allProducts.find(p=>p.id===id); if(t) showDetail(t); }
+  // Sellers realtime
+  onValue(ref(db,'seller_applications'),(snap)=>{
+    sellers=[];
+    if(snap.val()) Object.keys(snap.val()).forEach(k=>{ if(snap.val()[k].status==='approved') sellers.push({uid:k,...snap.val()[k]}); });
+    renderStoreChips();
+    if(!$('pg-stores').classList.contains('hidden')) drawStoreGrid();
+  });
 
-        dismissLoader();
-    }, (err) => {
-        clearTimeout(loaderTimeout);
-        const l = document.getElementById('loader');
-        if (l && !l.dataset.dismissed) {
-            l.innerHTML = `<i class="fas fa-exclamation-triangle text-yellow-400 text-4xl mb-4"></i><p class="text-yellow-300 font-bold">Akses database ditolak</p><p class="text-gray-500 text-sm mt-2 text-center px-8">Periksa Firebase Rules</p><button onclick="location.reload()" class="mt-6 px-6 py-2 bg-blue-600 rounded-xl text-sm font-bold">Coba Lagi</button>`;
-        }
-        renderProducts([]);
-    });
-
-    // Load sellers approved realtime
-    onValue(ref(db,'seller_applications'), (snap) => {
-        allSellers = [];
-        const data = snap.val();
-        if (data) Object.keys(data).forEach(k => { if(data[k].status==='approved') allSellers.push({ uid:k, ...data[k] }); });
-        renderStoreChips(allSellers);
-    });
-
-    // Close modal on overlay click
-    document.querySelectorAll('.modal-overlay').forEach(o => {
-        o.addEventListener('click', e => { if(e.target===o){ o.style.display='none'; document.body.style.overflow='auto'; } });
-    });
+  // Close overlay on bg click
+  document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o){o.style.display='none';document.body.style.overflow='auto';} }));
 };
 
 // Avatar preview
-document.getElementById('avatarUpload')?.addEventListener('change', (e) => {
-    const file = e.target.files[0]; if (!file) return;
-    const r = new FileReader();
-    r.onload = ev => { document.getElementById('profileAvatar').innerHTML = `<img src="${ev.target.result}" class="w-full h-full object-cover">`; };
-    r.readAsDataURL(file);
-    showToast('Info','Avatar berubah sementara (Firebase Storage belum aktif)','info');
+$('avUp')?.addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{ $('pAvatar').innerHTML=`<img src="${ev.target.result}" class="w-full h-full object-cover">`; };
+  r.readAsDataURL(f);
+  toast('Info','Avatar berubah sementara (Firebase Storage belum aktif)','info');
 });
 
 initApp();
