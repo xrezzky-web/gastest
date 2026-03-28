@@ -1644,12 +1644,47 @@
             showToast('Peringatan', 'Firebase lambat/tidak merespons. Cek rules & koneksi.', 'warning');
         }, 8000);
 
-        // Auth state listener
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            updateAuthHeader();
-            refreshProfilePage();
-        });
+// Ganti bagian onAuthStateChanged di index.html
+onAuthStateChanged(auth, async (user) => {
+    const authHeader = document.getElementById('authHeader');
+    if (user) {
+        currentUser = user;
+        
+        // AMBIL DATA DARI DATABASE UNTUK CEK ROLE
+        const userRef = ref(db, 'users/' + user.uid);
+        const snapshot = await get(userRef);
+        const userData = snapshot.val();
+        const userRole = userData?.role || 'buyer'; // Default ke buyer kalau data kosong
+        const roleLabel = userRole === 'admin' ? 'Admin Tier' : 'Buyer Tier';
+        const roleClass = userRole === 'admin' ? 'text-red-400' : 'text-blue-400';
+
+        authHeader.innerHTML = `
+            <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs font-bold">${user.displayName || 'User'}</p>
+                    <p class="text-[10px] ${roleClass}">${roleLabel}</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold border-2 border-white/10">
+                    ${(user.displayName || 'U').charAt(0).toUpperCase()}
+                </div>
+            </div>
+        `;
+
+        // Update tampilan di halaman profil juga
+        const profileBadge = document.querySelector('#page-profile .text-blue-400');
+        if(profileBadge) {
+            profileBadge.textContent = roleLabel;
+            profileBadge.className = `text-[10px] ${roleClass}`;
+        }
+        
+        document.getElementById('userNameText').textContent = user.displayName;
+        document.getElementById('userEmailText').textContent = user.email;
+    } else {
+        currentUser = null;
+        authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-6 !text-sm">Masuk</button>`;
+    }
+});
+
 
         // Load products realtime
         onValue(ref(db, 'products'), (snapshot) => {
@@ -1804,4 +1839,4 @@
     initApp();
 </script>
 </body>
-</html>
+                                                                    </html>
