@@ -1340,6 +1340,9 @@
         reader.readAsDataURL(file);
         showToast('Info', 'Avatar berubah sementara (upload storage tidak aktif)', 'info');
     });
+    
+    
+    
 
     // =========================================================
     //  RENDER PRODUCTS
@@ -1644,46 +1647,75 @@
             showToast('Peringatan', 'Firebase lambat/tidak merespons. Cek rules & koneksi.', 'warning');
         }, 8000);
 
-// Ganti bagian onAuthStateChanged di index.html
-onAuthStateChanged(auth, async (user) => {
-    const authHeader = document.getElementById('authHeader');
-    if (user) {
-        currentUser = user;
-        
-        // AMBIL DATA DARI DATABASE UNTUK CEK ROLE
-        const userRef = ref(db, 'users/' + user.uid);
-        const snapshot = await get(userRef);
-        const userData = snapshot.val();
-        const userRole = userData?.role || 'buyer'; // Default ke buyer kalau data kosong
-        const roleLabel = userRole === 'admin' ? 'Admin Tier' : 'Buyer Tier';
-        const roleClass = userRole === 'admin' ? 'text-red-400' : 'text-blue-400';
+        // --- LOGIKA AUTH & ROLE ADMIN ---
+        onAuthStateChanged(auth, async (user) => {
+            const authHeader = document.getElementById('authHeader');
+            if (user) {
+                currentUser = user;
 
-        authHeader.innerHTML = `
-            <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs font-bold">${user.displayName || 'User'}</p>
-                    <p class="text-[10px] ${roleClass}">${roleLabel}</p>
-                </div>
-                <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold border-2 border-white/10">
-                    ${(user.displayName || 'U').charAt(0).toUpperCase()}
-                </div>
-            </div>
-        `;
+                // 1. Ambil data Role dari Database
+                const userRef = ref(db, 'users/' + user.uid);
+                const snapshot = await get(userRef);
+                const userData = snapshot.val();
+                const userRole = userData?.role || 'buyer';
+                
+                // Simpan role ke objek user agar bisa dipakai di mana saja
+                currentUser.role = userRole;
 
-        // Update tampilan di halaman profil juga
-        const profileBadge = document.querySelector('#page-profile .text-blue-400');
-        if(profileBadge) {
-            profileBadge.textContent = roleLabel;
-            profileBadge.className = `text-[10px] ${roleClass}`;
-        }
-        
-        document.getElementById('userNameText').textContent = user.displayName;
-        document.getElementById('userEmailText').textContent = user.email;
-    } else {
-        currentUser = null;
-        authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-6 !text-sm">Masuk</button>`;
-    }
-});
+                const isAdmin = userRole === 'admin';
+                const roleLabel = isAdmin ? 'Admin Tier' : 'Buyer Tier';
+                const badgeClass = isAdmin 
+                    ? 'bg-red-500/20 text-red-500 border-red-500/50' 
+                    : 'bg-blue-500/20 text-blue-400 border-blue-500/50';
+
+                // 2. Update Header (Kanan Atas) - Sekarang pakai Badge Berkotak
+                authHeader.innerHTML = `
+                    <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-xs font-bold leading-none mb-1">${user.displayName || 'User'}</p>
+                            <span class="${badgeClass} border px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter">
+                                ${roleLabel}
+                            </span>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold border-2 border-white/10 shadow-lg">
+                            ${(user.displayName || 'U').charAt(0).toUpperCase()}
+                        </div>
+                    </div>
+                `;
+
+                // 3. Update Halaman Profil (Nama & Email)
+                document.getElementById('userNameText').textContent = user.displayName;
+                document.getElementById('userEmailText').textContent = user.email;
+                document.getElementById('profileAvatar').textContent = (user.displayName || 'U').charAt(0).toUpperCase();
+
+                // 4. UBAH TOMBOL SELLER JADI DASHBOARD ADMIN (Otomatis)
+                // Kita cari banner yang ada tulisan "Jadilah Seller"
+                const sellerBanner = document.querySelector('.bg-blue-600\\/10')?.parentElement || document.querySelector('.page-view#page-profile .glass-card:nth-child(2)');
+                
+                if (isAdmin && sellerBanner) {
+                    sellerBanner.innerHTML = `
+                        <div onclick="window.location.href='seller-dashboard.html'" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 p-5 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.01] transition shadow-xl border border-white/10 mt-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
+                                    <i class="fas fa-user-shield text-white text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-white/70 uppercase tracking-widest leading-none mb-1">Akses Terbuka</p>
+                                    <h3 class="text-lg font-black text-white leading-none">DASHBOARD ADMIN</h3>
+                                    <p class="text-xs text-white/50 mt-1">Kelola semua produk & layanan</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-right text-white/50"></i>
+                        </div>
+                    `;
+                }
+
+            } else {
+                currentUser = null;
+                authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-6 !text-sm">Masuk</button>`;
+            }
+        });
+
 
 
         // Load products realtime
@@ -1839,4 +1871,4 @@ onAuthStateChanged(auth, async (user) => {
     initApp();
 </script>
 </body>
-                                                                    </html>
+                            </html>
