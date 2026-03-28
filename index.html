@@ -412,10 +412,12 @@
                                     <i class="fas fa-camera text-xs"></i>
                                 </label>
                                 <input type="file" id="avatarUpload" class="hidden" accept="image/*">
-                            </div>
-                            <h2 id="userNameText" class="text-2xl font-bold">Memuat...</h2>
-                            <p id="userEmailText" class="text-gray-400 text-sm mb-2"></p>
-                            <span class="text-xs bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full font-bold mb-6">Buyer Tier</span>
+<h2 id="userNameText" class="text-2xl font-bold">Memuat...</h2>
+<p id="userEmailText" class="text-gray-400 text-sm mb-6"></p>
+<div id="roleBadgeContainer" class="mb-6"></div>
+
+<div id="sellerBanner" class="glass-card p-5 mb-6 bg-blue-600/10 border-blue-500/20 relative overflow-hidden group cursor-pointer">
+
                             
                             <div class="grid grid-cols-2 gap-4 w-full">
                                 <div class="bg-white/5 p-4 rounded-2xl text-center">
@@ -1340,9 +1342,6 @@
         reader.readAsDataURL(file);
         showToast('Info', 'Avatar berubah sementara (upload storage tidak aktif)', 'info');
     });
-    
-    
-    
 
     // =========================================================
     //  RENDER PRODUCTS
@@ -1459,7 +1458,7 @@
         }
         if (!selectedProduct) return;
 
-        const waNumber = "6288293064112"; // ← ganti nomor admin/seller
+        const waNumber = "6281234567890"; // ← ganti nomor admin/seller
         const msg = encodeURIComponent(
             `Halo XREZZKY STORE, saya ingin membeli:\n\n` +
             `*Produk:* ${selectedProduct.name}\n` +
@@ -1647,75 +1646,78 @@
             showToast('Peringatan', 'Firebase lambat/tidak merespons. Cek rules & koneksi.', 'warning');
         }, 8000);
 
-        // --- LOGIKA AUTH & ROLE ADMIN ---
-        onAuthStateChanged(auth, async (user) => {
+        // Auth state listener
+                onAuthStateChanged(auth, async (user) => {
             const authHeader = document.getElementById('authHeader');
+            const sellerBanner = document.getElementById('sellerBanner');
+            const badgeContainer = document.getElementById('roleBadgeContainer');
+
             if (user) {
                 currentUser = user;
 
-                // 1. Ambil data Role dari Database
+                // 1. Ambil Data Role Realtime
                 const userRef = ref(db, 'users/' + user.uid);
                 const snapshot = await get(userRef);
                 const userData = snapshot.val();
                 const userRole = userData?.role || 'buyer';
-                
-                // Simpan role ke objek user agar bisa dipakai di mana saja
                 currentUser.role = userRole;
 
                 const isAdmin = userRole === 'admin';
                 const roleLabel = isAdmin ? 'Admin Tier' : 'Buyer Tier';
-                const badgeClass = isAdmin 
+                const badgeStyle = isAdmin 
                     ? 'bg-red-500/20 text-red-500 border-red-500/50' 
                     : 'bg-blue-500/20 text-blue-400 border-blue-500/50';
 
-                // 2. Update Header (Kanan Atas) - Sekarang pakai Badge Berkotak
+                // 2. Update Header (Kanan Atas) - Box Rapi
                 authHeader.innerHTML = `
                     <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('profile')">
-                        <div class="text-right hidden sm:block">
-                            <p class="text-xs font-bold leading-none mb-1">${user.displayName || 'User'}</p>
-                            <span class="${badgeClass} border px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter">
-                                ${roleLabel}
-                            </span>
+                        <div class="text-right hidden sm:block leading-none">
+                            <p class="text-[10px] font-bold text-gray-500 mb-1 uppercase">Profil</p>
+                            <div class="flex flex-col items-end gap-1">
+                                <p class="text-xs font-bold leading-none">${user.displayName || 'User'}</p>
+                                <span class="${badgeStyle} border px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter">${roleLabel}</span>
+                            </div>
                         </div>
-                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold border-2 border-white/10 shadow-lg">
-                            ${(user.displayName || 'U').charAt(0).toUpperCase()}
-                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold border-2 border-white/10 shadow-lg">${(user.displayName || 'U').charAt(0).toUpperCase()}</div>
                     </div>
                 `;
 
-                // 3. Update Halaman Profil (Nama & Email)
-                document.getElementById('userNameText').textContent = user.displayName;
-                document.getElementById('userEmailText').textContent = user.email;
-                document.getElementById('profileAvatar').textContent = (user.displayName || 'U').charAt(0).toUpperCase();
+                // 3. Update Badge di Tengah Profil (Biar ga dobel)
+                if (badgeContainer) {
+                    badgeContainer.innerHTML = `<span class="${badgeStyle} border px-4 py-1 rounded-full text-[10px] font-black uppercase">${roleLabel}</span>`;
+                }
 
-                // 4. UBAH TOMBOL SELLER JADI DASHBOARD ADMIN (Otomatis)
-                // Kita cari banner yang ada tulisan "Jadilah Seller"
-                const sellerBanner = document.querySelector('.bg-blue-600\\/10')?.parentElement || document.querySelector('.page-view#page-profile .glass-card:nth-child(2)');
-                
+                // 4. Ubah Tombol "Jadilah Seller" Jadi Dashboard Admin
                 if (isAdmin && sellerBanner) {
+                    sellerBanner.className = "w-full bg-gradient-to-r from-blue-700 to-indigo-900 p-6 rounded-[28px] flex items-center justify-between cursor-pointer hover:scale-[1.02] transition shadow-2xl border border-white/20 mb-6";
+                    sellerBanner.onclick = () => window.location.href = 'seller-dashboard.html';
                     sellerBanner.innerHTML = `
-                        <div onclick="window.location.href='seller-dashboard.html'" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 p-5 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.01] transition shadow-xl border border-white/10 mt-4">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
-                                    <i class="fas fa-user-shield text-white text-xl"></i>
-                                </div>
-                                <div>
-                                    <p class="text-[10px] font-bold text-white/70 uppercase tracking-widest leading-none mb-1">Akses Terbuka</p>
-                                    <h3 class="text-lg font-black text-white leading-none">DASHBOARD ADMIN</h3>
-                                    <p class="text-xs text-white/50 mt-1">Kelola semua produk & layanan</p>
-                                </div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md">
+                                <i class="fas fa-user-shield text-white text-xl"></i>
                             </div>
-                            <i class="fas fa-arrow-right text-white/50"></i>
+                            <div>
+                                <p class="text-[10px] font-bold text-blue-200 uppercase tracking-widest leading-none mb-1">Owner Access</p>
+                                <h3 class="text-lg font-black text-white leading-none tracking-tight">DASHBOARD ADMIN</h3>
+                                <p class="text-xs text-white/50 mt-1 italic">Kelola Semua Stok & Produk</p>
+                            </div>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                            <i class="fas fa-chevron-right text-white"></i>
                         </div>
                     `;
                 }
+
+                // Update data teks biasa
+                document.getElementById('userNameText').textContent = user.displayName;
+                document.getElementById('userEmailText').textContent = user.email;
+                document.getElementById('profileAvatar').textContent = (user.displayName || 'U').charAt(0).toUpperCase();
 
             } else {
                 currentUser = null;
                 authHeader.innerHTML = `<button onclick="openModal('modalAuth')" class="btn-primary !py-2 !px-6 !text-sm">Masuk</button>`;
             }
         });
-
 
 
         // Load products realtime
@@ -1871,4 +1873,4 @@
     initApp();
 </script>
 </body>
-                            </html>
+</html>
