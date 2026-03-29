@@ -1,329 +1,869 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard - XREZZKY STORE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <style>
-        :root {
-            --bg: #080c14; --sf: #0e1520; --sf2: #131c2e;
-            --bd: rgba(255,255,255,.07); --bl: #3b82f6; --yw: #f59e0b; --gr: #10b981;
-        }
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: #f1f5f9;
-            min-height: 100vh;
-        }
-        .glass { background: rgba(14,21,32,0.92); backdrop-filter: blur(16px); border: 1px solid var(--bd); }
-        .inp { width:100%; padding:14px; border-radius:12px; background:var(--sf2); border:1px solid var(--bd); color:#f1f5f9; }
-        .inp:focus { border-color: var(--bl); }
-        .btn { padding:12px 20px; border-radius:12px; font-weight:700; cursor:pointer; }
-        .bp { background:var(--bl); color:white; }
-        .by { background:var(--yw); color:black; }
-        .bg { background:var(--gr); color:white; }
-        .tab-active { border-bottom: 3px solid var(--bl); color: white; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XREZZKY | Seller Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--bg:#05080f;--s1:#0f172a;--s2:#1e293b;--blue:#3b82f6;--green:#22c55e;--yellow:#f59e0b;--red:#ef4444;--border:rgba(255,255,255,.07);--glass:rgba(15,23,42,.85)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:#f1f5f9;min-height:100vh}
+.syne{font-family:'Syne',sans-serif}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--s2);border-radius:8px}
+.glass{background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:16px}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px}
+.inp{width:100%;background:#070b14;border:1px solid var(--border);padding:11px 14px;border-radius:10px;color:#f1f5f9;font-family:'Plus Jakarta Sans',sans-serif;font-size:.875rem;transition:.25s}
+.inp:focus{border-color:var(--blue);outline:none;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+textarea.inp{resize:vertical;min-height:80px}
+select.inp option{background:var(--s1)}
+.btn{padding:10px 20px;border-radius:10px;font-weight:700;font-size:.8rem;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn:active{transform:scale(.97)}
+.btn-blue{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}.btn-blue:hover{opacity:.9}
+.btn-red{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}.btn-red:hover{opacity:.9}
+.btn-green{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}.btn-green:hover{opacity:.9}
+.btn-yellow{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}.btn-yellow:hover{opacity:.9}
+.btn-ghost{background:rgba(255,255,255,.06);color:#94a3b8;border:1px solid var(--border)}.btn-ghost:hover{background:rgba(255,255,255,.1);color:#f1f5f9}
+#sidebar{width:220px;min-height:100vh;background:var(--s1);border-right:1px solid var(--border);position:fixed;left:0;top:0;z-index:50}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:10px;cursor:pointer;transition:.2s;font-size:.8rem;font-weight:600;color:#64748b;margin:2px 8px}
+.ni:hover{background:rgba(255,255,255,.05);color:#f1f5f9}
+.ni.on{background:rgba(59,130,246,.15);color:var(--blue);border-left:3px solid var(--blue);padding-left:11px}
+#content{margin-left:220px;min-height:100vh;padding:24px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:20px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;position:relative;animation:sup .3s ease}
+.modal-lg{max-width:680px}
+@keyframes sup{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.b-pending{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
+.b-payment{background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3)}
+.b-process{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3)}
+.b-done{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
+.b-cancel{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)}
+.b-confirm{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
+.section{display:none}.section.on{display:block;animation:fin .3s ease}
+@keyframes fin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.stat-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:-40%;right:-20%;width:120px;height:120px;border-radius:50%;opacity:.07}
+.sb::before{background:#3b82f6}.sg::before{background:#22c55e}.sy::before{background:#f59e0b}.sr::before{background:#ef4444}
+/* STAR RATING */
+.star-inp{display:flex;flex-direction:row-reverse;gap:4px;justify-content:flex-start}
+.star-inp input{display:none}
+.star-inp label{font-size:28px;color:#374151;cursor:pointer;transition:.15s;line-height:1}
+.star-inp label:hover,.star-inp label:hover~label,.star-inp input:checked~label{color:#f59e0b}
+/* IMG PREVIEW */
+.img-preview{width:80px;height:80px;border-radius:10px;object-fit:cover;border:1px solid var(--border)}
+#toast{position:fixed;top:16px;right:16px;z-index:9999;transform:translateX(150%);transition:.4s}
+.ti{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:10px;min-width:260px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.spin{width:18px;height:18px;border:2px solid var(--border);border-top:2px solid var(--blue);border-radius:50%;animation:spinning 1s linear infinite;display:inline-block}
+@keyframes spinning{to{transform:rotate(360deg)}}
+#lockScreen{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.order-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;transition:.2s}
+.order-card:hover{border-color:rgba(59,130,246,.3)}
+</style>
 </head>
-<body class="pb-20">
+<body>
 
-<div id="loading" class="fixed inset-0 bg-[#080c14] flex flex-col items-center justify-center z-50">
-    <div style="font-family:'Syne',sans-serif;" class="text-4xl font-bold mb-6 text-blue-400">Seller Dashboard</div>
-    <div class="w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
-        <div id="progressBar" class="h-full bg-blue-500 transition-all" style="width:0%"></div>
+<!-- LOCK SCREEN -->
+<div id="lockScreen">
+  <div class="text-center mb-6">
+    <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-900/40">
+      <i class="fas fa-store text-white text-xl"></i>
     </div>
+    <h1 class="text-2xl font-extrabold syne text-white mb-1">Seller Dashboard</h1>
+    <p class="text-sm text-slate-500">Login dengan akun seller kamu</p>
+  </div>
+  <div style="width:100%;max-width:340px" class="card">
+    <div class="mb-3"><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Email</label><input id="lEmail" type="email" class="inp" placeholder="Email akun seller"></div>
+    <div class="mb-4">
+      <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Password</label>
+      <input id="lPass" type="password" class="inp" placeholder="Password">
+    </div>
+    <button onclick="doLogin()" class="btn btn-blue w-full justify-center py-3"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+    <button onclick="doForgotPass()" class="btn btn-ghost w-full justify-center mt-2 text-xs"><i class="fas fa-key"></i> Lupa Password</button>
+    <p id="lErr" class="text-red-400 text-xs text-center mt-2 hidden"></p>
+    <div class="border-t border-white/5 mt-4 pt-4">
+      <a href="index.html" class="btn btn-ghost w-full justify-center text-xs"><i class="fas fa-arrow-left"></i> Kembali ke Marketplace</a>
+    </div>
+  </div>
 </div>
 
-<div class="max-w-7xl mx-auto px-4 py-6">
-    <div class="flex items-center justify-between mb-8">
-        <div>
-            <h1 style="font-family:'Syne',sans-serif;" class="text-3xl font-bold">Seller Dashboard</h1>
-            <p id="storeName" class="text-gray-400"></p>
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="p-4 border-b border-white/5 mb-2">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 bg-blue-600 rounded-xl flex items-center justify-center"><i class="fas fa-bolt text-white text-xs"></i></div>
+      <div>
+        <p class="font-extrabold syne text-xs text-white">XREZZKY</p>
+        <p class="text-[9px] text-green-400 font-black uppercase tracking-widest">Seller</p>
+      </div>
+    </div>
+  </div>
+  <div class="px-2">
+    <div class="ni on" onclick="go('dashboard')"><i class="fas fa-gauge-high w-4 text-center"></i> Dashboard</div>
+    <div class="ni" onclick="go('orders')"><i class="fas fa-receipt w-4 text-center"></i> Pesanan <span id="newOrderBadge" class="ml-auto text-[9px] bg-yellow-500 text-black px-1.5 py-0.5 rounded-full font-black hidden">0</span></div>
+    <div class="ni" onclick="go('products')"><i class="fas fa-boxes-stacked w-4 text-center"></i> Produk</div>
+    <div class="ni" onclick="go('store')"><i class="fas fa-store w-4 text-center"></i> Profil Toko</div>
+    <div class="ni" onclick="go('reviews')"><i class="fas fa-star w-4 text-center"></i> Ulasan</div>
+  </div>
+  <div class="absolute bottom-0 left-0 right-0 p-3 border-t border-white/5">
+    <div class="flex items-center gap-2 mb-2">
+      <div class="w-8 h-8 rounded-full bg-blue-600/30 flex items-center justify-center font-bold text-xs" id="sAvatar">S</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-bold truncate" id="sName">Seller</p>
+        <p id="sStoreName" class="text-[9px] text-green-400 font-black truncate">Toko</p>
+      </div>
+    </div>
+    <div class="flex gap-1.5">
+      <a href="index.html" class="btn btn-ghost text-xs flex-1 justify-center !py-1.5"><i class="fas fa-store text-xs"></i></a>
+      <button onclick="doLogout()" class="btn btn-ghost text-xs flex-1 justify-center !py-1.5 text-red-400"><i class="fas fa-sign-out-alt text-xs"></i></button>
+    </div>
+  </div>
+</nav>
+
+<main id="content">
+
+  <!-- DASHBOARD -->
+  <section id="sec-dashboard" class="section on">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h1 class="text-xl font-extrabold syne">Dashboard Toko</h1>
+        <p class="text-slate-500 text-xs" id="storeNameHeader">-</p>
+      </div>
+      <button onclick="go('products');openAddProd()" class="btn btn-blue text-xs"><i class="fas fa-plus"></i> Tambah Produk</button>
+    </div>
+    <!-- STATS -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+      <div class="stat-card sb"><p class="text-xs text-slate-500 font-bold uppercase mb-1">Total Produk</p><p class="text-2xl font-extrabold syne text-blue-400" id="ds-prods">0</p></div>
+      <div class="stat-card sg"><p class="text-xs text-slate-500 font-bold uppercase mb-1">Order Masuk</p><p class="text-2xl font-extrabold syne text-green-400" id="ds-orders">0</p></div>
+      <div class="stat-card sy"><p class="text-xs text-slate-500 font-bold uppercase mb-1">Perlu Konfirmasi</p><p class="text-2xl font-extrabold syne text-yellow-400" id="ds-confirm">0</p></div>
+      <div class="stat-card sr"><p class="text-xs text-slate-500 font-bold uppercase mb-1">Rating Toko</p><p class="text-2xl font-extrabold syne text-yellow-400" id="ds-rating">-</p></div>
+    </div>
+    <!-- RECENT ORDERS -->
+    <div class="card mb-4">
+      <h3 class="font-bold text-sm syne mb-3 flex items-center gap-2"><i class="fas fa-clock text-yellow-400"></i> Pesanan Perlu Tindakan</h3>
+      <div id="dashOrders"></div>
+    </div>
+    <!-- TOP PRODUCTS -->
+    <div class="card">
+      <h3 class="font-bold text-sm syne mb-3 flex items-center gap-2"><i class="fas fa-fire text-orange-400"></i> Produk Terlaris</h3>
+      <div id="dashTopProds"></div>
+    </div>
+  </section>
+
+  <!-- ORDERS -->
+  <section id="sec-orders" class="section">
+    <div class="flex items-center justify-between mb-5">
+      <h1 class="text-xl font-extrabold syne">Kelola Pesanan</h1>
+      <div class="flex gap-2">
+        <select id="orderFilter" class="inp text-xs" style="width:150px" onchange="renderOrders()">
+          <option value="all">Semua</option>
+          <option value="confirm">Konfirmasi</option>
+          <option value="pending">Pending Bayar</option>
+          <option value="processing">Diproses</option>
+          <option value="completed">Selesai</option>
+          <option value="cancelled">Ditolak</option>
+        </select>
+      </div>
+    </div>
+    <div id="orderCards"></div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section id="sec-products" class="section">
+    <div class="flex items-center justify-between mb-5">
+      <h1 class="text-xl font-extrabold syne">Kelola Produk</h1>
+      <button onclick="openAddProd()" class="btn btn-blue text-xs"><i class="fas fa-plus"></i> Tambah Produk</button>
+    </div>
+    <div id="prodGrid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+  </section>
+
+  <!-- STORE PROFILE -->
+  <section id="sec-store" class="section">
+    <h1 class="text-xl font-extrabold syne mb-5">Profil & Pengaturan Toko</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="card">
+        <h3 class="font-bold text-sm syne mb-4 flex items-center gap-2"><i class="fas fa-store text-blue-400"></i> Info Toko</h3>
+        <div class="space-y-3">
+          <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Nama Toko</label><input id="st_name" type="text" class="inp" placeholder="Nama toko kamu"></div>
+          <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Kategori Utama</label><input id="st_cat" type="text" class="inp" placeholder="Game Mobile, dll"></div>
+          <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Deskripsi Toko</label><textarea id="st_desc" class="inp" rows="4" placeholder="Ceritakan tentang toko kamu..."></textarea></div>
+          <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Kota / Domisili</label><input id="st_city" type="text" class="inp" placeholder="Jakarta, Padang, dll"></div>
         </div>
-        <button onclick="logoutSeller()" class="btn border border-red-500 text-red-400 hover:bg-red-500/10">Logout</button>
-    </div>
-
-    <!-- Stats -->
-    <div class="grid grid-cols-3 gap-4 mb-8">
-        <div class="glass p-5 rounded-2xl text-center">
-            <p class="text-xs text-gray-400">Total Produk</p>
-            <p id="stat-products" class="text-3xl font-bold text-blue-400">0</p>
+        <button onclick="saveStoreInfo()" class="btn btn-blue mt-4 w-full justify-center"><i class="fas fa-save"></i> Simpan Info Toko</button>
+      </div>
+      <div class="card">
+        <h3 class="font-bold text-sm syne mb-4 flex items-center gap-2"><i class="fas fa-whatsapp text-green-400" style="font-family:'Font Awesome 6 Brands'"></i> Kontak & WA Pembeli</h3>
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Nomor WhatsApp Order <span class="text-red-400">*</span></label>
+            <div class="relative"><span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-bold">+62</span><input id="st_wa" type="tel" class="inp !pl-10" placeholder="8123456789"></div>
+            <p class="text-[10px] text-slate-600 mt-1">Nomor ini yang akan dihubungi pembeli saat beli produk kamu.</p>
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Template Pesan Order (otomatis)</label>
+            <div class="bg-black/30 p-3 rounded-xl border border-white/5 text-xs text-slate-400 leading-relaxed font-mono" id="waPreview">Loading...</div>
+          </div>
         </div>
-        <div class="glass p-5 rounded-2xl text-center">
-            <p class="text-xs text-gray-400">Total Terjual</p>
-            <p id="stat-sold" class="text-3xl font-bold text-green-400">0</p>
+        <button onclick="saveStoreContact()" class="btn btn-green mt-4 w-full justify-center"><i class="fas fa-save"></i> Simpan Kontak</button>
+      </div>
+    </div>
+    <!-- STORE PREVIEW -->
+    <div class="card mt-5">
+      <h3 class="font-bold text-sm syne mb-4 flex items-center gap-2"><i class="fas fa-eye text-purple-400"></i> Preview Profil Toko</h3>
+      <div class="bg-black/20 rounded-2xl p-5 border border-white/5">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-2xl font-bold" id="prev_avatar">S</div>
+          <div>
+            <p class="font-extrabold syne" id="prev_name">Nama Toko</p>
+            <p class="text-xs text-blue-400 font-bold uppercase" id="prev_cat">Kategori</p>
+            <p class="text-[10px] text-slate-500" id="prev_city">Kota</p>
+          </div>
+          <span class="ml-auto text-[10px] bg-green-500/20 text-green-400 border border-green-500/30 px-2 py-0.5 rounded-full font-bold">✅ Verified</span>
         </div>
-        <div class="glass p-5 rounded-2xl text-center">
-            <p class="text-xs text-gray-400">Rating Toko</p>
-            <p id="stat-rating" class="text-3xl font-bold text-yellow-400">0.0</p>
+        <p class="text-sm text-slate-400 leading-relaxed" id="prev_desc">-</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="sec-reviews" class="section">
+    <h1 class="text-xl font-extrabold syne mb-5">Ulasan Produk</h1>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+      <div class="card text-center">
+        <p class="text-3xl font-extrabold syne text-yellow-400 mb-1" id="rv-avg">-</p>
+        <p class="text-xs text-slate-500">Rating Rata-rata</p>
+      </div>
+      <div class="card text-center">
+        <p class="text-3xl font-extrabold syne text-blue-400 mb-1" id="rv-total">0</p>
+        <p class="text-xs text-slate-500">Total Ulasan</p>
+      </div>
+      <div class="card text-center">
+        <p class="text-3xl font-extrabold syne text-green-400 mb-1" id="rv-prods">0</p>
+        <p class="text-xs text-slate-500">Produk Diulas</p>
+      </div>
+    </div>
+    <div id="reviewList"></div>
+  </section>
+
+</main>
+
+<!-- TOAST -->
+<div id="toast"><div class="ti"><div id="toastIco" class="w-7 h-7 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0"><i class="fas fa-info-circle text-xs"></i></div><div><p class="font-bold text-xs" id="toastT">-</p><p class="text-[10px] text-slate-400" id="toastM">-</p></div></div></div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- ADD/EDIT PRODUCT -->
+<div id="mProd" class="overlay">
+  <div class="modal modal-lg p-7">
+    <button onclick="closeM('mProd')" class="absolute top-4 right-4 w-9 h-9 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+    <h2 id="prodModalTitle" class="text-xl font-extrabold syne mb-5">Tambah Produk</h2>
+    <input type="hidden" id="prod_id">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="space-y-3">
+        <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Nama Produk <span class="text-red-400">*</span></label><input id="prod_name" type="text" class="inp" placeholder="Nama produk kamu"></div>
+        <div class="grid grid-cols-2 gap-2">
+          <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Harga (Rp) <span class="text-red-400">*</span></label><input id="prod_price" type="number" class="inp" placeholder="0"></div>
+          <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Stok <span class="text-red-400">*</span></label><input id="prod_stock" type="number" class="inp" placeholder="0"></div>
         </div>
-    </div>
-
-    <!-- Tabs -->
-    <div class="flex border-b border-white/10 mb-6 overflow-x-auto">
-        <button onclick="switchTab(0)" class="tab px-6 py-3 tab-active" id="tab-0">📦 Produk Saya</button>
-        <button onclick="switchTab(1)" class="tab px-6 py-3" id="tab-1">📋 Pesanan Masuk</button>
-        <button onclick="switchTab(2)" class="tab px-6 py-3" id="tab-2">➕ Tambah Produk</button>
-        <button onclick="switchTab(3)" class="tab px-6 py-3" id="tab-3">🏪 Info Toko</button>
-    </div>
-
-    <!-- Tab Content -->
-    <div id="tab-content-0" class="tab-content">
-        <div id="productList" class="space-y-4"></div>
-    </div>
-
-    <div id="tab-content-1" class="tab-content hidden">
-        <div id="orderList" class="space-y-4"></div>
-    </div>
-
-    <div id="tab-content-2" class="tab-content hidden">
-        <div class="glass p-6 rounded-3xl">
-            <h3 class="font-bold mb-6 text-lg">Tambah / Edit Produk</h3>
-            <input id="prodName" type="text" placeholder="Nama Produk *" class="inp mb-3">
-            <input id="prodPrice" type="number" placeholder="Harga (Rp) *" class="inp mb-3">
-            <input id="prodStock" type="number" placeholder="Stok *" class="inp mb-3">
-            <input id="prodCategory" type="text" placeholder="Kategori (contoh: Fashion, Elektronik)" class="inp mb-3">
-            <textarea id="prodDesc" placeholder="Deskripsi produk" class="inp h-24 mb-4"></textarea>
-            <input id="prodImage" type="text" placeholder="URL Gambar (https://...)" class="inp mb-4">
-            <button onclick="saveProduct()" class="btn bg w-full py-4">Simpan Produk</button>
+        <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Kategori</label><input id="prod_cat" type="text" class="inp" placeholder="Game Mobile, E-Voucher, dll"></div>
+        <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Deskripsi</label><textarea id="prod_desc" class="inp" rows="4" placeholder="Deskripsikan produkmu secara detail..."></textarea></div>
+      </div>
+      <div class="space-y-3">
+        <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">URL Gambar (hingga 3)</label>
+          <input id="prod_img1" type="url" class="inp mb-2" placeholder="https://... (gambar 1)">
+          <input id="prod_img2" type="url" class="inp mb-2" placeholder="https://... (gambar 2, opsional)">
+          <input id="prod_img3" type="url" class="inp" placeholder="https://... (gambar 3, opsional)">
         </div>
+        <!-- PREVIEW IMAGES -->
+        <div id="imgPreviews" class="flex gap-2 flex-wrap mt-2"></div>
+        <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-3">
+          <p class="text-xs text-blue-400 font-bold mb-1">💡 Tips</p>
+          <p class="text-[10px] text-slate-400">Gunakan gambar dengan rasio 1:1 (persegi) untuk hasil terbaik. Upload ke imgbb.com atau imgur.com lalu paste linknya.</p>
+        </div>
+      </div>
     </div>
-
-    <div id="tab-content-3" class="tab-content hidden">
-        <div id="storeInfo" class="glass p-6 rounded-3xl"></div>
+    <div class="flex gap-3 mt-5">
+      <button onclick="closeM('mProd')" class="btn btn-ghost flex-1 justify-center">Batal</button>
+      <button onclick="saveProd()" class="btn btn-blue flex-1 justify-center"><i class="fas fa-save"></i> Simpan Produk</button>
     </div>
+  </div>
 </div>
+
+<!-- ORDER DETAIL -->
+<div id="mOrder" class="overlay">
+  <div class="modal modal-lg p-0 overflow-hidden">
+    <div class="relative p-6 bg-gradient-to-b from-blue-600/20 to-transparent">
+      <button onclick="closeM('mOrder')" class="absolute top-4 right-4 w-9 h-9 bg-black/20 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+      <h2 class="text-lg font-extrabold syne mb-0.5">Detail Pesanan</h2>
+      <p id="ord_idDisplay" class="text-slate-400 text-xs">ID: -</p>
+    </div>
+    <div class="px-6 pb-6 space-y-4">
+      <!-- ORDER INFO -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Produk</p><p id="ord_prodName" class="text-sm font-bold">-</p></div>
+        <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Harga</p><p id="ord_price" class="text-sm font-bold text-blue-400">-</p></div>
+        <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Pembeli</p><p id="ord_buyer" class="text-sm font-bold">-</p></div>
+        <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">No. WA Pembeli</p><p id="ord_buyerWa" class="text-sm font-bold">-</p></div>
+        <div class="bg-white/5 p-3 rounded-xl col-span-2"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Status</p><div id="ord_statusBadge"></div></div>
+      </div>
+      <!-- REJECT REASON -->
+      <div id="ord_rejectReason" class="hidden bg-red-500/10 border border-red-500/20 rounded-xl p-3">
+        <p class="text-[10px] text-red-400 font-bold uppercase mb-1">Alasan Penolakan</p>
+        <p id="ord_rejectText" class="text-sm text-slate-300">-</p>
+      </div>
+      <!-- WA MESSAGE TEMPLATE -->
+      <div class="bg-black/30 border border-white/5 rounded-xl p-4">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-[10px] text-slate-500 font-bold uppercase">Pesan WA ke Pembeli</p>
+          <button onclick="copyWaMsg()" class="btn btn-ghost text-xs !py-1 !px-3"><i class="fas fa-copy"></i> Salin</button>
+        </div>
+        <p id="ord_waMsg" class="text-xs text-slate-300 leading-relaxed font-mono whitespace-pre-wrap">-</p>
+      </div>
+      <!-- ACTIONS -->
+      <div id="ord_actions" class="flex gap-2 flex-wrap"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REJECT ORDER MODAL -->
+<div id="mReject" class="overlay">
+  <div class="modal p-7">
+    <button onclick="closeM('mReject')" class="absolute top-4 right-4 w-9 h-9 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+    <div class="w-14 h-14 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4"><i class="fas fa-times text-red-400 text-xl"></i></div>
+    <h2 class="text-xl font-extrabold syne mb-1 text-center">Tolak Pesanan</h2>
+    <p class="text-slate-400 text-sm text-center mb-5">Berikan alasan penolakan yang jelas untuk pembeli.</p>
+    <textarea id="rejectReason" class="inp mb-4" rows="3" placeholder="Contoh: Stok habis, harga sudah berubah, dll..."></textarea>
+    <div class="flex gap-3">
+      <button onclick="closeM('mReject')" class="btn btn-ghost flex-1 justify-center">Batal</button>
+      <button onclick="confirmReject()" class="btn btn-red flex-1 justify-center"><i class="fas fa-times"></i> Tolak Pesanan</button>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE PRODUCT CONFIRM -->
+<div id="mDelProd" class="overlay">
+  <div class="modal p-7 text-center">
+    <div class="w-14 h-14 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4"><i class="fas fa-trash text-red-400 text-xl"></i></div>
+    <h2 class="text-xl font-extrabold syne mb-2">Hapus Produk?</h2>
+    <p id="delProdName" class="text-slate-400 text-sm mb-5">Produk ini akan dihapus permanen.</p>
+    <div class="flex gap-3">
+      <button onclick="closeM('mDelProd')" class="btn btn-ghost flex-1 justify-center">Batal</button>
+      <button onclick="confirmDelProd()" class="btn btn-red flex-1 justify-center"><i class="fas fa-trash"></i> Ya, Hapus</button>
+    </div>
+  </div>
+</div>
+
+<input type="hidden" id="delProdId">
+<input type="hidden" id="rejectOrderUid">
+<input type="hidden" id="rejectOrderId">
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getDatabase, ref, onValue, set, get, remove, update, push } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
-    authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
-    databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "xrezzkystore-marketplace-83bc0",
-    storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
-    messagingSenderId: "604900856944",
-    appId: "1:604900856944:web:c48c973da45214c68a10b5"
+const FB = {apiKey:"AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",authDomain:"xrezzkystore-marketplace-83bc0.firebaseapp.com",databaseURL:"https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"xrezzkystore-marketplace-83bc0",storageBucket:"xrezzkystore-marketplace-83bc0.firebasestorage.app",messagingSenderId:"604900856944",appId:"1:604900856944:web:c48c973da45214c68a10b5"};
+const app=initializeApp(FB),auth=getAuth(app),db=getDatabase(app);
+
+// ─── STATE ───
+let CU=null,sellerData=null,myProducts={},myOrders={};
+let toastTmr=null;
+const ADMIN_EMAIL='xrezzkystore.idn@gmail.com';
+
+// ─── UTILS ───
+const $=id=>document.getElementById(id);
+window.toast=(t,m,type='success')=>{
+  const map={success:{bg:'bg-green-500/20',cl:'text-green-400',i:'fa-check-circle'},error:{bg:'bg-red-500/20',cl:'text-red-400',i:'fa-times-circle'},info:{bg:'bg-blue-500/20',cl:'text-blue-400',i:'fa-info-circle'},warning:{bg:'bg-yellow-500/20',cl:'text-yellow-400',i:'fa-exclamation-circle'}};
+  const c=map[type]||map.info;
+  $('toastT').textContent=t;$('toastM').textContent=m;
+  $('toastIco').className=`w-7 h-7 rounded-full ${c.bg} flex items-center justify-center ${c.cl} shrink-0`;
+  $('toastIco').innerHTML=`<i class="fas ${c.i} text-xs"></i>`;
+  const el=$('toast');el.style.transform='translateX(0)';
+  if(toastTmr)clearTimeout(toastTmr);
+  toastTmr=setTimeout(()=>el.style.transform='translateX(150%)',4000);
+};
+window.openM=id=>{const e=$(id);if(e){e.style.display='flex';document.body.style.overflow='hidden';}};
+window.closeM=id=>{const e=$(id);if(e){e.style.display='none';document.body.style.overflow='auto';}};
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o){o.style.display='none';document.body.style.overflow='auto';}}));
+
+// ─── AUTH ───
+window.doLogin=async()=>{
+  const email=$('lEmail').value.trim(),pass=$('lPass').value,err=$('lErr');
+  err.classList.add('hidden');
+  try{
+    await signInWithEmailAndPassword(auth,email,pass);
+  }catch(e){err.textContent='Email atau password salah!';err.classList.remove('hidden');}
+};
+window.doLogout=()=>{if(!confirm('Keluar dari dashboard?'))return;signOut(auth).then(()=>location.reload());};
+window.doForgotPass=async()=>{
+  const email=$('lEmail').value.trim();
+  if(!email)return alert('Isi email dulu!');
+  try{await sendPasswordResetEmail(auth,email);alert('Email reset password sudah dikirim! Cek inbox kamu.');}
+  catch(e){alert('Gagal: '+e.message);}
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
+onAuthStateChanged(auth,async user=>{
+  if(!user){return;}
+  CU=user;
+  // Check if seller or admin
+  const snap=await get(ref(db,`users/${user.uid}`));
+  const userData=snap.exists()?snap.val():{};
+  const isAdmin=user.email===ADMIN_EMAIL||userData.role==='admin';
+  const isSeller=userData.role==='seller';
 
-let currentUser = null;
-let sellerData = null;
-let products = [];
-let orders = [];
-let currentEditProductId = null;
+  if(!isSeller&&!isAdmin){
+    alert('Akun kamu belum menjadi seller. Daftar dulu di marketplace!');
+    signOut(auth);return;
+  }
+  // Load seller data
+  const sellerSnap=await get(ref(db,`seller_applications/${user.uid}`));
+  if(!sellerSnap.exists()&&!isAdmin){
+    // admin belum daftar seller — tampilkan pesan khusus
+    $('lockScreen').style.display='none';
+    alert('Kamu adalah admin. Daftarkan toko kamu dulu di marketplace untuk akses seller dashboard.');
+    window.location.href='index.html';return;
+  }
+  sellerData=sellerSnap.exists()?{uid:user.uid,...sellerSnap.val()}:{uid:user.uid,storeName:'Admin Store',storeDesc:'',category:'',city:'',whatsapp:'',ownerName:user.displayName||'Admin'};
 
-/* TOAST SIMPLE */
-function showToast(msg){
-    alert(msg);
-}
+  // ─── BANNED CHECK ───
+  if (userData.banned === true) {
+    $('lockScreen').style.display = 'flex';
+    $('lockScreen').innerHTML = `
+      <div style="max-width:360px;width:100%;text-align:center">
+        <div style="width:72px;height:72px;background:rgba(239,68,68,.15);border:2px solid rgba(239,68,68,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+          <i class="fas fa-ban" style="font-size:1.8rem;color:#ef4444"></i>
+        </div>
+        <h2 class="syne" style="font-size:1.5rem;font-weight:800;color:#f1f5f9;margin-bottom:8px">Akun Dibanned</h2>
+        <p style="color:#64748b;font-size:.85rem;margin-bottom:16px">Akses seller dashboard diblokir oleh admin.</p>
+        <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:14px;padding:16px;margin-bottom:20px;text-align:left">
+          <p style="font-size:10px;font-weight:800;text-transform:uppercase;color:#ef4444;margin-bottom:6px">Alasan</p>
+          <p style="font-size:.85rem;color:#fca5a5">${userData.bannedReason||'Tidak ada keterangan.'}</p>
+        </div>
+        <p style="font-size:11px;color:#475569;margin-bottom:16px">Hubungi: xrezzkystore.idn@gmail.com</p>
+        <button onclick="doLogout()" class="btn btn-red w-full justify-center"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+      </div>`;
+    return;
+  }
+  // ──────────────────────
 
-/* LOADING */
-function simulateLoading() {
-    setTimeout(() => {
-        const el = document.getElementById('loading');
-        if (el) el.remove();
-    }, 1200);
-}
+  $('lockScreen').style.display='none';
+  initSeller();
+});
 
-/* TAB */
-window.switchTab = function(tab) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-    document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
+// ─── INIT ───
+const initSeller=()=>{
+  $('sName').textContent=sellerData.ownerName||CU.displayName||'Seller';
+  $('sStoreName').textContent=sellerData.storeName||'Toko';
+  $('sAvatar').textContent=(sellerData.storeName||'S').charAt(0).toUpperCase();
+  $('storeNameHeader').textContent=sellerData.storeName||'-';
 
-    document.querySelectorAll('.tab').forEach(el => el.classList.remove('tab-active'));
-    document.getElementById(`tab-${tab}`).classList.add('tab-active');
-};
+  // Load products (only mine)
+  onValue(ref(db,'products'),snap=>{
+    myProducts={};
+    const all=snap.val()||{};
+    Object.entries(all).forEach(([id,p])=>{if(p.sellerId===CU.uid)myProducts[id]=p;});
+    updateStats();
+    renderProducts();
+    renderDashTop();
+    renderReviews();
+  });
 
-/* DATA */
-function loadSellerData() {
-    onAuthStateChanged(auth, (user) => {
-        if (!user) return window.location.href = 'index.html';
-
-        currentUser = user;
-
-        // SELLER
-        onValue(ref(db, 'sellers/' + user.uid), (snap) => {
-            if (snap.exists()) {
-                sellerData = snap.val();
-                document.getElementById('storeName').textContent = sellerData.storeName || 'Toko Saya';
-                loadStoreInfo();
-            }
-        });
-
-        // PRODUCTS
-        onValue(ref(db, 'products'), (snap) => {
-            products = [];
-            if (snap.exists()) {
-                snap.forEach(child => {
-                    const p = child.val();
-                    if (p.sellerId === user.uid) {
-                        products.push({ id: child.key, ...p });
-                    }
-                });
-            }
-            renderSellerProducts();
-            updateStats();
-        });
-
-        // ORDERS
-        onValue(ref(db, 'orders'), (snap) => {
-            orders = [];
-            if (snap.exists()) {
-                snap.forEach(child => {
-                    const o = child.val();
-                    if (o.sellerId === user.uid) {
-                        orders.push({ id: child.key, ...o });
-                    }
-                });
-            }
-            renderOrders();
-        });
-    });
-}
-
-/* PRODUK */
-function renderSellerProducts() {
-    const container = document.getElementById('productList');
-    container.innerHTML = '';
-
-    products.forEach(p => {
-        const div = document.createElement('div');
-        div.className = 'glass p-4 rounded-2xl flex gap-4';
-        div.innerHTML = `
-            <img src="${p.images?.[0] || 'https://placehold.co/80x80'}" class="w-20 h-20 object-cover rounded-xl">
-            <div class="flex-1">
-                <p class="font-medium">${p.name}</p>
-                <p class="text-blue-400">Rp ${Number(p.price || 0).toLocaleString('id-ID')}</p>
-                <p class="text-xs text-gray-400">Stok: ${p.stock || 0}</p>
-            </div>
-            <div>
-                <button onclick="editProduct('${p.id}')" class="btn border border-yellow-400 text-yellow-400 text-xs px-3 py-1 mb-2">Edit</button>
-                <button onclick="deleteProduct('${p.id}')" class="btn border border-red-500 text-red-400 text-xs px-3 py-1">Hapus</button>
-            </div>
-        `;
-        container.appendChild(div);
-    });
-}
-
-/* ORDER */
-function renderOrders() {
-    const container = document.getElementById('orderList');
-    container.innerHTML = '';
-
-    orders.forEach(order => {
-        const div = document.createElement('div');
-        div.className = 'glass p-5 rounded-2xl';
-        div.innerHTML = `
-            <div class="flex justify-between mb-3">
-                <span class="font-mono text-sm">${order.orderId || order.id}</span>
-                <span class="px-3 py-1 text-xs rounded-full">
-                    ${order.status || 'pending'}
-                </span>
-            </div>
-            <p class="font-medium">${order.userName || 'User'}</p>
-            <p class="text-sm text-gray-400">
-                ${order.items && Array.isArray(order.items)
-                    ? order.items.map(i => `${i.name} x${i.qty}`).join(', ')
-                    : 'Tidak ada item'}
-            </p>
-            <p class="text-blue-400 font-bold mt-2">Rp ${Number(order.total || 0).toLocaleString('id-ID')}</p>
-        `;
-        container.appendChild(div);
-    });
-}
-
-/* STORE */
-function loadStoreInfo() {
-    const el = document.getElementById('storeInfo');
-    if (!sellerData) return;
-
-    el.innerHTML = `
-        <h3 class="font-bold mb-4">Info Toko</h3>
-        <p><strong>Nama Toko:</strong> ${sellerData.storeName || '-'}</p>
-        <p><strong>Kota:</strong> ${sellerData.city || '-'}</p>
-        <p><strong>WhatsApp:</strong> ${sellerData.whatsapp || '-'}</p>
-        <p class="mt-4 text-sm text-gray-400">${sellerData.description || ''}</p>
-    `;
-}
-
-/* SAVE */
-window.saveProduct = async () => {
-    const name = prodName.value.trim();
-    const price = parseInt(prodPrice.value);
-    const stock = parseInt(prodStock.value);
-
-    if (!name || isNaN(price) || isNaN(stock) || price <= 0 || stock < 0) {
-        return showToast('Input tidak valid');
-    }
-
-    const data = {
-        name,
-        price,
-        stock,
-        images: prodImage.value ? [prodImage.value] : [],
-        sellerId: currentUser.uid,
-        sellerName: sellerData?.storeName || 'Toko Saya'
-    };
-
-    try {
-        if (currentEditProductId) {
-            await update(ref(db, 'products/' + currentEditProductId), data);
-        } else {
-            await push(ref(db, 'products'), data);
+  // Load ALL orders and filter by seller's products
+  onValue(ref(db,'orders'),snap=>{
+    myOrders={};
+    const all=snap.val()||{};
+    Object.entries(all).forEach(([uid,userOrders])=>{
+      if(!userOrders)return;
+      Object.entries(userOrders).forEach(([oid,o])=>{
+        if(myProducts[o.productId]||Object.values(myProducts).find(p=>p.name===o.productName)){
+          if(!myOrders[uid])myOrders[uid]={};
+          myOrders[uid][oid]=o;
         }
-        showToast('Berhasil disimpan');
-    } catch {
-        showToast('Gagal');
-    }
+      });
+    });
+    updateStats();
+    renderDashOrders();
+    renderOrders();
+    // New order badge
+    let confirmCount=0;
+    Object.values(myOrders).forEach(uo=>Object.values(uo).forEach(o=>{if(o.status==='confirm')confirmCount++;}));
+    const nb=$('newOrderBadge');
+    if(confirmCount>0){nb.textContent=confirmCount;nb.classList.remove('hidden');}else nb.classList.add('hidden');
+  });
+
+  loadStoreForm();
+  updateWaPreview();
 };
 
-/* EDIT */
-window.editProduct = (id) => {
-    const p = products.find(x => x.id === id);
-    if (!p) return;
-
-    currentEditProductId = id;
-    prodName.value = p.name;
-    prodPrice.value = p.price;
-    prodStock.value = p.stock;
-    prodImage.value = p.images?.[0] || '';
-
-    switchTab(2);
+const updateStats=()=>{
+  const prods=Object.keys(myProducts).length;
+  let orders=0,confirm=0;
+  Object.values(myOrders).forEach(uo=>Object.values(uo).forEach(o=>{orders++;if(o.status==='confirm')confirm++;}));
+  // Rating
+  const rated=Object.values(myProducts).filter(p=>p.rating);
+  const avg=rated.length>0?(rated.reduce((a,p)=>a+parseFloat(p.rating),0)/rated.length).toFixed(1):'-';
+  $('ds-prods').textContent=prods;
+  $('ds-orders').textContent=orders;
+  $('ds-confirm').textContent=confirm;
+  $('ds-rating').textContent=avg!=='-'?`${avg}★`:'-';
 };
 
-/* DELETE */
-window.deleteProduct = async (id) => {
-    if (!confirm('Hapus produk?')) return;
-    await remove(ref(db, 'products/' + id));
+// ─── SECTION NAV ───
+window.go=name=>{
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  $(`sec-${name}`)?.classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>{if(n.textContent.trim().toLowerCase().includes(name.toLowerCase().slice(0,5)))n.classList.add('on');});
+  if(name==='reviews')renderReviews();
 };
 
-/* STATS */
-function updateStats() {
-    document.getElementById('stat-products').textContent = products.length;
-    document.getElementById('stat-sold').textContent = '0';
-}
-
-/* LOGOUT */
-window.logoutSeller = async () => {
-    await signOut(auth);
-    location.href = 'index.html';
+// ─── PRODUCTS ───
+window.openAddProd=()=>{
+  $('prodModalTitle').textContent='Tambah Produk';
+  $('prod_id').value='';
+  ['prod_name','prod_price','prod_stock','prod_cat','prod_desc','prod_img1','prod_img2','prod_img3'].forEach(id=>$(id).value='');
+  $('imgPreviews').innerHTML='';
+  openM('mProd');
 };
 
-/* INIT */
-simulateLoading();
-loadSellerData();
+window.openEditProd=(id)=>{
+  const p=myProducts[id];if(!p)return;
+  $('prodModalTitle').textContent='Edit Produk';
+  $('prod_id').value=id;
+  $('prod_name').value=p.name||'';
+  $('prod_price').value=p.price||0;
+  $('prod_stock').value=p.stock||0;
+  $('prod_cat').value=p.category||'';
+  $('prod_desc').value=p.description||'';
+  $('prod_img1').value=p.images?.[0]||'';
+  $('prod_img2').value=p.images?.[1]||'';
+  $('prod_img3').value=p.images?.[2]||'';
+  updateImgPreviews();
+  openM('mProd');
+};
+
+// Live preview images
+['prod_img1','prod_img2','prod_img3'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('input',updateImgPreviews);
+});
+const updateImgPreviews=()=>{
+  const el=$('imgPreviews');el.innerHTML='';
+  [$('prod_img1')?.value,$('prod_img2')?.value,$('prod_img3')?.value].filter(Boolean).forEach(url=>{
+    const img=document.createElement('img');img.src=url;img.className='img-preview';img.onerror=()=>img.remove();
+    el.appendChild(img);
+  });
+};
+
+window.saveProd=async()=>{
+  const id=$('prod_id').value;
+  const name=$('prod_name').value.trim();
+  const price=Number($('prod_price').value)||0;
+  const stock=Number($('prod_stock').value)||0;
+  if(!name)return toast('Error','Nama produk wajib!','error');
+  if(price<=0)return toast('Error','Harga harus lebih dari 0!','error');
+
+  const imgs=[$('prod_img1').value,$('prod_img2').value,$('prod_img3').value].filter(v=>v.trim());
+  const data={
+    name,price,stock,category:$('prod_cat').value.trim(),description:$('prod_desc').value.trim(),
+    images:imgs,sellerId:CU.uid,sellerName:sellerData.ownerName||CU.displayName||'Seller',
+    storeName:sellerData.storeName||'Toko',storeId:CU.uid,
+    createdAt:id?myProducts[id]?.createdAt||Date.now():Date.now(),updatedAt:Date.now()
+  };
+  try{
+    if(id){await update(ref(db,`products/${id}`),data);}
+    else{await push(ref(db,'products'),data);}
+    closeM('mProd');
+    toast('Berhasil!',id?'Produk diperbarui':'Produk berhasil ditambahkan!');
+  }catch(e){toast('Gagal',e.message,'error');}
+};
+
+window.triggerDelProd=(id,name)=>{
+  $('delProdId').value=id;
+  $('delProdName').textContent=`"${name}" akan dihapus permanen dari marketplace.`;
+  openM('mDelProd');
+};
+window.confirmDelProd=async()=>{
+  const id=$('delProdId').value;
+  await remove(ref(db,`products/${id}`));
+  closeM('mDelProd');toast('Dihapus',`Produk berhasil dihapus`,'warning');
+};
+
+const renderProducts=()=>{
+  const el=$('prodGrid');el.innerHTML='';
+  const list=Object.entries(myProducts);
+  if(list.length===0){el.innerHTML=`<div class="col-span-full text-center py-16 text-slate-600"><i class="fas fa-boxes-stacked text-4xl mb-3 opacity-30"></i><p class="font-bold">Belum ada produk</p><button onclick="openAddProd()" class="btn btn-blue text-xs mt-3"><i class="fas fa-plus"></i> Tambah Sekarang</button></div>`;return;}
+  list.forEach(([id,p])=>{
+    const low=Number(p.stock)>0&&Number(p.stock)<5,out=Number(p.stock)<=0;
+    const card=document.createElement('div');
+    card.className='card hover:border-blue-500/30 transition';
+    card.innerHTML=`
+      <div class="relative overflow-hidden rounded-xl mb-3" style="aspect-ratio:1/1">
+        <img src="${p.images?.[0]||'https://placehold.co/300x300/0f172a/3b82f6?text=Produk'}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/300x300/0f172a/3b82f6?text=Produk'">
+        ${out?'<div class="absolute inset-0 bg-black/60 flex items-center justify-center"><span class="text-xs font-black text-red-400 bg-red-500/20 px-3 py-1 rounded-full border border-red-500/30">HABIS</span></div>':''}
+        ${low?'<span class="absolute top-2 right-2 text-[9px] font-black bg-yellow-500 text-black px-2 py-0.5 rounded-full">LIMIT</span>':''}
+      </div>
+      <p class="text-[9px] text-blue-400 font-bold uppercase mb-0.5">${p.category||'General'}</p>
+      <p class="text-sm font-bold mb-1 line-clamp-1">${p.name}</p>
+      <div class="flex justify-between items-center mb-3">
+        <p class="text-sm font-extrabold text-blue-400">Rp ${Number(p.price||0).toLocaleString('id-ID')}</p>
+        ${p.rating?`<span class="text-yellow-400 text-xs font-bold">★ ${p.rating}</span>`:`<span class="text-slate-600 text-xs">Stok: ${p.stock}</span>`}
+      </div>
+      <div class="flex gap-2">
+        <button onclick="openEditProd('${id}')" class="btn btn-ghost text-xs flex-1 justify-center !py-2"><i class="fas fa-edit"></i> Edit</button>
+        <button onclick="triggerDelProd('${id}','${(p.name||'').replace(/'/g,"\\'")}');" class="btn btn-red text-xs !py-2 !px-3"><i class="fas fa-trash"></i></button>
+      </div>`;
+    el.appendChild(card);
+  });
+};
+
+const renderDashTop=()=>{
+  const el=$('dashTopProds');
+  const sorted=Object.entries(myProducts).sort(([,a],[,b])=>Number(b.sold||0)-Number(a.sold||0)).slice(0,5);
+  if(sorted.length===0){el.innerHTML='<p class="text-slate-600 text-xs text-center py-4">Belum ada produk</p>';return;}
+  el.innerHTML='';
+  sorted.forEach(([id,p])=>{
+    const div=document.createElement('div');
+    div.className='flex items-center gap-3 p-2.5 bg-white/3 rounded-xl mb-2';
+    div.innerHTML=`<img src="${p.images?.[0]||'https://placehold.co/40x40/0f172a/3b82f6?text=P'}" class="w-10 h-10 rounded-lg object-cover shrink-0"><div class="flex-1 min-w-0"><p class="text-xs font-bold truncate">${p.name}</p><p class="text-[10px] text-slate-500">Stok: ${p.stock} ${p.rating?`· ★ ${p.rating}`:''}</p></div><span class="text-blue-400 text-xs font-bold shrink-0">Rp ${Number(p.price||0).toLocaleString('id-ID')}</span>`;
+    el.appendChild(div);
+  });
+};
+
+// ─── ORDERS ───
+const statusMap={
+  confirm:   {l:'Konfirmasi Pesanan', b:'b-confirm', desc:'Pembeli sudah pesan, tunggu konfirmasimu'},
+  pending:   {l:'Pending Pembayaran',  b:'b-pending', desc:'Kamu sudah konfirmasi, tunggu pembayaran'},
+  processing:{l:'Sedang Diproses',     b:'b-process', desc:'Pembayaran diterima, sedang diproses'},
+  completed: {l:'Selesai',             b:'b-done',    desc:'Transaksi selesai'},
+  cancelled: {l:'Ditolak / Batal',     b:'b-cancel',  desc:'Pesanan ditolak atau dibatalkan'},
+};
+
+const renderDashOrders=()=>{
+  const el=$('dashOrders');
+  let list=[];
+  Object.entries(myOrders).forEach(([uid,uo])=>Object.entries(uo).forEach(([oid,o])=>{if(o.status==='confirm'||o.status==='pending'||o.status==='processing')list.push({uid,oid,...o});}));
+  list.sort((a,b)=>b.createdAt-a.createdAt);
+  if(list.length===0){el.innerHTML='<p class="text-slate-600 text-xs text-center py-4">Tidak ada pesanan perlu tindakan 🎉</p>';return;}
+  el.innerHTML='';
+  list.slice(0,5).forEach(o=>{
+    const st=statusMap[o.status]||statusMap.confirm;
+    const div=document.createElement('div');
+    div.className='flex items-center gap-3 p-3 bg-white/3 rounded-xl mb-2 hover:bg-white/5 cursor-pointer transition';
+    div.onclick=()=>openOrderDetail(o.uid,o.oid);
+    div.innerHTML=`<div class="flex-1 min-w-0"><p class="text-sm font-bold truncate">${o.productName||'-'}</p><p class="text-xs text-slate-500">${o.buyerName||'-'} · ${o.createdAt?new Date(o.createdAt).toLocaleDateString('id-ID'):'-'}</p></div><span class="badge ${st.b} shrink-0">${st.l}</span>`;
+    el.appendChild(div);
+  });
+};
+
+window.renderOrders=()=>{
+  const el=$('orderCards');el.innerHTML='';
+  const filter=$('orderFilter')?.value||'all';
+  let list=[];
+  Object.entries(myOrders).forEach(([uid,uo])=>Object.entries(uo).forEach(([oid,o])=>list.push({uid,oid,...o})));
+  list=list.filter(o=>filter==='all'||o.status===filter).sort((a,b)=>b.createdAt-a.createdAt);
+  if(list.length===0){el.innerHTML='<div class="card text-center py-12 text-slate-600"><i class="fas fa-receipt text-4xl mb-3 opacity-30"></i><p class="font-bold">Tidak ada pesanan</p></div>';return;}
+  list.forEach(o=>{
+    const st=statusMap[o.status]||statusMap.confirm;
+    const dt=o.createdAt?new Date(o.createdAt).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'}):'-';
+    const card=document.createElement('div');
+    card.className='order-card cursor-pointer';
+    card.onclick=()=>openOrderDetail(o.uid,o.oid);
+    card.innerHTML=`
+      <div class="flex items-start justify-between mb-2 gap-3">
+        <div class="flex-1 min-w-0">
+          <p class="font-bold">${o.productName||'-'}</p>
+          <p class="text-xs text-slate-500">${dt} · ID: ${o.oid.slice(-6).toUpperCase()}</p>
+        </div>
+        <span class="badge ${st.b} shrink-0">${st.l}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <div><p class="text-sm font-bold text-blue-400">Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}</p><p class="text-xs text-slate-500">${o.buyerName||'-'}</p></div>
+        <span class="text-blue-400 text-xs font-bold flex items-center gap-1">Detail <i class="fas fa-chevron-right text-[10px]"></i></span>
+      </div>`;
+    el.appendChild(card);
+  });
+};
+
+window.openOrderDetail=(uid,oid)=>{
+  let o=null;
+  if(myOrders[uid]&&myOrders[uid][oid])o={...myOrders[uid][oid],uid,oid};
+  if(!o)return;
+  const st=statusMap[o.status]||statusMap.confirm;
+  $('ord_idDisplay').textContent=`ID: ${oid.slice(-8).toUpperCase()}`;
+  $('ord_prodName').textContent=o.productName||'-';
+  $('ord_price').textContent=`Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}`;
+  $('ord_buyer').textContent=o.buyerName||'-';
+  $('ord_buyerWa').textContent=o.buyerWa||'-';
+  $('ord_statusBadge').innerHTML=`<span class="badge ${st.b}">${st.l}</span><p class="text-xs text-slate-500 mt-1">${st.desc}</p>`;
+  // Reject reason
+  if(o.status==='cancelled'&&o.cancelReason){
+    $('ord_rejectReason').classList.remove('hidden');
+    $('ord_rejectText').textContent=o.cancelReason;
+  } else {
+    $('ord_rejectReason').classList.add('hidden');
+  }
+  // WA Template
+  const p=myProducts[o.productId]||{};
+  const waMsg=
+`Halo ${o.buyerName||'Pelanggan'},
+
+✅ Update Pesanan Kamu!
+
+🏪 Toko: ${sellerData.storeName||'XREZZKY Seller'}
+📋 ID Pesanan: ${oid.slice(-8).toUpperCase()}
+📦 Nama Produk: ${o.productName||'-'}
+📝 Deskripsi: ${p.description||'-'}
+🏷️ Kategori: ${p.category||'-'}
+💰 Harga: Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}
+💳 Total: Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}
+🆔 ID Produk: ${o.productId||'-'}
+
+📊 Status: ${st.l}
+${o.status==='pending'?`\n💳 Silakan lakukan pembayaran dan konfirmasi ke kami.\n`:''}${o.status==='processing'?`\n⚙️ Pesanan sedang kami proses, harap tunggu ya!\n`:''}${o.status==='completed'?`\n✅ Pesanan selesai! Terima kasih sudah berbelanja 🙏\n`:''}
+— ${sellerData.storeName||'XREZZKY Store'} via XREZZKY OFFICIAL STORE`;
+  $('ord_waMsg').textContent=waMsg;
+  window._currentWaMsg=waMsg;
+  window._currentOrderBuyerWa=(o.buyerWa||'').replace(/\D/g,'');
+
+  // Actions
+  const actions=$('ord_actions');actions.innerHTML='';
+  const wa=`<button onclick="sendWaOrder()" class="btn btn-green text-xs"><i class="fas fa-whatsapp" style="font-family:'Font Awesome 6 Brands'"></i> Hubungi WA</button>`;
+  if(o.status==='confirm'){
+    actions.innerHTML=`
+      ${wa}
+      <button onclick="updateOrderStatus('${uid}','${oid}','pending')" class="btn btn-yellow text-xs"><i class="fas fa-check"></i> Konfirmasi</button>
+      <button onclick="openRejectModal('${uid}','${oid}')" class="btn btn-red text-xs"><i class="fas fa-times"></i> Tolak</button>`;
+  } else if(o.status==='pending'){
+    actions.innerHTML=`${wa}<button onclick="updateOrderStatus('${uid}','${oid}','processing')" class="btn btn-blue text-xs"><i class="fas fa-spinner"></i> Tandai Diproses</button>`;
+  } else if(o.status==='processing'){
+    actions.innerHTML=`${wa}<button onclick="updateOrderStatus('${uid}','${oid}','completed')" class="btn btn-green text-xs"><i class="fas fa-check-double"></i> Tandai Selesai</button>`;
+  } else {
+    actions.innerHTML=wa;
+  }
+  openM('mOrder');
+};
+
+window.sendWaOrder=()=>{
+  const wa=window._currentOrderBuyerWa||sellerData.whatsapp?.replace(/\D/g,'')||'';
+  if(!wa){toast('Info','Nomor WA pembeli tidak tersedia','info');return;}
+  window.open(`https://wa.me/${wa}?text=${encodeURIComponent(window._currentWaMsg||'')}`, '_blank');
+};
+window.copyWaMsg=()=>{
+  navigator.clipboard?.writeText(window._currentWaMsg||'').then(()=>toast('Disalin!','Pesan WA berhasil disalin'));
+};
+
+window.updateOrderStatus=async(uid,oid,status)=>{
+  try{
+    await update(ref(db,`orders/${uid}/${oid}`),{status});
+    closeM('mOrder');
+    toast('Status diupdate',`Pesanan → ${statusMap[status]?.l||status}`);
+    renderOrders();renderDashOrders();
+  }catch(e){toast('Gagal',e.message,'error');}
+};
+
+window.openRejectModal=(uid,oid)=>{
+  $('rejectOrderUid').value=uid;$('rejectOrderId').value=oid;
+  $('rejectReason').value='';
+  openM('mReject');
+};
+window.confirmReject=async()=>{
+  const uid=$('rejectOrderUid').value,oid=$('rejectOrderId').value;
+  const reason=$('rejectReason').value.trim();
+  if(!reason)return toast('Error','Alasan wajib diisi!','error');
+  await update(ref(db,`orders/${uid}/${oid}`),{status:'cancelled',cancelReason:reason});
+  closeM('mReject');closeM('mOrder');
+  toast('Pesanan Ditolak','Pembeli akan melihat alasan penolakan','warning');
+};
+
+// ─── STORE PROFILE ───
+const loadStoreForm=()=>{
+  $('st_name').value=sellerData.storeName||'';
+  $('st_cat').value=sellerData.category||'';
+  $('st_desc').value=sellerData.storeDesc||'';
+  $('st_city').value=sellerData.city||'';
+  const wa=(sellerData.whatsapp||'').replace('+62','').replace(/\D/g,'');
+  $('st_wa').value=wa;
+  updatePreview();
+};
+
+const updatePreview=()=>{
+  const name=$('st_name').value||'Nama Toko';
+  const cat=$('st_cat').value||'Kategori';
+  const city=$('st_city').value||'Kota';
+  const desc=$('st_desc').value||'Deskripsi toko belum diisi.';
+  $('prev_avatar').textContent=name.charAt(0).toUpperCase();
+  $('prev_name').textContent=name;
+  $('prev_cat').textContent=cat;
+  $('prev_city').textContent=city;
+  $('prev_desc').textContent=desc;
+};
+['st_name','st_cat','st_city','st_desc'].forEach(id=>$(id)?.addEventListener('input',updatePreview));
+
+const updateWaPreview=()=>{
+  const preview=$('waPreview');if(!preview)return;
+  preview.textContent=`Halo ${sellerData.storeName||'[Nama Toko]'},\nsaya ingin membeli:\n\n*Produk:* [nama produk]\n*Harga:* Rp [harga]\n*ID Produk:* [id]\n\n*Pembeli:* [nama]\n*Email:* [email]\n*No WA:* [wa pembeli]\n\nMohon instruksi selanjutnya.`;
+};
+
+window.saveStoreInfo=async()=>{
+  const upd={storeName:$('st_name').value.trim(),category:$('st_cat').value.trim(),storeDesc:$('st_desc').value.trim(),city:$('st_city').value.trim()};
+  if(!upd.storeName)return toast('Error','Nama toko wajib!','error');
+  try{
+    await update(ref(db,`seller_applications/${CU.uid}`),upd);
+    await update(ref(db,`users/${CU.uid}`),{storeName:upd.storeName});
+    Object.assign(sellerData,upd);
+    $('sStoreName').textContent=upd.storeName;
+    $('storeNameHeader').textContent=upd.storeName;
+    toast('Tersimpan!','Info toko berhasil diperbarui');
+  }catch(e){toast('Gagal',e.message,'error');}
+};
+
+window.saveStoreContact=async()=>{
+  const waRaw=$('st_wa').value.trim().replace(/\D/g,'');
+  if(!waRaw||waRaw.length<9)return toast('Error','Nomor WA tidak valid!','error');
+  const wa=`+62${waRaw}`;
+  try{
+    await update(ref(db,`seller_applications/${CU.uid}`),{whatsapp:wa});
+    sellerData.whatsapp=wa;
+    toast('Tersimpan!','Nomor WA berhasil diperbarui');
+  }catch(e){toast('Gagal',e.message,'error');}
+};
+
+// ─── REVIEWS ───
+const renderReviews=async()=>{
+  const el=$('reviewList');if(!el)return;
+  el.innerHTML='';
+  let allReviews=[],totalRating=0,ratedProds=0;
+  for(const[id,p]of Object.entries(myProducts)){
+    if(!p.reviews)continue;
+    ratedProds++;
+    Object.values(p.reviews).forEach(r=>{
+      allReviews.push({...r,productName:p.name,productId:id});
+      totalRating+=r.stars||0;
+    });
+  }
+  const avg=allReviews.length>0?(totalRating/allReviews.length).toFixed(1):'-';
+  $('rv-avg').textContent=avg!=='-'?`${avg}★`:'-';
+  $('rv-total').textContent=allReviews.length;
+  $('rv-prods').textContent=ratedProds;
+
+  if(allReviews.length===0){el.innerHTML='<div class="card text-center py-12 text-slate-600"><i class="fas fa-star text-4xl mb-3 opacity-30"></i><p class="font-bold">Belum ada ulasan</p></div>';return;}
+  allReviews.sort((a,b)=>b.createdAt-a.createdAt).forEach(r=>{
+    let stars='';
+    for(let i=1;i<=5;i++)stars+=`<span style="color:${i<=r.stars?'#f59e0b':'#374151'}">★</span>`;
+    const dt=new Date(r.createdAt).toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'});
+    const div=document.createElement('div');
+    div.className='card mb-3';
+    div.innerHTML=`
+      <div class="flex items-center justify-between mb-2">
+        <div><p class="text-xs font-bold">${r.productName||'-'}</p><p class="text-[10px] text-slate-500">${r.userName||'User'} · ${dt}</p></div>
+        <div class="flex items-center gap-1 text-base">${stars}</div>
+      </div>
+      ${r.comment?`<p class="text-sm text-slate-400 leading-relaxed bg-white/3 p-3 rounded-xl">"${r.comment}"</p>`:'<p class="text-xs text-slate-600 italic">Tidak ada komentar</p>'}`;
+    el.appendChild(div);
+  });
+};
 </script>
 </body>
 </html>
