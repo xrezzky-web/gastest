@@ -22,12 +22,14 @@
         }
         .glass { background: rgba(14,21,32,0.92); backdrop-filter: blur(16px); border: 1px solid var(--bd); }
         .inp { width:100%; padding:14px; border-radius:12px; background:var(--sf2); border:1px solid var(--bd); color:#f1f5f9; }
-        .inp:focus { border-color: var(--bl); }
-        .btn { padding:12px 20px; border-radius:12px; font-weight:700; cursor:pointer; }
+        .inp:focus { border-color: var(--bl); outline: none; }
+        .btn { padding:12px 20px; border-radius:12px; font-weight:700; cursor:pointer; transition: all 0.2s; }
         .bp { background:var(--bl); color:white; }
         .by { background:var(--yw); color:black; }
         .bg { background:var(--gr); color:white; }
-        .tab-active { border-bottom: 3px solid var(--bl); color: white; }
+        .tab-active { border-bottom: 3px solid var(--bl); color: white; font-weight: 600; }
+        .toast { animation: slideUp 0.3s ease forwards; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity:0; } to { transform: translateY(0); opacity:1; } }
     </style>
 </head>
 <body class="pb-20">
@@ -35,7 +37,7 @@
 <div id="loading" class="fixed inset-0 bg-[#080c14] flex flex-col items-center justify-center z-50">
     <div style="font-family:'Syne',sans-serif;" class="text-4xl font-bold mb-6 text-blue-400">Seller Dashboard</div>
     <div class="w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
-        <div id="progressBar" class="h-full bg-blue-500 transition-all" style="width:0%"></div>
+        <div id="progressBar" class="h-full bg-blue-500 transition-all duration-1000" style="width:0%"></div>
     </div>
 </div>
 
@@ -43,7 +45,7 @@
     <div class="flex items-center justify-between mb-8">
         <div>
             <h1 style="font-family:'Syne',sans-serif;" class="text-3xl font-bold">Seller Dashboard</h1>
-            <p id="storeName" class="text-gray-400"></p>
+            <p id="storeName" class="text-gray-400">Memuat...</p>
         </div>
         <button onclick="logoutSeller()" class="btn border border-red-500 text-red-400 hover:bg-red-500/10">Logout</button>
     </div>
@@ -90,7 +92,7 @@
             <input id="prodCategory" type="text" placeholder="Kategori (contoh: Fashion, Elektronik)" class="inp mb-3">
             <textarea id="prodDesc" placeholder="Deskripsi produk" class="inp h-24 mb-4"></textarea>
             <input id="prodImage" type="text" placeholder="URL Gambar (https://...)" class="inp mb-4">
-            <button onclick="saveProduct()" class="btn bg w-full py-4">Simpan Produk</button>
+            <button onclick="saveProduct()" class="btn bg w-full py-4 text-lg">Simpan Produk</button>
         </div>
     </div>
 
@@ -98,6 +100,9 @@
         <div id="storeInfo" class="glass p-6 rounded-3xl"></div>
     </div>
 </div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 right-6 hidden bg-gray-800 border border-gray-700 text-white px-6 py-3 rounded-2xl shadow-2xl toast"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -124,23 +129,49 @@
     let orders = [];
     let currentEditProductId = null;
 
+    // Toast Notification
+    function showToast(message, type = 'info') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.remove('hidden', 'bg-green-600', 'bg-red-600');
+        
+        if (type === 'success') toast.classList.add('bg-green-600');
+        else if (type === 'error') toast.classList.add('bg-red-600');
+        
+        setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 3000);
+    }
+
     // Loading
     function simulateLoading() {
-        setTimeout(() => document.getElementById('loading').remove(), 1200);
+        const progress = document.getElementById('progressBar');
+        let width = 0;
+        const interval = setInterval(() => {
+            width += Math.random() * 25;
+            if (width > 95) width = 95;
+            progress.style.width = width + '%';
+        }, 80);
+
+        setTimeout(() => {
+            clearInterval(interval);
+            progress.style.width = '100%';
+            setTimeout(() => document.getElementById('loading').remove(), 300);
+        }, 1200);
     }
 
     // Switch Tab
-    function switchTab(tab) {
+    window.switchTab = function(tab) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
         document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
 
         document.querySelectorAll('.tab').forEach(el => el.classList.remove('tab-active'));
         document.getElementById(`tab-${tab}`).classList.add('tab-active');
-    }
+    };
 
-    // Realtime Data
+    // Load Seller Data
     function loadSellerData() {
-        onAuthStateChanged(auth, async (user) => {
+        onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = 'index.html';
                 return;
@@ -153,31 +184,37 @@
                     sellerData = snap.val();
                     document.getElementById('storeName').textContent = sellerData.storeName || 'Toko Saya';
                     loadStoreInfo();
+                } else {
+                    document.getElementById('storeName').textContent = 'Toko Belum Diatur';
                 }
             });
 
-            // Load Products (hanya milik seller ini)
+            // Load Products
             onValue(ref(db, 'products'), (snap) => {
                 products = [];
-                snap.forEach(child => {
-                    const p = child.val();
-                    if (p.sellerId === user.uid) {
-                        products.push({ id: child.key, ...p });
-                    }
-                });
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        const p = child.val();
+                        if (p.sellerId === user.uid) {
+                            products.push({ id: child.key, ...p });
+                        }
+                    });
+                }
                 renderSellerProducts();
                 updateStats();
             });
 
-            // Load Orders (hanya untuk seller ini)
+            // Load Orders
             onValue(ref(db, 'orders'), (snap) => {
                 orders = [];
-                snap.forEach(child => {
-                    const o = child.val();
-                    if (o.sellerId === user.uid) {
-                        orders.push({ id: child.key, ...o });
-                    }
-                });
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        const o = child.val();
+                        if (o.sellerId === user.uid) {
+                            orders.push({ id: child.key, ...o });
+                        }
+                    });
+                }
                 renderOrders();
             });
         });
@@ -185,20 +222,24 @@
 
     function renderSellerProducts() {
         const container = document.getElementById('productList');
-        container.innerHTML = '';
+        container.innerHTML = products.length === 0 
+            ? `<p class="text-center text-gray-400 py-10">Belum ada produk. Tambahkan produk baru di tab "Tambah Produk".</p>`
+            : '';
+
         products.forEach(p => {
             const div = document.createElement('div');
-            div.className = 'glass p-4 rounded-2xl flex gap-4';
+            div.className = 'glass p-4 rounded-2xl flex gap-4 items-center';
             div.innerHTML = `
-                <img src="${p.images && p.images[0] ? p.images[0] : 'https://placehold.co/80x80/1a2333/64748b?text=No+Img'}" class="w-20 h-20 object-cover rounded-xl">
-                <div class="flex-1">
-                    <p class="font-medium">${p.name}</p>
-                    <p class="text-blue-400">Rp ${Number(p.price).toLocaleString('id-ID')}</p>
+                <img src="${p.images && p.images[0] ? p.images[0] : 'https://placehold.co/80x80/1a2333/64748b?text=No+Img'}" 
+                     class="w-20 h-20 object-cover rounded-xl flex-shrink-0">
+                <div class="flex-1 min-w-0">
+                    <p class="font-medium truncate">${p.name}</p>
+                    <p class="text-blue-400">Rp ${Number(p.price || 0).toLocaleString('id-ID')}</p>
                     <p class="text-xs text-gray-400">Stok: ${p.stock || 0}</p>
                 </div>
-                <div>
-                    <button onclick="editProduct('${p.id}')" class="btn border border-yellow-400 text-yellow-400 text-xs px-3 py-1 mb-2">Edit</button>
-                    <button onclick="deleteProduct('${p.id}')" class="btn border border-red-500 text-red-400 text-xs px-3 py-1">Hapus</button>
+                <div class="flex flex-col gap-2">
+                    <button onclick="editProduct('${p.id}')" class="btn border border-yellow-400 text-yellow-400 text-xs px-4 py-1">Edit</button>
+                    <button onclick="deleteProduct('${p.id}')" class="btn border border-red-500 text-red-400 text-xs px-4 py-1">Hapus</button>
                 </div>
             `;
             container.appendChild(div);
@@ -207,23 +248,28 @@
 
     function renderOrders() {
         const container = document.getElementById('orderList');
-        container.innerHTML = '';
+        container.innerHTML = orders.length === 0 
+            ? `<p class="text-center text-gray-400 py-10">Belum ada pesanan masuk.</p>`
+            : '';
+
         orders.forEach(order => {
             const div = document.createElement('div');
             div.className = 'glass p-5 rounded-2xl';
             div.innerHTML = `
                 <div class="flex justify-between mb-3">
-                    <span class="font-mono text-sm">${order.orderId}</span>
-                    <span class="px-3 py-1 text-xs rounded-full ${order.status === 'completed' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}">
+                    <span class="font-mono text-sm">${order.orderId || order.id}</span>
+                    <span class="px-3 py-1 text-xs rounded-full ${order.status === 'completed' ? 'bg-green-500/20 text-green-400' : order.status === 'rejected' ? 'bg-red-500/20 text-red-400' : 'bg-yellow-500/20 text-yellow-400'}">
                         ${order.status || 'pending'}
                     </span>
                 </div>
-                <p class="font-medium">${order.userName}</p>
-                <p class="text-sm text-gray-400">\( {order.items.map(i => ` \){i.name} x${i.qty}`).join(', ')}</p>
-                <p class="text-blue-400 font-bold mt-2">Rp ${Number(order.total).toLocaleString('id-ID')}</p>
+                <p class="font-medium">${order.userName || 'Pembeli'}</p>
+                <p class="text-sm text-gray-400 mt-1">
+                    \( {order.items ? order.items.map(i => ` \){i.name} ×${i.qty}`).join(', ') : 'Tidak ada item'}
+                </p>
+                <p class="text-blue-400 font-bold mt-3">Rp ${Number(order.total || 0).toLocaleString('id-ID')}</p>
                 
-                <div class="mt-4 flex gap-2">
-                    <select onchange="updateOrderStatus('${order.id}', this.value)" class="inp text-sm">
+                <div class="mt-4">
+                    <select onchange="updateOrderStatus('${order.id}', this.value)" class="inp text-sm py-2">
                         <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
                         <option value="processed" ${order.status === 'processed' ? 'selected' : ''}>Diproses</option>
                         <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Dikirim</option>
@@ -239,24 +285,24 @@
     window.updateOrderStatus = async (orderId, status) => {
         try {
             await update(ref(db, 'orders/' + orderId), { status });
-            if (status === 'rejected') {
-                // Kembalikan stok (logic sederhana)
-                showToast('Pesanan ditolak, stok akan dikembalikan');
-            }
-            showToast(`Status diubah menjadi ${status}`);
+            showToast(`Status pesanan diubah menjadi ${status}`, 'success');
         } catch (e) {
-            showToast('Gagal update status');
+            console.error(e);
+            showToast('Gagal mengubah status', 'error');
         }
     };
 
     function loadStoreInfo() {
         const el = document.getElementById('storeInfo');
+        if (!sellerData) return;
         el.innerHTML = `
-            <h3 class="font-bold mb-4">Info Toko</h3>
-            <p><strong>Nama Toko:</strong> ${sellerData.storeName}</p>
-            <p><strong>Kota:</strong> ${sellerData.city}</p>
-            <p><strong>WhatsApp:</strong> ${sellerData.whatsapp}</p>
-            <p class="mt-4 text-sm text-gray-400">${sellerData.description || ''}</p>
+            <h3 class="font-bold mb-4 text-lg">Info Toko</h3>
+            <div class="space-y-2">
+                <p><strong>Nama Toko:</strong> ${sellerData.storeName || '-'}</p>
+                <p><strong>Kota:</strong> ${sellerData.city || '-'}</p>
+                <p><strong>WhatsApp:</strong> ${sellerData.whatsapp || '-'}</p>
+                <p class="text-sm text-gray-400 mt-4">${sellerData.description || 'Tidak ada deskripsi.'}</p>
+            </div>
         `;
     }
 
@@ -268,29 +314,36 @@
         const desc = document.getElementById('prodDesc').value.trim();
         const imageUrl = document.getElementById('prodImage').value.trim();
 
-        if (!name || !price || !stock) return showToast('Nama, harga, dan stok wajib diisi');
+        if (!name || isNaN(price) || isNaN(stock) || price <= 0 || stock < 0) {
+            showToast('Nama, harga (>0), dan stok wajib diisi dengan benar', 'error');
+            return;
+        }
 
         const productData = {
-            name, price, stock, category: category || 'Lainnya',
-            description: desc, 
+            name,
+            price,
+            stock,
+            category: category || 'Lainnya',
+            description: desc,
             images: imageUrl ? [imageUrl] : [],
             sellerId: currentUser.uid,
-            sellerName: sellerData.storeName,
+            sellerName: sellerData ? sellerData.storeName : 'Toko Saya',
             updatedAt: Date.now()
         };
 
         try {
             if (currentEditProductId) {
                 await update(ref(db, 'products/' + currentEditProductId), productData);
-                showToast('Produk berhasil diperbarui');
+                showToast('Produk berhasil diperbarui', 'success');
             } else {
                 await push(ref(db, 'products'), productData);
-                showToast('Produk berhasil ditambahkan');
+                showToast('Produk berhasil ditambahkan', 'success');
             }
-            switchTab(0); // Kembali ke tab produk
+            switchTab(0);
             clearProductForm();
         } catch (e) {
-            showToast('Gagal menyimpan produk');
+            console.error(e);
+            showToast('Gagal menyimpan produk', 'error');
         }
     };
 
@@ -306,11 +359,12 @@
 
     window.editProduct = (id) => {
         const p = products.find(prod => prod.id === id);
-        if (!p) return;
+        if (!p) return showToast('Produk tidak ditemukan', 'error');
+
         currentEditProductId = id;
-        document.getElementById('prodName').value = p.name;
-        document.getElementById('prodPrice').value = p.price;
-        document.getElementById('prodStock').value = p.stock;
+        document.getElementById('prodName').value = p.name || '';
+        document.getElementById('prodPrice').value = p.price || '';
+        document.getElementById('prodStock').value = p.stock || '';
         document.getElementById('prodCategory').value = p.category || '';
         document.getElementById('prodDesc').value = p.description || '';
         document.getElementById('prodImage').value = p.images && p.images[0] ? p.images[0] : '';
@@ -318,27 +372,32 @@
     };
 
     window.deleteProduct = async (id) => {
-        if (!confirm('Yakin hapus produk ini?')) return;
+        if (!confirm('Yakin ingin menghapus produk ini?')) return;
         try {
             await remove(ref(db, 'products/' + id));
-            showToast('Produk dihapus');
+            showToast('Produk berhasil dihapus', 'success');
         } catch (e) {
-            showToast('Gagal menghapus');
+            console.error(e);
+            showToast('Gagal menghapus produk', 'error');
         }
     };
 
     function updateStats() {
         document.getElementById('stat-products').textContent = products.length;
-        // Total terjual bisa dihitung dari orders nanti
+        // Total terjual bisa dikembangkan nanti dari orders
         document.getElementById('stat-sold').textContent = '0';
     }
 
     window.logoutSeller = async () => {
-        await signOut(auth);
-        window.location.href = 'index.html';
+        try {
+            await signOut(auth);
+            window.location.href = 'index.html';
+        } catch (e) {
+            showToast('Gagal logout', 'error');
+        }
     };
 
-    // Init
+    // Inisialisasi
     simulateLoading();
     loadSellerData();
 </script>
