@@ -1,114 +1,1335 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 Not Found</title> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; margin: 0; display: none; /* Sembunyikan semua body dulu */ }
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        header { background: #0f172a; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
-        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f1f5f9; font-size: 0.8rem; text-transform: uppercase; color: #64748b; }
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
-        .pending { background: #fef9c3; color: #854d0e; }
-        .approved { background: #dcfce7; color: #166534; }
-        .btn { padding: 6px 12px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; font-size: 0.8rem; }
-        .btn-ok { background: #22c55e; color: white; margin-right: 5px; }
-        .btn-del { background: #ef4444; color: white; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XREZZKY | Admin Panel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--bg:#05080f;--s1:#0f172a;--s2:#1e293b;--blue:#3b82f6;--red:#ef4444;--green:#22c55e;--yellow:#f59e0b;--border:rgba(255,255,255,.07);--glass:rgba(15,23,42,.85)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:#f1f5f9;overflow-x:hidden;min-height:100vh}
+.syne{font-family:'Syne',sans-serif}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--s2);border-radius:8px}
+.glass{background:var(--glass);backdrop-filter:blur(14px);border:1px solid var(--border);border-radius:16px}
+.card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px}
+.inp{width:100%;background:#070b14;border:1px solid var(--border);padding:11px 14px;border-radius:10px;color:#f1f5f9;font-family:'Plus Jakarta Sans',sans-serif;font-size:.875rem;transition:.25s}
+.inp:focus{border-color:var(--blue);outline:none;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+.btn{padding:10px 20px;border-radius:10px;font-weight:700;font-size:.8rem;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn:active{transform:scale(.97)}
+.btn-blue{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
+.btn-blue:hover{opacity:.9}
+.btn-red{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+.btn-red:hover{opacity:.9}
+.btn-green{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
+.btn-green:hover{opacity:.9}
+.btn-yellow{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+.btn-yellow:hover{opacity:.9}
+.btn-ghost{background:rgba(255,255,255,.06);color:#94a3b8;border:1px solid var(--border)}
+.btn-ghost:hover{background:rgba(255,255,255,.1);color:#f1f5f9}
+/* SIDEBAR */
+#sidebar{width:240px;min-height:100vh;background:var(--s1);border-right:1px solid var(--border);position:fixed;left:0;top:0;z-index:50;transition:.3s}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;cursor:pointer;transition:.2s;font-size:.82rem;font-weight:600;color:#64748b;margin:2px 8px}
+.nav-item:hover{background:rgba(255,255,255,.05);color:#f1f5f9}
+.nav-item.active{background:rgba(59,130,246,.15);color:var(--blue);border-left:3px solid var(--blue)}
+.nav-item.active{padding-left:13px}
+/* CONTENT */
+#content{margin-left:240px;min-height:100vh;padding:28px}
+/* OVERLAY */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(8px);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--s1);border:1px solid var(--border);border-radius:20px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative;animation:sup .3s ease}
+.modal-lg{max-width:720px}
+@keyframes sup{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+/* STAT CARDS */
+.stat-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:20px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:-40%;right:-20%;width:140px;height:140px;border-radius:50%;opacity:.08}
+.stat-blue::before{background:#3b82f6}
+.stat-green::before{background:#22c55e}
+.stat-yellow::before{background:#f59e0b}
+.stat-red::before{background:#ef4444}
+.stat-purple::before{background:#a855f7}
+/* BADGE */
+.badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.badge-pending{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.3)}
+.badge-approved{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
+.badge-rejected{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)}
+.badge-banned{background:rgba(239,68,68,.25);color:#f87171;border:1px solid rgba(239,68,68,.4)}
+.badge-buyer{background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3)}
+.badge-seller{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3)}
+.badge-admin{background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3)}
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;padding:10px 14px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#475569;border-bottom:1px solid var(--border)}
+.tbl td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.82rem;vertical-align:middle}
+.tbl tr:hover td{background:rgba(255,255,255,.02)}
+/* TOAST */
+#toast{position:fixed;top:20px;right:20px;z-index:9999;transform:translateX(150%);transition:.4s}
+.toast-inner{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;min-width:280px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+/* SPINNER */
+.spin{width:20px;height:20px;border:2px solid var(--border);border-top:2px solid var(--blue);border-radius:50%;animation:spinning 1s linear infinite;display:inline-block}
+@keyframes spinning{to{transform:rotate(360deg)}}
+/* CONFIRM CODE INPUT */
+.code-input{letter-spacing:.3em;font-size:1.1rem;font-weight:800;text-align:center}
+/* TAG CHIPS */
+.tag-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.3);color:#93c5fd;padding:4px 12px;border-radius:20px;font-size:.75rem;font-weight:700}
+/* TOGGLE */
+.toggle{position:relative;width:44px;height:24px;cursor:pointer}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:#374151;border-radius:12px;transition:.3s}
+.toggle-slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s}
+.toggle input:checked + .toggle-slider{background:var(--blue)}
+.toggle input:checked + .toggle-slider::before{transform:translateX(20px)}
+/* SECTION */
+.section{display:none}.section.active{display:block}
+@keyframes fin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.section.active{animation:fin .35s ease}
+/* LOCK SCREEN */
+#lockScreen{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center}
+/* TEXTAREA */
+textarea.inp{resize:vertical;min-height:80px}
+select.inp option{background:var(--s1)}
+</style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h2 style="margin:0">🛡️ Control Center</h2>
-        <button onclick="location.reload()" class="btn" style="background:#334155; color:white;">Refresh Data</button>
-    </header>
+<!-- LOCK SCREEN -->
+<div id="lockScreen">
+  <div class="text-center mb-8">
+    <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-900/50">
+      <i class="fas fa-shield-halved text-white text-2xl"></i>
+    </div>
+    <h1 class="text-2xl font-extrabold syne text-white mb-1">XREZZKY ADMIN</h1>
+    <p class="text-sm text-slate-500">Masuk dengan akun admin yang terdaftar</p>
+  </div>
+  <div style="width:100%;max-width:360px" class="card">
+    <div class="mb-4">
+      <label class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1.5 block">Email Admin</label>
+      <input id="lockEmail" type="email" class="inp" placeholder="xrezzkystore.idn@gmail.com">
+    </div>
+    <div class="mb-5">
+      <label class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1.5 block">Password</label>
+      <input id="lockPass" type="password" class="inp" placeholder="Password">
+    </div>
+    <button onclick="doAdminLogin()" class="btn btn-blue w-full justify-center py-3">
+      <i class="fas fa-sign-in-alt"></i> Masuk ke Admin Panel
+    </button>
+    <p id="lockErr" class="text-red-400 text-xs text-center mt-3 hidden"></p>
+  </div>
+</div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Toko</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody id="reg-list">
-            </tbody>
-    </table>
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="p-5 border-b border-white/5 mb-3">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center"><i class="fas fa-bolt text-white text-sm"></i></div>
+      <div>
+        <p class="font-extrabold syne text-sm text-white">XREZZKY</p>
+        <p class="text-[10px] text-red-400 font-black uppercase tracking-widest">Admin Panel</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="px-3">
+    <p class="text-[9px] text-slate-600 font-black uppercase tracking-widest px-3 mb-2 mt-3">Overview</p>
+    <div class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-gauge-high w-4"></i> Dashboard</div>
+    <div class="nav-item" onclick="showSection('analytics')"><i class="fas fa-chart-line w-4"></i> Analitik</div>
+
+    <p class="text-[9px] text-slate-600 font-black uppercase tracking-widest px-3 mb-2 mt-5">Marketplace</p>
+    <div class="nav-item" onclick="showSection('marketplace')"><i class="fas fa-sliders w-4"></i> Pengaturan Toko</div>
+    <div class="nav-item" onclick="showSection('products')"><i class="fas fa-boxes-stacked w-4"></i> Semua Produk</div>
+    <div class="nav-item" onclick="showSection('categories')"><i class="fas fa-tags w-4"></i> Kategori & Banner</div>
+    <div class="nav-item" onclick="showSection('orders')"><i class="fas fa-receipt w-4"></i> Kelola Order</div>
+
+    <p class="text-[9px] text-slate-600 font-black uppercase tracking-widest px-3 mb-2 mt-5">Pengguna</p>
+    <div class="nav-item" onclick="showSection('sellers')"><i class="fas fa-store w-4"></i> Seller & Toko <span id="pendingBadge" class="ml-auto text-[9px] bg-yellow-500 text-black px-1.5 py-0.5 rounded-full font-black hidden">0</span></div>
+    <div class="nav-item" onclick="showSection('buyers')"><i class="fas fa-users w-4"></i> Pembeli</div>
+
+    <p class="text-[9px] text-slate-600 font-black uppercase tracking-widest px-3 mb-2 mt-5">Sistem</p>
+    <div class="nav-item" onclick="showSection('security')"><i class="fas fa-lock w-4"></i> Keamanan</div>
+  </div>
+
+  <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-white/5">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center text-red-400 font-bold text-sm" id="adminAvatar">A</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-bold truncate" id="adminName">Admin</p>
+        <p class="text-[10px] text-red-400 font-black">OWNER</p>
+      </div>
+    </div>
+    <div class="flex gap-2">
+      <a href="index.html" class="btn btn-ghost text-xs flex-1 justify-center"><i class="fas fa-store text-xs"></i> Toko</a>
+      <button onclick="doLogout()" class="btn btn-ghost text-xs flex-1 justify-center text-red-400"><i class="fas fa-sign-out-alt text-xs"></i> Keluar</button>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main id="content">
+
+  <!-- ===== DASHBOARD ===== -->
+  <section id="sec-dashboard" class="section active">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h1 class="text-2xl font-extrabold syne">Dashboard</h1>
+        <p class="text-slate-500 text-sm" id="dashDate">-</p>
+      </div>
+      <button onclick="location.reload()" class="btn btn-ghost"><i class="fas fa-rotate-right"></i> Refresh</button>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 mb-6">
+      <div class="stat-card stat-blue">
+        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Total User</p>
+        <p class="text-3xl font-extrabold syne text-blue-400" id="st-users">-</p>
+        <p class="text-[10px] text-slate-600 mt-1">Terdaftar di Auth</p>
+      </div>
+      <div class="stat-card stat-green">
+        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Produk Aktif</p>
+        <p class="text-3xl font-extrabold syne text-green-400" id="st-products">-</p>
+        <p class="text-[10px] text-slate-600 mt-1">Di marketplace</p>
+      </div>
+      <div class="stat-card stat-yellow">
+        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Toko Aktif</p>
+        <p class="text-3xl font-extrabold syne text-yellow-400" id="st-stores">-</p>
+        <p class="text-[10px] text-slate-600 mt-1">Seller approved</p>
+      </div>
+      <div class="stat-card stat-red">
+        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Pending Seller</p>
+        <p class="text-3xl font-extrabold syne text-red-400" id="st-pending">-</p>
+        <p class="text-[10px] text-slate-600 mt-1">Menunggu review</p>
+      </div>
+      <div class="stat-card stat-purple">
+        <p class="text-xs text-slate-500 font-bold uppercase mb-1">Total Order</p>
+        <p class="text-3xl font-extrabold syne text-purple-400" id="st-orders">-</p>
+        <p class="text-[10px] text-slate-600 mt-1">Semua transaksi</p>
+      </div>
+    </div>
+
+    <!-- PENDING SELLERS QUICK VIEW -->
+    <div class="card mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold syne flex items-center gap-2"><i class="fas fa-clock text-yellow-400"></i> Pendaftaran Seller Pending</h3>
+        <button onclick="showSection('sellers')" class="btn btn-ghost text-xs">Lihat Semua</button>
+      </div>
+      <div id="dashPending"></div>
+    </div>
+
+    <!-- RECENT PRODUCTS -->
+    <div class="card">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold syne flex items-center gap-2"><i class="fas fa-box text-blue-400"></i> Produk Terbaru</h3>
+        <button onclick="showSection('products')" class="btn btn-ghost text-xs">Lihat Semua</button>
+      </div>
+      <div id="dashProducts"></div>
+    </div>
+  </section>
+
+  <!-- ===== ANALITIK ===== -->
+  <section id="sec-analytics" class="section">
+    <h1 class="text-2xl font-extrabold syne mb-6">Analitik</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div class="card">
+        <h3 class="font-bold text-sm mb-4 flex items-center gap-2"><i class="fas fa-users text-blue-400"></i> Distribusi User</h3>
+        <div id="userDistChart"></div>
+      </div>
+      <div class="card">
+        <h3 class="font-bold text-sm mb-4 flex items-center gap-2"><i class="fas fa-star text-yellow-400"></i> Produk Rating Tertinggi</h3>
+        <div id="topRatedList"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="font-bold text-sm mb-4 flex items-center gap-2"><i class="fas fa-store text-green-400"></i> Performa Toko</h3>
+      <div id="storePerf"></div>
+    </div>
+  </section>
+
+  <!-- ===== MARKETPLACE SETTINGS ===== -->
+  <section id="sec-marketplace" class="section">
+    <h1 class="text-2xl font-extrabold syne mb-6">Pengaturan Marketplace</h1>
+
+    <!-- HERO BANNER CONFIG -->
+    <div class="card mb-5">
+      <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-image text-blue-400"></i> Hero Banner</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Judul Utama (XREZZKY)</label>
+          <input id="cfg_title1" type="text" class="inp mb-3" placeholder="XREZZKY">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Subjudul (OFFICIAL STORE)</label>
+          <input id="cfg_title2" type="text" class="inp mb-3" placeholder="OFFICIAL STORE">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Tagline / Deskripsi</label>
+          <textarea id="cfg_tagline" class="inp mb-3" rows="3" placeholder="Platform jual-beli produk digital..."></textarea>
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Badge Kepercayaan (pisah koma)</label>
+          <input id="cfg_badges" type="text" class="inp mb-3" placeholder="TERJAMIN, TRUSTED, #1 MARKETPLACE">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Stat 1 — Angka</label>
+          <input id="cfg_stat1n" type="text" class="inp mb-2" placeholder="500+">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Stat 1 — Label</label>
+          <input id="cfg_stat1l" type="text" class="inp mb-3" placeholder="Produk">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Stat 2 — Angka</label>
+          <input id="cfg_stat2n" type="text" class="inp mb-2" placeholder="2K+">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Stat 2 — Label</label>
+          <input id="cfg_stat2l" type="text" class="inp mb-3" placeholder="Pembeli">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Stat 3 — Angka</label>
+          <input id="cfg_stat3n" type="text" class="inp mb-2" placeholder="4.9★">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Stat 3 — Label</label>
+          <input id="cfg_stat3l" type="text" class="inp" placeholder="Rating">
+        </div>
+      </div>
+      <button onclick="saveCfg('hero')" class="btn btn-blue mt-4"><i class="fas fa-save"></i> Simpan Hero Banner</button>
+    </div>
+
+    <!-- PROMO TICKER -->
+    <div class="card mb-5">
+      <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-bullhorn text-yellow-400"></i> Promo Ticker</h3>
+      <p class="text-xs text-slate-500 mb-3">Setiap baris = 1 teks promo yang bergulir di marketplace</p>
+      <div id="tickerList" class="space-y-2 mb-3"></div>
+      <div class="flex gap-2">
+        <input id="newTicker" type="text" class="inp flex-1" placeholder="✨ Tambah teks promo baru...">
+        <button onclick="addTicker()" class="btn btn-blue shrink-0"><i class="fas fa-plus"></i></button>
+      </div>
+      <button onclick="saveCfg('ticker')" class="btn btn-blue mt-3"><i class="fas fa-save"></i> Simpan Ticker</button>
+    </div>
+
+    <!-- FEATURE TAGS -->
+    <div class="card mb-5">
+      <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-tags text-green-400"></i> Feature Tags (Fitur Unggulan)</h3>
+      <p class="text-xs text-slate-500 mb-3">4 kotak fitur di bawah hero. Icon pakai nama FontAwesome.</p>
+      <div id="featureList" class="space-y-3 mb-3"></div>
+      <button onclick="addFeature()" class="btn btn-ghost text-xs"><i class="fas fa-plus"></i> Tambah Fitur</button>
+      <button onclick="saveCfg('features')" class="btn btn-blue mt-3 ml-2"><i class="fas fa-save"></i> Simpan Fitur</button>
+    </div>
+
+    <!-- SELLER CTA -->
+    <div class="card">
+      <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-store text-purple-400"></i> Banner Seller CTA</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Label Kecil</label>
+          <input id="cfg_ctaLabel" type="text" class="inp mb-3" placeholder="Jadi Seller di XREZZKY">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Judul</label>
+          <input id="cfg_ctaTitle" type="text" class="inp mb-3" placeholder="Buka Toko Kamu Sekarang">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Deskripsi</label>
+          <input id="cfg_ctaDesc" type="text" class="inp" placeholder="Jangkau ribuan pembeli · Gratis daftar">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Teks Tombol</label>
+          <input id="cfg_ctaBtn" type="text" class="inp mb-3" placeholder="Mulai">
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Nomor WA Admin (default order)</label>
+          <input id="cfg_adminWa" type="tel" class="inp" placeholder="6281234567890">
+        </div>
+      </div>
+      <button onclick="saveCfg('cta')" class="btn btn-blue mt-4"><i class="fas fa-save"></i> Simpan CTA</button>
+    </div>
+  </section>
+
+  <!-- ===== PRODUK ===== -->
+  <section id="sec-products" class="section">
+    <div class="flex items-center justify-between mb-5">
+      <h1 class="text-2xl font-extrabold syne">Semua Produk</h1>
+      <input type="text" id="prodSearch" placeholder="Cari produk..." class="inp" style="width:220px" oninput="renderProducts(this.value)">
+    </div>
+    <div class="card overflow-x-auto">
+      <table class="tbl" id="prodTable">
+        <thead><tr>
+          <th>Produk</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Rating</th><th>Seller</th><th>Aksi</th>
+        </tr></thead>
+        <tbody id="prodBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== KATEGORI & BANNER ===== -->
+  <section id="sec-categories" class="section">
+    <h1 class="text-2xl font-extrabold syne mb-5">Kategori & Label</h1>
+    <div class="card mb-5">
+      <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-list text-blue-400"></i> Kategori Aktif</h3>
+      <div id="catList" class="flex flex-wrap gap-2 mb-4"></div>
+      <div class="flex gap-2">
+        <input id="newCat" type="text" class="inp flex-1" placeholder="Nama kategori baru...">
+        <button onclick="addCategory()" class="btn btn-blue"><i class="fas fa-plus"></i></button>
+      </div>
+      <button onclick="saveCfg('categories')" class="btn btn-blue mt-3"><i class="fas fa-save"></i> Simpan Kategori</button>
+    </div>
+    <div class="card">
+      <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-certificate text-yellow-400"></i> Label Kepercayaan (Trust Badges)</h3>
+      <p class="text-xs text-slate-500 mb-3">Label yang muncul di hero banner marketplace (pisah koma)</p>
+      <input id="cfg_trustBadges" type="text" class="inp mb-3" placeholder="TERJAMIN, TRUSTED, #1 MARKETPLACE">
+      <button onclick="saveCfg('trustBadges')" class="btn btn-blue"><i class="fas fa-save"></i> Simpan Label</button>
+    </div>
+  </section>
+
+  <!-- ===== ORDERS ===== -->
+  <section id="sec-orders" class="section">
+    <div class="flex items-center justify-between mb-5">
+      <h1 class="text-2xl font-extrabold syne">Kelola Order</h1>
+      <button onclick="openAddOrderModal()" class="btn btn-blue"><i class="fas fa-plus"></i> Tambah Order Manual</button>
+    </div>
+    <div class="card overflow-x-auto">
+      <table class="tbl">
+        <thead><tr><th>Order ID</th><th>Pembeli</th><th>Produk</th><th>Total</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+        <tbody id="orderBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== SELLERS ===== -->
+  <section id="sec-sellers" class="section">
+    <div class="flex items-center justify-between mb-5">
+      <h1 class="text-2xl font-extrabold syne">Seller & Toko</h1>
+      <div class="flex gap-2">
+        <select id="sellerFilter" class="inp" style="width:160px" onchange="renderSellers()">
+          <option value="all">Semua</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Ditolak</option>
+          <option value="banned">Banned</option>
+        </select>
+      </div>
+    </div>
+    <div id="sellerCards" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+  </section>
+
+  <!-- ===== BUYERS ===== -->
+  <section id="sec-buyers" class="section">
+    <div class="flex items-center justify-between mb-5">
+      <h1 class="text-2xl font-extrabold syne">Manajemen Pembeli</h1>
+      <input type="text" id="buyerSearch" placeholder="Cari nama/email..." class="inp" style="width:220px" oninput="renderBuyers(this.value)">
+    </div>
+    <div class="card overflow-x-auto">
+      <table class="tbl">
+        <thead><tr><th>Nama</th><th>Email</th><th>Role</th><th>Status</th><th>Bergabung</th><th>Aksi</th></tr></thead>
+        <tbody id="buyerBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== SECURITY ===== -->
+  <section id="sec-security" class="section">
+    <h1 class="text-2xl font-extrabold syne mb-5">Keamanan & Sistem</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <div class="card">
+        <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-key text-yellow-400"></i> Kode Konfirmasi Admin</h3>
+        <p class="text-xs text-slate-500 mb-3">Kode yang wajib diinput sebelum aksi berbahaya (delete, ban). Kode saat ini tersimpan di Firebase.</p>
+        <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mb-4">
+          <p class="text-xs text-blue-400 font-bold mb-1">Kode Admin Aktif</p>
+          <p class="font-extrabold syne text-blue-300 text-lg tracking-widest" id="currentCode">•••••••••</p>
+        </div>
+        <input id="newCode" type="text" class="inp mb-3 code-input" placeholder="Kode baru (min 6 karakter)">
+        <button onclick="saveAdminCode()" class="btn btn-yellow w-full justify-center"><i class="fas fa-key"></i> Update Kode Konfirmasi</button>
+      </div>
+      <div class="card">
+        <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-database text-red-400"></i> Clear Data</h3>
+        <p class="text-xs text-slate-500 mb-3">Hapus semua data produk dan toko. Aksi ini <strong class="text-red-400">permanen</strong> dan tidak bisa dibatalkan.</p>
+        <div class="space-y-3">
+          <button onclick="triggerClearData('products')" class="btn btn-red w-full justify-center"><i class="fas fa-trash"></i> Hapus Semua Produk</button>
+          <button onclick="triggerClearData('seller_applications')" class="btn btn-red w-full justify-center"><i class="fas fa-store"></i> Hapus Semua Toko</button>
+          <button onclick="triggerClearData('orders')" class="btn btn-red w-full justify-center"><i class="fas fa-receipt"></i> Hapus Semua Order</button>
+        </div>
+      </div>
+      <div class="card md:col-span-2">
+        <h3 class="font-bold syne mb-4 flex items-center gap-2"><i class="fas fa-history text-purple-400"></i> Log Aktivitas Admin</h3>
+        <div id="activityLog" class="max-h-72 overflow-y-auto custom-scrollbar space-y-2"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- TOAST -->
+<div id="toast">
+  <div class="toast-inner">
+    <div id="toastIco" class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 shrink-0"><i class="fas fa-info-circle text-sm"></i></div>
+    <div><p class="font-bold text-sm" id="toastT">-</p><p class="text-xs text-slate-400" id="toastM">-</p></div>
+  </div>
+</div>
+
+<!-- ========= MODALS ========= -->
+
+<!-- SELLER DETAIL MODAL -->
+<div id="mSellerDetail" class="overlay">
+  <div class="modal modal-lg p-0 overflow-hidden">
+    <div class="relative p-7 bg-gradient-to-b from-blue-600/20 to-transparent">
+      <button onclick="closeM('mSellerDetail')" class="absolute top-4 right-4 w-9 h-9 bg-black/20 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+      <div class="flex items-center gap-4">
+        <div id="sdAvatar" class="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center text-2xl font-bold">S</div>
+        <div>
+          <h2 id="sdStoreName" class="text-xl font-extrabold syne">Nama Toko</h2>
+          <p id="sdOwner" class="text-slate-400 text-sm">oleh -</p>
+          <div id="sdStatusBadge" class="mt-1"></div>
+        </div>
+      </div>
+    </div>
+    <div class="px-7 pb-7 space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Email</p><p id="sdEmail" class="text-sm font-semibold">-</p></div>
+        <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">WhatsApp</p><p id="sdWa" class="text-sm font-semibold">-</p></div>
+        <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Kota</p><p id="sdCity" class="text-sm font-semibold">-</p></div>
+        <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Kategori</p><p id="sdCat" class="text-sm font-semibold">-</p></div>
+        <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Pengalaman</p><p id="sdExp" class="text-sm font-semibold">-</p></div>
+        <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Produk Pertama</p><p id="sdFirst" class="text-sm font-semibold">-</p></div>
+      </div>
+      <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Deskripsi Toko</p><p id="sdDesc" class="text-sm text-slate-300 leading-relaxed">-</p></div>
+      <div class="bg-white/5 p-3 rounded-xl"><p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Catatan untuk Admin</p><p id="sdNotes" class="text-sm text-slate-300">-</p></div>
+      <div class="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+        <p class="text-[10px] text-blue-400 font-bold uppercase mb-2">Teks Persetujuan (klik untuk salin)</p>
+        <p id="sdApprovalText" onclick="copyApprovalText()" class="text-xs text-blue-200 leading-relaxed cursor-pointer hover:text-white transition select-all">-</p>
+        <button onclick="copyApprovalText()" class="btn btn-ghost text-xs mt-2"><i class="fas fa-copy"></i> Salin Teks</button>
+      </div>
+      <!-- ACTIONS -->
+      <div id="sdActions" class="flex gap-3 flex-wrap"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DANGEROUS ACTION MODAL -->
+<div id="mConfirm" class="overlay">
+  <div class="modal p-8">
+    <div class="text-center mb-6">
+      <div id="confirmIcon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"><i id="confirmIconI" class="fas fa-exclamation-triangle text-2xl"></i></div>
+      <h2 id="confirmTitle" class="text-xl font-extrabold syne mb-2">Konfirmasi Aksi</h2>
+      <p id="confirmDesc" class="text-slate-400 text-sm leading-relaxed">-</p>
+    </div>
+    <div class="mb-4">
+      <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Alasan <span class="text-red-400">*</span></label>
+      <textarea id="confirmReason" class="inp" rows="2" placeholder="Wajib isi alasan..."></textarea>
+    </div>
+    <div class="mb-5">
+      <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Kode Konfirmasi Admin <span class="text-red-400">*</span></label>
+      <input id="confirmCode" type="text" class="inp code-input" placeholder="Masukkan kode admin">
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeM('mConfirm')" class="btn btn-ghost flex-1 justify-center">Batal</button>
+      <button id="confirmBtn" class="btn btn-red flex-1 justify-center">Konfirmasi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD ORDER MODAL -->
+<div id="mAddOrder" class="overlay">
+  <div class="modal p-7">
+    <button onclick="closeM('mAddOrder')" class="absolute top-4 right-4 w-9 h-9 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+    <h2 class="text-xl font-extrabold syne mb-5">Tambah Order Manual</h2>
+    <p class="text-xs text-slate-500 mb-4">Digunakan untuk mencatat transaksi yang sudah selesai via WA. Order ini akan muncul di halaman Pesanan pembeli.</p>
+    <div class="space-y-3">
+      <div>
+        <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">UID Pembeli <span class="text-red-400">*</span></label>
+        <input id="ord_uid" type="text" class="inp" placeholder="UID user dari Firebase Auth">
+      </div>
+      <div>
+        <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">ID Produk <span class="text-red-400">*</span></label>
+        <input id="ord_pid" type="text" class="inp" placeholder="ID produk dari Firebase">
+      </div>
+      <div>
+        <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Nama Produk <span class="text-red-400">*</span></label>
+        <input id="ord_pname" type="text" class="inp" placeholder="Nama produk">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Total Harga</label>
+          <input id="ord_price" type="number" class="inp" placeholder="0">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Status</label>
+          <select id="ord_status" class="inp">
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Nama Toko</label>
+        <input id="ord_store" type="text" class="inp" placeholder="Nama toko seller">
+      </div>
+    </div>
+    <button onclick="submitOrder()" class="btn btn-blue w-full justify-center mt-5"><i class="fas fa-plus"></i> Tambah Order</button>
+  </div>
+</div>
+
+<!-- EDIT PRODUCT MODAL -->
+<div id="mEditProd" class="overlay">
+  <div class="modal p-7">
+    <button onclick="closeM('mEditProd')" class="absolute top-4 right-4 w-9 h-9 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+    <h2 class="text-xl font-extrabold syne mb-5">Edit Produk</h2>
+    <input type="hidden" id="ep_id">
+    <div class="space-y-3">
+      <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Nama Produk</label><input id="ep_name" type="text" class="inp"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Harga (Rp)</label><input id="ep_price" type="number" class="inp"></div>
+        <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Stok</label><input id="ep_stock" type="number" class="inp"></div>
+      </div>
+      <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Kategori</label><input id="ep_cat" type="text" class="inp"></div>
+      <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Deskripsi</label><textarea id="ep_desc" class="inp" rows="3"></textarea></div>
+    </div>
+    <button onclick="saveProduct()" class="btn btn-blue w-full justify-center mt-5"><i class="fas fa-save"></i> Simpan Perubahan</button>
+  </div>
+</div>
+
+<!-- UPDATE ORDER STATUS MODAL -->
+<div id="mOrderStatus" class="overlay">
+  <div class="modal p-7">
+    <button onclick="closeM('mOrderStatus')" class="absolute top-4 right-4 w-9 h-9 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
+    <h2 class="text-xl font-extrabold syne mb-2">Update Status Order</h2>
+    <p id="osOrderId" class="text-slate-500 text-xs mb-5">ID: -</p>
+    <input type="hidden" id="os_uid"><input type="hidden" id="os_oid">
+    <select id="os_status" class="inp mb-4">
+      <option value="pending">⏳ Pending — Menunggu Konfirmasi</option>
+      <option value="processing">🔄 Processing — Sedang Diproses</option>
+      <option value="completed">✅ Completed — Selesai</option>
+      <option value="cancelled">❌ Cancelled — Dibatalkan</option>
+    </select>
+    <button onclick="saveOrderStatus()" class="btn btn-blue w-full justify-center"><i class="fas fa-check"></i> Update Status</button>
+  </div>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getDatabase, ref, onValue, set, get, remove, update, push } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-    // --- KEAMANAN TERSEMBUNYI ---
-    const secretKey = "XREZZKY2026"; // GANTI INI DENGAN PASSWORD RAHASIA LU
-    const login = prompt("System Authentication Required:");
+const FB = {
+    apiKey:"AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
+    authDomain:"xrezzkystore-marketplace-83bc0.firebaseapp.com",
+    databaseURL:"https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId:"xrezzkystore-marketplace-83bc0",
+    storageBucket:"xrezzkystore-marketplace-83bc0.firebasestorage.app",
+    messagingSenderId:"604900856944",
+    appId:"1:604900856944:web:c48c973da45214c68a10b5"
+};
+const app  = initializeApp(FB);
+const auth = getAuth(app);
+const db   = getDatabase(app);
 
-    if (login !== secretKey) {
-        document.body.innerHTML = "<h1 style='text-align:center; margin-top:100px;'>404 Not Found</h1>";
-        document.body.style.display = "block";
-    } else {
-        document.body.style.display = "block";
-        initAdmin();
+// ─── CONSTANTS ───
+const ADMIN_EMAIL = 'xrezzkystore.idn@gmail.com';
+const ADMIN_PHONE = '088293064112';
+const DEFAULT_CODE = '088293064112';
+
+// ─── STATE ───
+let adminUser   = null;
+let allProducts = {};
+let allUsers    = {};
+let allSellers  = {};
+let allOrders   = {};
+let siteConfig  = {};
+let adminCode   = DEFAULT_CODE;
+let tickerItems = [];
+let featureItems= [];
+let categories  = [];
+let pendingAction = null;
+
+// ─── UTILS ───
+const $ = id => document.getElementById(id);
+let toastTmr;
+window.toast = (t, m, type='success') => {
+    const map={success:{bg:'bg-green-500/20',cl:'text-green-400',i:'fa-check-circle'},error:{bg:'bg-red-500/20',cl:'text-red-400',i:'fa-times-circle'},info:{bg:'bg-blue-500/20',cl:'text-blue-400',i:'fa-info-circle'},warning:{bg:'bg-yellow-500/20',cl:'text-yellow-400',i:'fa-exclamation-circle'}};
+    const c=map[type]||map.info;
+    $('toastT').textContent=t; $('toastM').textContent=m;
+    $('toastIco').className=`w-8 h-8 rounded-full ${c.bg} flex items-center justify-center ${c.cl} shrink-0`;
+    $('toastIco').innerHTML=`<i class="fas ${c.i} text-sm"></i>`;
+    const el=$('toast'); el.style.transform='translateX(0)';
+    if(toastTmr) clearTimeout(toastTmr);
+    toastTmr=setTimeout(()=>el.style.transform='translateX(150%)',4000);
+};
+
+window.openM = (id) => { const e=$(id); if(e){e.style.display='flex';document.body.style.overflow='hidden';} };
+window.closeM = (id) => { const e=$(id); if(e){e.style.display='none';document.body.style.overflow='auto';} };
+
+// Close overlay on bg click
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o){o.style.display='none';document.body.style.overflow='auto';}}));
+
+// ─── AUTH ───
+window.doAdminLogin = async () => {
+    const email = $('lockEmail').value.trim();
+    const pass  = $('lockPass').value;
+    const errEl = $('lockErr');
+    errEl.classList.add('hidden');
+
+    if (email !== ADMIN_EMAIL) {
+        errEl.textContent = 'Hanya email admin yang terdaftar yang bisa masuk.';
+        errEl.classList.remove('hidden');
+        return;
     }
+    try {
+        await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) {
+        errEl.textContent = 'Email atau password salah!';
+        errEl.classList.remove('hidden');
+    }
+};
 
-    function initAdmin() {
-        const firebaseConfig = {
-            apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
-            authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
-            databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "xrezzkystore-marketplace-83bc0",
-            storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
-            messagingSenderId: "604900856944",
-            appId: "1:604900856944:web:c48c973da45214c68a10b5"
-        };
+window.doLogout = () => {
+    if(!confirm('Yakin keluar dari admin panel?')) return;
+    signOut(auth).then(() => location.reload());
+};
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const listArea = document.getElementById('reg-list');
+onAuthStateChanged(auth, async (user) => {
+    if (user && user.email === ADMIN_EMAIL) {
+        adminUser = user;
+        $('lockScreen').style.display = 'none';
+        $('adminName').textContent    = user.displayName || 'Admin';
+        $('adminAvatar').textContent  = (user.displayName||'A').charAt(0).toUpperCase();
+        $('dashDate').textContent     = new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-        // Ambil Data Registrasi
-        onValue(ref(db, 'registrations'), (snapshot) => {
-            const data = snapshot.val();
-            listArea.innerHTML = '';
-            if (data) {
-                Object.keys(data).forEach(key => {
-                    const r = data[key];
-                    listArea.innerHTML += `
-                        <tr>
-                            <td><strong>${r.storeName}</strong></td>
-                            <td>${r.email}</td>
-                            <td><span class="badge ${r.status}">${r.status}</span></td>
-                            <td>
-                                ${r.status === 'pending' ? `<button class="btn btn-ok" onclick="approve('${key}')">Approve</button>` : ''}
-                                <button class="btn btn-del" onclick="hapus('${key}')">Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                });
-            } else {
-                listArea.innerHTML = '<tr><td colspan="4" style="text-align:center">Kosong.</td></tr>';
-            }
+        // Verify role in DB
+        const snap = await get(ref(db,`users/${user.uid}`));
+        if (!snap.exists() || snap.val().role !== 'admin') {
+            toast('Akses Ditolak','Role bukan admin!','error');
+            signOut(auth); return;
+        }
+        initAdminData();
+    } else if (user && user.email !== ADMIN_EMAIL) {
+        toast('Akses Ditolak','Akun ini bukan admin!','error');
+        signOut(auth);
+    }
+    // else: stay on lock screen
+});
+
+// ─── INIT DATA ───
+const initAdminData = () => {
+    // Admin code
+    onValue(ref(db,'admin/config/adminCode'), snap => {
+        adminCode = snap.exists() ? snap.val() : DEFAULT_CODE;
+        $('currentCode').textContent = adminCode;
+    });
+
+    // Site config
+    onValue(ref(db,'admin/config/site'), snap => {
+        siteConfig = snap.exists() ? snap.val() : {};
+        loadConfigToForm();
+    });
+
+    // Products
+    onValue(ref(db,'products'), snap => {
+        allProducts = snap.val() || {};
+        updateStats();
+        renderProducts();
+        renderDashProducts();
+    });
+
+    // Users
+    onValue(ref(db,'users'), snap => {
+        allUsers = snap.val() || {};
+        updateStats();
+        renderBuyers();
+        renderAnalytics();
+    });
+
+    // Sellers
+    onValue(ref(db,'seller_applications'), snap => {
+        allSellers = snap.val() || {};
+        updateStats();
+        renderSellers();
+        renderDashPending();
+        renderAnalytics();
+        // pending badge
+        const pending = Object.values(allSellers).filter(s=>s.status==='pending').length;
+        const pb = $('pendingBadge');
+        if (pending > 0) { pb.textContent=pending; pb.classList.remove('hidden'); }
+        else pb.classList.add('hidden');
+    });
+
+    // Orders
+    onValue(ref(db,'orders'), snap => {
+        allOrders = snap.val() || {};
+        updateStats();
+        renderOrders();
+    });
+
+    // Activity log
+    onValue(ref(db,'admin/logs'), snap => {
+        const logs = snap.val() || {};
+        const logEl = $('activityLog');
+        logEl.innerHTML = '';
+        Object.values(logs).sort((a,b)=>b.ts-a.ts).slice(0,30).forEach(l => {
+            const d = new Date(l.ts).toLocaleString('id-ID');
+            const div=document.createElement('div');
+            div.className='bg-white/3 border border-white/5 rounded-xl p-3 flex items-start gap-3';
+            div.innerHTML=`<div class="w-7 h-7 rounded-full bg-${l.color||'blue'}-500/20 flex items-center justify-center shrink-0"><i class="fas fa-${l.icon||'circle-info'} text-${l.color||'blue'}-400 text-xs"></i></div><div class="flex-1 min-w-0"><p class="text-xs font-bold">${l.action}</p><p class="text-[10px] text-slate-500">${l.detail||''}</p><p class="text-[9px] text-slate-600 mt-0.5">${d}</p></div>`;
+            logEl.appendChild(div);
         });
+        if (Object.keys(logs).length===0) logEl.innerHTML='<p class="text-slate-600 text-xs text-center py-8">Belum ada log</p>';
+    });
+};
 
-        window.approve = (id) => {
-            if(confirm("Approve seller ini?")) {
-                update(ref(db, `registrations/${id}`), { status: 'approved' });
-            }
-        };
+const logAction = (action, detail, color='blue', icon='circle-info') => {
+    push(ref(db,'admin/logs'), { action, detail, color, icon, ts:Date.now(), admin: adminUser?.email });
+};
 
-        window.hapus = (id) => {
-            if(confirm("Hapus data ini?")) {
-                remove(ref(db, `registrations/${id}`));
-            }
-        };
+// ─── STATS ───
+const updateStats = () => {
+    const prods    = Object.keys(allProducts).length;
+    const users    = Object.keys(allUsers).length;
+    const approved = Object.values(allSellers).filter(s=>s.status==='approved').length;
+    const pending  = Object.values(allSellers).filter(s=>s.status==='pending').length;
+    let   orders   = 0;
+    Object.values(allOrders).forEach(u => orders += Object.keys(u||{}).length);
+    $('st-users').textContent    = users;
+    $('st-products').textContent = prods;
+    $('st-stores').textContent   = approved;
+    $('st-pending').textContent  = pending;
+    $('st-orders').textContent   = orders;
+};
+
+// ─── SECTION NAV ───
+window.showSection = (name) => {
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    $(`sec-${name}`)?.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n=>{ if(n.textContent.trim().startsWith(getSectionLabel(name))) n.classList.add('active'); });
+    // Trigger renders
+    if(name==='sellers') renderSellers();
+    if(name==='buyers')  renderBuyers();
+    if(name==='products') renderProducts();
+    if(name==='orders')  renderOrders();
+    if(name==='analytics') renderAnalytics();
+    if(name==='marketplace') loadConfigToForm();
+};
+const getSectionLabel = n=>({dashboard:'Dashboard',analytics:'Analitik',marketplace:'Pengaturan',products:'Semua Produk',categories:'Kategori',orders:'Kelola',sellers:'Seller',buyers:'Pembeli',security:'Keamanan'}[n]||'');
+
+// ─── DASHBOARD RENDERS ───
+const renderDashPending = () => {
+    const el = $('dashPending');
+    const list = Object.entries(allSellers).filter(([,s])=>s.status==='pending');
+    if (list.length===0) { el.innerHTML='<p class="text-slate-600 text-xs text-center py-6">Tidak ada pendaftaran pending</p>'; return; }
+    el.innerHTML='';
+    list.slice(0,3).forEach(([uid,s]) => {
+        const dt = s.submittedAt ? new Date(s.submittedAt).toLocaleDateString('id-ID') : '-';
+        const div=document.createElement('div');
+        div.className='flex items-center gap-3 p-3 bg-white/3 rounded-xl mb-2 hover:bg-white/5 transition cursor-pointer';
+        div.onclick=()=>openSellerDetail(uid);
+        div.innerHTML=`<div class="w-9 h-9 rounded-full bg-blue-600/30 flex items-center justify-center font-bold text-sm shrink-0">${(s.storeName||'S').charAt(0)}</div><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate">${s.storeName||'-'}</p><p class="text-xs text-slate-500">${s.ownerName||'-'} · ${dt}</p></div><span class="badge badge-pending shrink-0">Pending</span>`;
+        el.appendChild(div);
+    });
+};
+
+const renderDashProducts = () => {
+    const el=$('dashProducts');
+    const list=Object.entries(allProducts).sort(([,a],[,b])=>(b.createdAt||0)-(a.createdAt||0)).slice(0,5);
+    if(list.length===0){el.innerHTML='<p class="text-slate-600 text-xs text-center py-6">Belum ada produk</p>';return;}
+    el.innerHTML='';
+    list.forEach(([id,p])=>{
+        const div=document.createElement('div');
+        div.className='flex items-center gap-3 p-3 bg-white/3 rounded-xl mb-2';
+        div.innerHTML=`<img src="${p.images?.[0]||'https://placehold.co/40x40/0f172a/3b82f6?text=P'}" class="w-10 h-10 rounded-lg object-cover shrink-0"><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate">${p.name||'-'}</p><p class="text-xs text-slate-500">${p.category||'-'} · Stok: ${p.stock??'-'}</p></div><span class="text-sm font-bold text-blue-400">Rp ${Number(p.price||0).toLocaleString('id-ID')}</span>`;
+        el.appendChild(div);
+    });
+};
+
+// ─── ANALYTICS ───
+const renderAnalytics = () => {
+    // User distribution
+    const el=$('userDistChart');
+    const buyers=Object.values(allUsers).filter(u=>u.role==='buyer'||!u.role).length;
+    const sellers=Object.values(allUsers).filter(u=>u.role==='seller').length;
+    const admins=Object.values(allUsers).filter(u=>u.role==='admin').length;
+    const total=Object.keys(allUsers).length||1;
+    el.innerHTML=`
+        <div class="space-y-3">
+            <div><div class="flex justify-between text-xs mb-1"><span class="text-blue-400 font-bold">Pembeli</span><span>${buyers}</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-blue-500 rounded-full" style="width:${Math.round(buyers/total*100)}%"></div></div></div>
+            <div><div class="flex justify-between text-xs mb-1"><span class="text-green-400 font-bold">Seller</span><span>${sellers}</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-green-500 rounded-full" style="width:${Math.round(sellers/total*100)}%"></div></div></div>
+            <div><div class="flex justify-between text-xs mb-1"><span class="text-red-400 font-bold">Admin</span><span>${admins}</span></div><div class="h-2 bg-white/10 rounded-full overflow-hidden"><div class="h-full bg-red-500 rounded-full" style="width:${Math.round(admins/total*100)}%"></div></div></div>
+        </div>
+        <p class="text-[10px] text-slate-600 mt-4 text-center">Total ${total} user terdaftar di database</p>`;
+
+    // Top rated products
+    const trEl=$('topRatedList');
+    const sorted=Object.entries(allProducts).filter(([,p])=>p.rating).sort(([,a],[,b])=>parseFloat(b.rating)-parseFloat(a.rating)).slice(0,5);
+    if(sorted.length===0){trEl.innerHTML='<p class="text-slate-600 text-xs text-center py-4">Belum ada rating</p>';return;}
+    trEl.innerHTML='';
+    sorted.forEach(([id,p],i)=>{
+        const div=document.createElement('div');
+        div.className='flex items-center gap-3 p-2 rounded-xl mb-1.5 bg-white/3';
+        div.innerHTML=`<span class="text-lg font-extrabold syne text-slate-600 w-6 shrink-0">${i+1}</span><div class="flex-1 min-w-0"><p class="text-xs font-bold truncate">${p.name}</p></div><span class="text-yellow-400 text-xs font-bold">★ ${p.rating} <span class="text-slate-600">(${p.ratingCount||0})</span></span>`;
+        trEl.appendChild(div);
+    });
+
+    // Store performance
+    const spEl=$('storePerf');
+    const storeList=Object.values(allSellers).filter(s=>s.status==='approved');
+    if(storeList.length===0){spEl.innerHTML='<p class="text-slate-600 text-xs text-center py-4">Belum ada toko aktif</p>';return;}
+    spEl.innerHTML=`<table class="tbl"><thead><tr><th>Toko</th><th>Produk</th><th>Stok Total</th><th>Rating Toko</th><th>Kota</th></tr></thead><tbody>${
+        storeList.map(s=>{
+            const prods=Object.values(allProducts).filter(p=>p.sellerId===s.uid);
+            const stk=prods.reduce((a,p)=>a+Number(p.stock||0),0);
+            const rvs=prods.filter(p=>p.rating);
+            const avg=rvs.length>0?(rvs.reduce((a,p)=>a+parseFloat(p.rating),0)/rvs.length).toFixed(1):'-';
+            return `<tr><td class="font-bold">${s.storeName||'-'}</td><td>${prods.length}</td><td>${stk}</td><td>${avg!=='-'?`<span class="text-yellow-400 font-bold">★ ${avg}</span>`:'-'}</td><td class="text-slate-500">${s.city||'-'}</td></tr>`;
+        }).join('')
+    }</tbody></table>`;
+};
+
+// ─── PRODUCTS ───
+window.renderProducts = (q='') => {
+    const body=$('prodBody'); body.innerHTML='';
+    const search=(q||$('prodSearch')?.value||'').toLowerCase();
+    const list=Object.entries(allProducts).filter(([,p])=>!search||(p.name||'').toLowerCase().includes(search)||(p.category||'').toLowerCase().includes(search));
+    if(list.length===0){body.innerHTML=`<tr><td colspan="7" class="text-center py-8 text-slate-600">Tidak ada produk</td></tr>`;return;}
+    list.forEach(([id,p])=>{
+        const seller=Object.values(allSellers).find(s=>s.uid===p.sellerId);
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
+            <td><div class="flex items-center gap-2"><img src="${p.images?.[0]||'https://placehold.co/32x32/0f172a/3b82f6?text=P'}" class="w-8 h-8 rounded-lg object-cover shrink-0"><span class="font-semibold text-xs">${p.name||'-'}</span></div></td>
+            <td><span class="badge badge-buyer">${p.category||'-'}</span></td>
+            <td class="font-bold text-blue-400 text-xs">Rp ${Number(p.price||0).toLocaleString('id-ID')}</td>
+            <td class="text-xs ${Number(p.stock)<=0?'text-red-400':Number(p.stock)<5?'text-yellow-400':'text-green-400'} font-bold">${p.stock??'-'}</td>
+            <td class="text-xs">${p.rating?`<span class="text-yellow-400 font-bold">★ ${p.rating}</span>`:'<span class="text-slate-600">-</span>'}</td>
+            <td class="text-xs text-slate-400">${seller?.storeName||p.sellerName||'-'}</td>
+            <td><div class="flex gap-1">
+                <button onclick="openEditProd('${id}')" class="btn btn-ghost text-xs py-1.5 px-2"><i class="fas fa-edit"></i></button>
+                <button onclick="triggerDeleteProd('${id}','${(p.name||'').replace(/'/g,"\\'")}','${id}')" class="btn btn-red text-xs py-1.5 px-2"><i class="fas fa-trash"></i></button>
+            </div></td>`;
+        body.appendChild(tr);
+    });
+};
+
+window.openEditProd = (id) => {
+    const p=allProducts[id]; if(!p) return;
+    $('ep_id').value    = id;
+    $('ep_name').value  = p.name||'';
+    $('ep_price').value = p.price||0;
+    $('ep_stock').value = p.stock||0;
+    $('ep_cat').value   = p.category||'';
+    $('ep_desc').value  = p.description||'';
+    openM('mEditProd');
+};
+
+window.saveProduct = async () => {
+    const id=$('ep_id').value;
+    const upd={name:$('ep_name').value.trim(),price:Number($('ep_price').value),stock:Number($('ep_stock').value),category:$('ep_cat').value.trim(),description:$('ep_desc').value.trim()};
+    try {
+        await update(ref(db,`products/${id}`),upd);
+        closeM('mEditProd'); toast('Berhasil','Produk berhasil diupdate!');
+        logAction('Edit Produk',`Produk "${upd.name}" diupdate`,'blue','edit');
+    } catch(e){ toast('Gagal',e.message,'error'); }
+};
+
+window.triggerDeleteProd = (id, name) => {
+    pendingAction = async (reason) => {
+        await remove(ref(db,`products/${id}`));
+        logAction('Hapus Produk',`"${name}" dihapus. Alasan: ${reason}`,'red','trash');
+        toast('Terhapus',`Produk "${name}" berhasil dihapus!`,'warning');
+    };
+    openConfirmModal('Hapus Produk',`Kamu akan menghapus produk "<strong>${name}</strong>" secara permanen.`,'red','trash-alt');
+};
+
+// ─── SELLERS ───
+window.renderSellers = () => {
+    const filter=$('sellerFilter')?.value||'all';
+    const el=$('sellerCards'); el.innerHTML='';
+    const list=Object.entries(allSellers).filter(([,s])=>filter==='all'||s.status===filter);
+    if(list.length===0){el.innerHTML=`<div class="col-span-full text-center py-12 text-slate-600"><i class="fas fa-store text-4xl mb-3 opacity-30"></i><p>Tidak ada seller</p></div>`;return;}
+    list.forEach(([uid,s])=>{
+        const prods=Object.values(allProducts).filter(p=>p.sellerId===uid).length;
+        const card=document.createElement('div');
+        card.className='card cursor-pointer hover:border-blue-500/40 transition';
+        card.onclick=()=>openSellerDetail(uid);
+        card.innerHTML=`
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center text-lg font-bold shrink-0">${(s.storeName||'S').charAt(0)}</div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-bold truncate">${s.storeName||'-'}</p>
+                    <p class="text-xs text-slate-500 truncate">${s.ownerName||'-'}</p>
+                </div>
+                <span class="badge badge-${s.status||'pending'} shrink-0">${{pending:'Pending',approved:'Aktif',rejected:'Ditolak',banned:'Banned'}[s.status||'pending']}</span>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center text-[10px] mb-3">
+                <div class="bg-white/5 py-1.5 rounded-lg"><p class="font-bold">${prods}</p><p class="text-slate-500">Produk</p></div>
+                <div class="bg-white/5 py-1.5 rounded-lg"><p class="font-bold truncate">${s.category||'-'}</p><p class="text-slate-500">Kategori</p></div>
+                <div class="bg-white/5 py-1.5 rounded-lg"><p class="font-bold truncate">${s.city||'-'}</p><p class="text-slate-500">Kota</p></div>
+            </div>
+            <p class="text-[10px] text-slate-600">${s.submittedAt?new Date(s.submittedAt).toLocaleDateString('id-ID'):'-'}</p>`;
+        el.appendChild(card);
+    });
+};
+
+window.openSellerDetail = (uid) => {
+    const s=allSellers[uid]; if(!s) return;
+    $('sdAvatar').textContent     = (s.storeName||'S').charAt(0).toUpperCase();
+    $('sdStoreName').textContent  = s.storeName||'-';
+    $('sdOwner').textContent      = `oleh ${s.ownerName||'-'}`;
+    $('sdEmail').textContent      = s.email||'-';
+    $('sdWa').textContent         = s.whatsapp||'-';
+    $('sdCity').textContent       = s.city||'-';
+    $('sdCat').textContent        = s.category||'-';
+    $('sdExp').textContent        = s.experience||'-';
+    $('sdFirst').textContent      = s.firstProduct||'-';
+    $('sdDesc').textContent       = s.storeDesc||'-';
+    $('sdNotes').textContent      = s.notes||'-';
+
+    const statusBadge = {pending:'badge-pending',approved:'badge-approved',rejected:'badge-rejected',banned:'badge-banned'}[s.status||'pending'];
+    const statusLabel = {pending:'Pending',approved:'Approved',rejected:'Ditolak',banned:'Banned'}[s.status||'pending'];
+    $('sdStatusBadge').innerHTML = `<span class="badge ${statusBadge}">${statusLabel}</span>`;
+
+    // Approval text
+    const dt = new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+    const approvalText = `Halo ${s.ownerName||'Seller'},\n\nSelamat! Pendaftaran toko "${s.storeName}" kamu di XREZZKY OFFICIAL STORE telah kami verifikasi dan DISETUJUI ✅\n\nDetail Toko:\n• Nama Toko: ${s.storeName}\n• Kategori: ${s.category}\n• Status: SELLER AKTIF\n\nKamu sekarang bisa:\n✅ Mengakses Seller Dashboard\n✅ Menambahkan produk ke marketplace\n✅ Menerima pesanan dari pembeli\n\nTanggal Aktivasi: ${dt}\n\nSilakan login ke XREZZKY STORE dan buka Seller Dashboard untuk mulai berjualan!\n\nTerima kasih telah bergabung! 🚀\n— Tim XREZZKY OFFICIAL STORE`;
+    $('sdApprovalText').textContent = approvalText;
+    $('sdApprovalText').dataset.text = approvalText;
+
+    // Actions based on status
+    const actions = $('sdActions');
+    actions.innerHTML = '';
+    if (s.status === 'pending') {
+        actions.innerHTML = `
+            <button onclick="approveSeller('${uid}')" class="btn btn-green flex-1 justify-center"><i class="fas fa-check"></i> Setujui</button>
+            <button onclick="triggerRejectSeller('${uid}','${(s.storeName||'').replace(/'/g,"\\'")}','${uid}')" class="btn btn-red flex-1 justify-center"><i class="fas fa-times"></i> Tolak</button>`;
+    } else if (s.status === 'approved') {
+        actions.innerHTML = `
+            <button onclick="triggerBanStore('${uid}','${(s.storeName||'').replace(/'/g,"\\'")}','${uid}')" class="btn btn-red flex-1 justify-center"><i class="fas fa-ban"></i> Ban Toko</button>
+            <button onclick="triggerDeleteStore('${uid}','${(s.storeName||'').replace(/'/g,"\\'")}','${uid}')" class="btn btn-red flex-1 justify-center"><i class="fas fa-trash"></i> Hapus Toko</button>`;
+    } else if (s.status === 'banned') {
+        actions.innerHTML = `<button onclick="unbanSeller('${uid}')" class="btn btn-green flex-1 justify-center"><i class="fas fa-unlock"></i> Unban</button>`;
     }
-</script>
+    openM('mSellerDetail');
+};
 
+window.copyApprovalText = () => {
+    const text = $('sdApprovalText').dataset.text || $('sdApprovalText').textContent;
+    navigator.clipboard?.writeText(text).then(()=>toast('Disalin!','Teks persetujuan berhasil disalin','success')).catch(()=>{
+        const ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+        toast('Disalin!','Teks persetujuan berhasil disalin','success');
+    });
+};
+
+window.approveSeller = async (uid) => {
+    const s = allSellers[uid]; if(!s) return;
+    try {
+        await update(ref(db,`seller_applications/${uid}`),{status:'approved',reviewedAt:Date.now()});
+        await update(ref(db,`users/${uid}`),{role:'seller',storeName:s.storeName,sellerStatus:'approved'});
+        closeM('mSellerDetail');
+        toast('Disetujui! ✅',`Toko "${s.storeName}" berhasil diaktifkan`,'success');
+        logAction('Approve Seller',`"${s.storeName}" disetujui`,'green','check');
+    } catch(e){ toast('Gagal',e.message,'error'); }
+};
+
+window.unbanSeller = async (uid) => {
+    const s = allSellers[uid]; if(!s) return;
+    await update(ref(db,`seller_applications/${uid}`),{status:'approved',bannedAt:null,bannedReason:null});
+    await update(ref(db,`users/${uid}`),{role:'seller',banned:false});
+    closeM('mSellerDetail');
+    toast('Unban Berhasil',`Toko "${s.storeName}" diaktifkan kembali`,'success');
+    logAction('Unban Seller',`"${s.storeName}" diaktifkan kembali`,'blue','unlock');
+};
+
+window.triggerRejectSeller = (uid, name) => {
+    pendingAction = async (reason) => {
+        await update(ref(db,`seller_applications/${uid}`),{status:'rejected',reviewedAt:Date.now(),rejectedReason:reason});
+        await update(ref(db,`users/${uid}`),{sellerStatus:'rejected'});
+        closeM('mSellerDetail');
+        toast('Ditolak',`Pendaftaran "${name}" ditolak`,'warning');
+        logAction('Tolak Seller',`"${name}" ditolak. Alasan: ${reason}`,'yellow','times');
+    };
+    openConfirmModal('Tolak Pendaftaran',`Kamu akan menolak pendaftaran seller "<strong>${name}</strong>".`,'yellow','times-circle');
+};
+
+window.triggerBanStore = (uid, name) => {
+    pendingAction = async (reason) => {
+        await update(ref(db,`seller_applications/${uid}`),{status:'banned',bannedAt:Date.now(),bannedReason:reason});
+        await update(ref(db,`users/${uid}`),{role:'buyer',banned:true,bannedReason:reason});
+        closeM('mSellerDetail');
+        toast('Dibanned',`Toko "${name}" dibanned`,'error');
+        logAction('Ban Toko',`"${name}" dibanned. Alasan: ${reason}`,'red','ban');
+    };
+    openConfirmModal('Ban Toko',`Kamu akan membanned toko "<strong>${name}</strong>" dan menghapus akses seller.`,'red','ban');
+};
+
+window.triggerDeleteStore = (uid, name) => {
+    pendingAction = async (reason) => {
+        await remove(ref(db,`seller_applications/${uid}`));
+        await update(ref(db,`users/${uid}`),{role:'buyer',sellerStatus:null,storeName:null});
+        closeM('mSellerDetail');
+        toast('Dihapus',`Toko "${name}" dihapus`,'error');
+        logAction('Hapus Toko',`"${name}" dihapus. Alasan: ${reason}`,'red','trash');
+    };
+    openConfirmModal('Hapus Toko',`Kamu akan menghapus toko "<strong>${name}</strong>" secara permanen. Produk toko tidak otomatis terhapus.`,'red','trash-alt');
+};
+
+// ─── BUYERS ───
+window.renderBuyers = (q='') => {
+    const body=$('buyerBody'); body.innerHTML='';
+    const search=(q||$('buyerSearch')?.value||'').toLowerCase();
+    const list=Object.entries(allUsers).filter(([uid,u])=>!search||(u.name||'').toLowerCase().includes(search)||(u.email||'').toLowerCase().includes(search));
+    if(list.length===0){body.innerHTML=`<tr><td colspan="6" class="text-center py-8 text-slate-600">Tidak ada user</td></tr>`;return;}
+    list.forEach(([uid,u])=>{
+        const roleMap={admin:'badge-admin',seller:'badge-seller',buyer:'badge-buyer'};
+        const dt=u.createdAt?new Date(u.createdAt).toLocaleDateString('id-ID'):'-';
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
+            <td class="font-semibold text-sm">${u.name||'-'}</td>
+            <td class="text-xs text-slate-400">${u.email||'-'}</td>
+            <td><span class="badge ${roleMap[u.role||'buyer']||'badge-buyer'}">${u.role||'buyer'}</span></td>
+            <td>${u.banned?'<span class="badge badge-banned">Banned</span>':'<span class="text-green-400 text-xs font-bold">Aktif</span>'}</td>
+            <td class="text-xs text-slate-500">${dt}</td>
+            <td><div class="flex gap-1">
+                ${u.role!=='admin'?`<button onclick="triggerBanUser('${uid}','${(u.name||'').replace(/'/g,"\\'")}','${uid}')" class="btn btn-${u.banned?'green':'red'} text-xs py-1.5 px-2"><i class="fas fa-${u.banned?'unlock':'ban'}"></i> ${u.banned?'Unban':'Ban'}</button>`:'<span class="text-slate-700 text-xs">—</span>'}
+                ${u.role!=='admin'?`<button onclick="triggerDeleteUser('${uid}','${(u.name||'').replace(/'/g,"\\'")}','${uid}')" class="btn btn-red text-xs py-1.5 px-2"><i class="fas fa-trash"></i></button>`:''}
+            </div></td>`;
+        body.appendChild(tr);
+    });
+};
+
+window.triggerBanUser = (uid, name, _) => {
+    const u=allUsers[uid];
+    if(u?.banned){
+        // Unban langsung
+        update(ref(db,`users/${uid}`),{banned:false,bannedReason:null}).then(()=>{toast('Unban','User diaktifkan kembali');logAction('Unban User',`"${name}" diaktifkan kembali`,'blue','unlock');});
+        return;
+    }
+    pendingAction = async (reason) => {
+        await update(ref(db,`users/${uid}`),{banned:true,bannedReason:reason});
+        toast('Dibanned',`User "${name}" dibanned`,'warning');
+        logAction('Ban User',`"${name}" dibanned. Alasan: ${reason}`,'red','ban');
+        renderBuyers();
+    };
+    openConfirmModal('Ban Pengguna',`Kamu akan membanned pengguna "<strong>${name}</strong>". Mereka tidak bisa login.`,'red','ban');
+};
+
+window.triggerDeleteUser = (uid, name) => {
+    pendingAction = async (reason) => {
+        await remove(ref(db,`users/${uid}`));
+        toast('Dihapus',`User "${name}" dihapus dari database`,'warning');
+        logAction('Hapus User',`"${name}" dihapus. Alasan: ${reason}`,'red','trash');
+        renderBuyers();
+    };
+    openConfirmModal('Hapus Pengguna',`Kamu akan menghapus data "<strong>${name}</strong>" dari database. Akun Firebase Auth tidak ikut terhapus.`,'red','user-times');
+};
+
+// ─── ORDERS ───
+window.renderOrders = () => {
+    const body=$('orderBody'); body.innerHTML='';
+    const statusMap={pending:'⏳ Pending',processing:'🔄 Diproses',completed:'✅ Selesai',cancelled:'❌ Dibatalkan'};
+    const badgeMap={pending:'badge-pending',processing:'badge-buyer',completed:'badge-approved',cancelled:'badge-rejected'};
+    let hasData=false;
+    Object.entries(allOrders).forEach(([uid,userOrders])=>{
+        if(!userOrders) return;
+        Object.entries(userOrders).forEach(([oid,o])=>{
+            hasData=true;
+            const u=allUsers[uid];
+            const dt=o.createdAt?new Date(o.createdAt).toLocaleDateString('id-ID'):'-';
+            const tr=document.createElement('tr');
+            tr.innerHTML=`
+                <td class="text-xs font-mono text-slate-400">${oid.slice(-6).toUpperCase()}</td>
+                <td class="text-xs">${u?.name||uid.slice(0,8)+'...'}</td>
+                <td class="text-xs font-semibold">${o.productName||'-'}</td>
+                <td class="text-xs font-bold text-blue-400">Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}</td>
+                <td><span class="badge ${badgeMap[o.status||'pending']}">${statusMap[o.status||'pending']}</span></td>
+                <td class="text-xs text-slate-500">${dt}</td>
+                <td><button onclick="openOrderStatus('${uid}','${oid}','${o.status||'pending'}')" class="btn btn-ghost text-xs py-1.5 px-2"><i class="fas fa-edit"></i></button></td>`;
+            body.appendChild(tr);
+        });
+    });
+    if(!hasData) body.innerHTML=`<tr><td colspan="7" class="text-center py-8 text-slate-600">Belum ada order</td></tr>`;
+};
+
+window.openAddOrderModal = () => openM('mAddOrder');
+window.submitOrder = async () => {
+    const uid    = $('ord_uid').value.trim();
+    const pid    = $('ord_pid').value.trim();
+    const pname  = $('ord_pname').value.trim();
+    const price  = Number($('ord_price').value)||0;
+    const status = $('ord_status').value;
+    const store  = $('ord_store').value.trim();
+    if(!uid||!pid||!pname) return toast('Error','UID Pembeli, ID Produk, dan Nama Produk wajib!','error');
+    try {
+        const key = push(ref(db,`orders/${uid}`)).key;
+        await set(ref(db,`orders/${uid}/${key}`),{productId:pid,productName:pname,totalPrice:price,status,storeName:store,createdAt:Date.now(),rated:false});
+        closeM('mAddOrder'); toast('Berhasil','Order berhasil ditambahkan!');
+        logAction('Tambah Order',`Order untuk "${pname}" ke user ${uid.slice(0,8)}...`,'green','plus');
+    } catch(e){ toast('Gagal',e.message,'error'); }
+};
+
+window.openOrderStatus = (uid, oid, current) => {
+    $('os_uid').value=uid; $('os_oid').value=oid;
+    $('os_status').value=current;
+    $('osOrderId').textContent=`ID: ${oid.slice(-8).toUpperCase()}`;
+    openM('mOrderStatus');
+};
+window.saveOrderStatus = async () => {
+    const uid=$('os_uid').value, oid=$('os_oid').value, st=$('os_status').value;
+    try {
+        await update(ref(db,`orders/${uid}/${oid}`),{status:st});
+        closeM('mOrderStatus'); toast('Berhasil',`Status order diubah ke ${st}`);
+        logAction('Update Order',`Order ${oid.slice(-6).toUpperCase()} → ${st}`,'blue','edit');
+    } catch(e){ toast('Gagal',e.message,'error'); }
+};
+
+// ─── CONFIRM DANGEROUS ACTION ───
+const openConfirmModal = (title, desc, color='red', icon='exclamation-triangle') => {
+    $('confirmTitle').textContent = title;
+    $('confirmDesc').innerHTML = desc;
+    $('confirmReason').value = '';
+    $('confirmCode').value   = '';
+    const colorMap={red:['bg-red-500/20','text-red-400'],yellow:['bg-yellow-500/20','text-yellow-400'],blue:['bg-blue-500/20','text-blue-400']};
+    const [bg,tc]=colorMap[color]||colorMap.red;
+    $('confirmIcon').className=`w-16 h-16 rounded-full ${bg} flex items-center justify-center mx-auto mb-4`;
+    $('confirmIconI').className=`fas fa-${icon} text-2xl ${tc}`;
+    $('confirmBtn').className=`btn btn-${color==='yellow'?'yellow':color} flex-1 justify-center`;
+    openM('mConfirm');
+};
+
+$('confirmBtn').onclick = async () => {
+    const reason = $('confirmReason').value.trim();
+    const code   = $('confirmCode').value.trim();
+    if (!reason) return toast('Error','Wajib isi alasan!','error');
+    if (code !== adminCode) return toast('Kode Salah',`Kode konfirmasi tidak valid!`,'error');
+    if (!pendingAction) return;
+    try {
+        await pendingAction(reason);
+        closeM('mConfirm');
+        pendingAction = null;
+    } catch(e){ toast('Gagal',e.message,'error'); }
+};
+
+// ─── CLEAR DATA ───
+window.triggerClearData = (path) => {
+    const labels={products:'Semua Produk',seller_applications:'Semua Toko',orders:'Semua Order'};
+    pendingAction = async (reason) => {
+        await remove(ref(db,path));
+        if(path==='seller_applications'){
+            // reset role semua seller jadi buyer
+            const upd={};
+            Object.entries(allUsers).filter(([,u])=>u.role==='seller').forEach(([uid])=>{upd[`users/${uid}/role`]='buyer';upd[`users/${uid}/sellerStatus`]=null;});
+            if(Object.keys(upd).length) await update(ref(db),upd);
+        }
+        toast('Dihapus',`${labels[path]} berhasil dihapus`,'warning');
+        logAction('Clear Data',`${labels[path]} dihapus. Alasan: ${reason}`,'red','trash');
+    };
+    openConfirmModal(`Hapus ${labels[path]}`,`Aksi ini akan menghapus <strong>SEMUA</strong> data ${labels[path]} secara permanen. Tidak bisa dibatalkan!`,'red','exclamation-triangle');
+};
+
+// ─── ADMIN CODE ───
+window.saveAdminCode = async () => {
+    const code=$('newCode').value.trim();
+    if(!code||code.length<6) return toast('Error','Kode minimal 6 karakter!','error');
+    await set(ref(db,'admin/config/adminCode'),code);
+    $('newCode').value='';
+    toast('Berhasil','Kode konfirmasi admin diperbarui!','success');
+    logAction('Update Kode Admin','Kode konfirmasi diubah','yellow','key');
+};
+
+// ─── SITE CONFIG ───
+const loadConfigToForm = () => {
+    const c=siteConfig;
+    $('cfg_title1').value   = c.heroTitle1||'XREZZKY';
+    $('cfg_title2').value   = c.heroTitle2||'OFFICIAL STORE';
+    $('cfg_tagline').value  = c.tagline||'Platform jual-beli produk digital paling aman & terpercaya.';
+    $('cfg_badges').value   = (c.trustBadges||['TERJAMIN','TRUSTED','#1 MARKETPLACE']).join(', ');
+    $('cfg_stat1n').value   = c.stat1n||'500+';
+    $('cfg_stat1l').value   = c.stat1l||'Produk';
+    $('cfg_stat2n').value   = c.stat2n||'2K+';
+    $('cfg_stat2l').value   = c.stat2l||'Pembeli';
+    $('cfg_stat3n').value   = c.stat3n||'4.9★';
+    $('cfg_stat3l').value   = c.stat3l||'Rating';
+    $('cfg_ctaLabel').value = c.ctaLabel||'Jadi Seller di XREZZKY';
+    $('cfg_ctaTitle').value = c.ctaTitle||'Buka Toko Kamu Sekarang';
+    $('cfg_ctaDesc').value  = c.ctaDesc||'Jangkau ribuan pembeli · Gratis daftar · Komisi kompetitif';
+    $('cfg_ctaBtn').value   = c.ctaBtn||'Mulai';
+    $('cfg_adminWa').value  = c.adminWa||'6281234567890';
+    $('cfg_trustBadges').value=(c.trustBadges||['TERJAMIN','TRUSTED','#1 MARKETPLACE']).join(', ');
+
+    // Ticker
+    tickerItems = c.tickerItems||['✨ Flash Sale skin Mobile Legends hingga 50% OFF setiap Jumat','🎮 Gratis ongkir untuk pembelian pertama kamu','🔐 Semua transaksi dijamin aman & bergaransi','💎 Member Premium dapat akses early bird produk baru'];
+    renderTickerList();
+
+    // Features
+    featureItems = c.features||[
+        {icon:'fa-shield-alt',color:'blue',title:'Transaksi Aman',desc:'Sistem escrow & garansi'},
+        {icon:'fa-bolt',color:'green',title:'Proses Cepat',desc:'Pengiriman instan'},
+        {icon:'fa-headset',color:'purple',title:'CS 24/7',desc:'Siap bantu kapanpun'},
+        {icon:'fa-star',color:'yellow',title:'Produk Premium',desc:'Kualitas terjamin'},
+    ];
+    renderFeatureList();
+
+    // Categories
+    categories = c.categories||['Game Mobile','Premium Apps','E-Voucher','Akun Sosmed','Jasa Digital'];
+    renderCatList();
+};
+
+window.saveCfg = async (part) => {
+    const upd={};
+    if(part==='hero'||part==='all'){
+        upd.heroTitle1 = $('cfg_title1').value.trim();
+        upd.heroTitle2 = $('cfg_title2').value.trim();
+        upd.tagline    = $('cfg_tagline').value.trim();
+        upd.stat1n=$('cfg_stat1n').value; upd.stat1l=$('cfg_stat1l').value;
+        upd.stat2n=$('cfg_stat2n').value; upd.stat2l=$('cfg_stat2l').value;
+        upd.stat3n=$('cfg_stat3n').value; upd.stat3l=$('cfg_stat3l').value;
+    }
+    if(part==='ticker'||part==='all') upd.tickerItems = tickerItems;
+    if(part==='features'||part==='all') upd.features = featureItems;
+    if(part==='categories'||part==='all'){ upd.categories=categories; $('cfg_trustBadges').value=categories.join(', '); }
+    if(part==='trustBadges') upd.trustBadges = $('cfg_trustBadges').value.split(',').map(s=>s.trim()).filter(Boolean);
+    if(part==='cta'||part==='all'){
+        upd.ctaLabel=$('cfg_ctaLabel').value; upd.ctaTitle=$('cfg_ctaTitle').value;
+        upd.ctaDesc=$('cfg_ctaDesc').value;   upd.ctaBtn=$('cfg_ctaBtn').value;
+        upd.adminWa=$('cfg_adminWa').value;
+        upd.trustBadges=$('cfg_badges').value.split(',').map(s=>s.trim()).filter(Boolean);
+    }
+    try {
+        await update(ref(db,'admin/config/site'),upd);
+        toast('Tersimpan! 🎉','Konfigurasi marketplace berhasil diperbarui');
+        logAction('Update Konfigurasi',`Bagian "${part}" diupdate`,'green','save');
+    } catch(e){ toast('Gagal',e.message,'error'); }
+};
+
+// TICKER
+const renderTickerList = () => {
+    const el=$('tickerList'); el.innerHTML='';
+    tickerItems.forEach((t,i)=>{
+        const div=document.createElement('div');
+        div.className='flex items-center gap-2 bg-white/3 p-2.5 rounded-xl border border-white/5';
+        div.innerHTML=`<span class="text-sm flex-1">${t}</span><button onclick="removeTicker(${i})" class="text-red-400 hover:text-red-300 transition shrink-0"><i class="fas fa-times text-xs"></i></button>`;
+        el.appendChild(div);
+    });
+};
+window.addTicker = () => {
+    const v=$('newTicker').value.trim(); if(!v) return;
+    tickerItems.push(v); $('newTicker').value=''; renderTickerList();
+};
+window.removeTicker = (i) => { tickerItems.splice(i,1); renderTickerList(); };
+
+// FEATURES
+const renderFeatureList = () => {
+    const el=$('featureList'); el.innerHTML='';
+    featureItems.forEach((f,i)=>{
+        const div=document.createElement('div');
+        div.className='grid grid-cols-4 gap-2 items-center bg-white/3 p-2.5 rounded-xl border border-white/5';
+        div.innerHTML=`
+            <input type="text" value="${f.icon}" placeholder="fa-shield-alt" class="inp text-xs col-span-1" onchange="featureItems[${i}].icon=this.value">
+            <input type="text" value="${f.title}" placeholder="Judul" class="inp text-xs col-span-1" onchange="featureItems[${i}].title=this.value">
+            <input type="text" value="${f.desc}" placeholder="Deskripsi" class="inp text-xs col-span-1" onchange="featureItems[${i}].desc=this.value">
+            <div class="flex items-center gap-1">
+                <select class="inp text-xs" onchange="featureItems[${i}].color=this.value">
+                    ${['blue','green','purple','yellow','red'].map(c=>`<option value="${c}" ${f.color===c?'selected':''}>${c}</option>`).join('')}
+                </select>
+                <button onclick="removeFeature(${i})" class="text-red-400 shrink-0"><i class="fas fa-times text-xs"></i></button>
+            </div>`;
+        el.appendChild(div);
+    });
+};
+window.addFeature = () => { featureItems.push({icon:'fa-star',color:'blue',title:'Fitur Baru',desc:'Deskripsi'}); renderFeatureList(); };
+window.removeFeature = (i) => { featureItems.splice(i,1); renderFeatureList(); };
+
+// CATEGORIES
+const renderCatList = () => {
+    const el=$('catList'); el.innerHTML='';
+    categories.forEach((c,i)=>{
+        const span=document.createElement('div');
+        span.className='tag-chip';
+        span.innerHTML=`${c} <button onclick="removeCat(${i})" class="text-blue-400 hover:text-red-400 transition"><i class="fas fa-times text-[9px]"></i></button>`;
+        el.appendChild(span);
+    });
+};
+window.addCategory = () => {
+    const v=$('newCat').value.trim(); if(!v||categories.includes(v)) return;
+    categories.push(v); $('newCat').value=''; renderCatList();
+};
+window.removeCat = (i) => { categories.splice(i,1); renderCatList(); };
+</script>
 </body>
 </html>
