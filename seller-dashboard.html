@@ -22,33 +22,28 @@
         }
         .glass { background: rgba(14,21,32,0.92); backdrop-filter: blur(16px); border: 1px solid var(--bd); }
         .inp { width:100%; padding:14px; border-radius:12px; background:var(--sf2); border:1px solid var(--bd); color:#f1f5f9; }
-        .inp:focus { border-color: var(--bl); outline: none; }
-        .btn { padding:12px 20px; border-radius:12px; font-weight:700; cursor:pointer; transition: all 0.2s; }
-        .tab-active { border-bottom: 3px solid var(--bl); color: white; font-weight: 600; }
-        .toast {
-            animation: slideUp 0.3s ease forwards;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity:0; }
-            to { transform: translateY(0); opacity:1; }
-        }
+        .inp:focus { border-color: var(--bl); }
+        .btn { padding:12px 20px; border-radius:12px; font-weight:700; cursor:pointer; }
+        .bp { background:var(--bl); color:white; }
+        .by { background:var(--yw); color:black; }
+        .bg { background:var(--gr); color:white; }
+        .tab-active { border-bottom: 3px solid var(--bl); color: white; }
     </style>
 </head>
 <body class="pb-20">
 
 <div id="loading" class="fixed inset-0 bg-[#080c14] flex flex-col items-center justify-center z-50">
-    <div style="font-family:'Syne',sans-serif;" class="text-4xl font-bold mb-6 text-blue-400">XREZZKY STORE</div>
+    <div style="font-family:'Syne',sans-serif;" class="text-4xl font-bold mb-6 text-blue-400">Seller Dashboard</div>
     <div class="w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
-        <div id="progressBar" class="h-full bg-blue-500 transition-all duration-1000" style="width:0%"></div>
+        <div id="progressBar" class="h-full bg-blue-500 transition-all" style="width:0%"></div>
     </div>
-    <p class="text-gray-400 mt-4 text-sm">Memuat dashboard...</p>
 </div>
 
 <div class="max-w-7xl mx-auto px-4 py-6">
     <div class="flex items-center justify-between mb-8">
         <div>
             <h1 style="font-family:'Syne',sans-serif;" class="text-3xl font-bold">Seller Dashboard</h1>
-            <p id="storeName" class="text-gray-400">Memuat toko...</p>
+            <p id="storeName" class="text-gray-400"></p>
         </div>
         <button onclick="logoutSeller()" class="btn border border-red-500 text-red-400 hover:bg-red-500/10">Logout</button>
     </div>
@@ -70,14 +65,14 @@
     </div>
 
     <!-- Tabs -->
-    <div class="flex border-b border-white/10 mb-6 overflow-x-auto pb-1">
+    <div class="flex border-b border-white/10 mb-6 overflow-x-auto">
         <button onclick="switchTab(0)" class="tab px-6 py-3 tab-active" id="tab-0">📦 Produk Saya</button>
         <button onclick="switchTab(1)" class="tab px-6 py-3" id="tab-1">📋 Pesanan Masuk</button>
         <button onclick="switchTab(2)" class="tab px-6 py-3" id="tab-2">➕ Tambah Produk</button>
         <button onclick="switchTab(3)" class="tab px-6 py-3" id="tab-3">🏪 Info Toko</button>
     </div>
 
-    <!-- Tab Contents -->
+    <!-- Tab Content -->
     <div id="tab-content-0" class="tab-content">
         <div id="productList" class="space-y-4"></div>
     </div>
@@ -92,329 +87,243 @@
             <input id="prodName" type="text" placeholder="Nama Produk *" class="inp mb-3">
             <input id="prodPrice" type="number" placeholder="Harga (Rp) *" class="inp mb-3">
             <input id="prodStock" type="number" placeholder="Stok *" class="inp mb-3">
-            <input id="prodCategory" type="text" placeholder="Kategori" class="inp mb-3">
+            <input id="prodCategory" type="text" placeholder="Kategori (contoh: Fashion, Elektronik)" class="inp mb-3">
             <textarea id="prodDesc" placeholder="Deskripsi produk" class="inp h-24 mb-4"></textarea>
             <input id="prodImage" type="text" placeholder="URL Gambar (https://...)" class="inp mb-4">
-            <button onclick="saveProduct()" class="btn bg w-full py-4 text-lg">💾 Simpan Produk</button>
+            <button onclick="saveProduct()" class="btn bg w-full py-4">Simpan Produk</button>
         </div>
     </div>
 
     <div id="tab-content-3" class="tab-content hidden">
-        <div id="storeInfo" class="glass p-6 rounded-3xl text-sm"></div>
+        <div id="storeInfo" class="glass p-6 rounded-3xl"></div>
     </div>
 </div>
 
-<!-- Toast -->
-<div id="toast" class="fixed bottom-6 right-6 hidden px-6 py-3 rounded-2xl shadow-2xl text-white toast max-w-xs"></div>
-
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-    import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getDatabase, ref, onValue, push, update, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
-        authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
-        databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "xrezzkystore-marketplace-83bc0",
-        storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
-        messagingSenderId: "604900856944",
-        appId: "1:604900856944:web:c48c973da45214c68a10b5"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
+    authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
+    databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "xrezzkystore-marketplace-83bc0",
+    storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
+    messagingSenderId: "604900856944",
+    appId: "1:604900856944:web:c48c973da45214c68a10b5"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
 
-    let currentUser = null;
-    let sellerData = null;
-    let products = [];
-    let orders = [];
-    let currentEditProductId = null;
+let currentUser = null;
+let sellerData = null;
+let products = [];
+let orders = [];
+let currentEditProductId = null;
 
-    // Toast
-    function showToast(msg, type = 'info') {
-        const toast = document.getElementById('toast');
-        toast.textContent = msg;
-        toast.classList.remove('hidden', 'bg-green-600', 'bg-red-600', 'bg-blue-600');
-        
-        if (type === 'success') toast.classList.add('bg-green-600');
-        else if (type === 'error') toast.classList.add('bg-red-600');
-        else toast.classList.add('bg-blue-600');
+/* TOAST SIMPLE */
+function showToast(msg){
+    alert(msg);
+}
 
-        setTimeout(() => toast.classList.add('hidden'), 3500);
-    }
+/* LOADING */
+function simulateLoading() {
+    setTimeout(() => {
+        const el = document.getElementById('loading');
+        if (el) el.remove();
+    }, 1200);
+}
 
-    // Loading
-    function simulateLoading() {
-        const bar = document.getElementById('progressBar');
-        let w = 0;
-        const int = setInterval(() => {
-            w += Math.random() * 20 + 10;
-            if (w > 95) w = 95;
-            bar.style.width = w + '%';
-        }, 90);
+/* TAB */
+window.switchTab = function(tab) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
 
-        setTimeout(() => {
-            clearInterval(int);
-            bar.style.width = '100%';
-            setTimeout(() => document.getElementById('loading').remove(), 400);
-        }, 1400);
-    }
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove('tab-active'));
+    document.getElementById(`tab-${tab}`).classList.add('tab-active');
+};
 
-    window.switchTab = function(n) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-        document.getElementById(`tab-content-${n}`).classList.remove('hidden');
+/* DATA */
+function loadSellerData() {
+    onAuthStateChanged(auth, (user) => {
+        if (!user) return window.location.href = 'index.html';
 
-        document.querySelectorAll('.tab').forEach(el => el.classList.remove('tab-active'));
-        document.getElementById(`tab-${n}`).classList.add('tab-active');
-    };
+        currentUser = user;
 
-    function loadSellerData() {
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = 'index.html';
-                return;
+        // SELLER
+        onValue(ref(db, 'sellers/' + user.uid), (snap) => {
+            if (snap.exists()) {
+                sellerData = snap.val();
+                document.getElementById('storeName').textContent = sellerData.storeName || 'Toko Saya';
+                loadStoreInfo();
             }
-            currentUser = user;
-
-            // Seller Info
-            onValue(ref(db, 'sellers/' + user.uid), (snap) => {
-                if (snap.exists()) {
-                    sellerData = snap.val();
-                    document.getElementById('storeName').textContent = sellerData.storeName || 'Toko Saya';
-                    renderStoreInfo();
-                } else {
-                    document.getElementById('storeName').innerHTML = `<span class="text-yellow-400">⚠️ Info toko belum diatur</span>`;
-                }
-            });
-
-            // Products
-            onValue(ref(db, 'products'), (snap) => {
-                products = [];
-                if (snap.exists()) {
-                    snap.forEach(child => {
-                        const p = child.val();
-                        if (p.sellerId === user.uid) {
-                            products.push({ id: child.key, ...p });
-                        }
-                    });
-                }
-                renderProducts();
-                updateStats();
-            });
-
-            // Orders
-            onValue(ref(db, 'orders'), (snap) => {
-                orders = [];
-                if (snap.exists()) {
-                    snap.forEach(child => {
-                        const o = child.val();
-                        if (o.sellerId === user.uid) {
-                            orders.push({ id: child.key, ...o });
-                        }
-                    });
-                }
-                renderOrders();
-            });
         });
-    }
 
-    function renderProducts() {
-        const container = document.getElementById('productList');
-        container.innerHTML = '';
-
-        if (products.length === 0) {
-            container.innerHTML = `<p class="text-center py-12 text-gray-400">Belum ada produk. Silakan tambah di tab "Tambah Produk".</p>`;
-            return;
-        }
-
-        products.forEach(p => {
-            const div = document.createElement('div');
-            div.className = 'glass p-5 rounded-3xl flex gap-5 items-center';
-            div.innerHTML = `
-                <img src="${p.images && p.images[0] ? p.images[0] : 'https://placehold.co/100x100/1f2937/9ca3af?text=No+Image'}" 
-                     class="w-24 h-24 object-cover rounded-2xl" alt="${p.name}">
-                <div class="flex-1">
-                    <h4 class="font-semibold text-lg">${p.name}</h4>
-                    <p class="text-blue-400 text-xl font-bold">Rp ${Number(p.price || 0).toLocaleString('id-ID')}</p>
-                    <p class="text-sm text-gray-400">Stok: <span class="font-medium">${p.stock || 0}</span></p>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <button onclick="editProduct('${p.id}')" class="btn border border-yellow-400 text-yellow-400 text-sm px-5 py-2">Edit</button>
-                    <button onclick="deleteProduct('${p.id}')" class="btn border border-red-500 text-red-400 text-sm px-5 py-2">Hapus</button>
-                </div>
-            `;
-            container.appendChild(div);
+        // PRODUCTS
+        onValue(ref(db, 'products'), (snap) => {
+            products = [];
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    const p = child.val();
+                    if (p.sellerId === user.uid) {
+                        products.push({ id: child.key, ...p });
+                    }
+                });
+            }
+            renderSellerProducts();
+            updateStats();
         });
-    }
 
-    function renderOrders() {
-        const container = document.getElementById('orderList');
-        container.innerHTML = '';
-
-        if (orders.length === 0) {
-            container.innerHTML = `<p class="text-center py-12 text-gray-400">Belum ada pesanan masuk saat ini.</p>`;
-            return;
-        }
-
-        orders.forEach(order => {
-            const div = document.createElement('div');
-            div.className = 'glass p-6 rounded-3xl';
-            div.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
-                    <div>
-                        <span class="font-mono text-xs bg-gray-700 px-2 py-1 rounded">${order.orderId || order.id}</span>
-                    </div>
-                    <span class="px-4 py-1 text-xs rounded-full font-medium ${order.status === 'completed' ? 'bg-green-500/20 text-green-400' : order.status === 'rejected' ? 'bg-red-500/20 text-red-400' : 'bg-amber-500/20 text-amber-400'}">
-                        ${order.status ? order.status.toUpperCase() : 'PENDING'}
-                    </span>
-                </div>
-                <p class="font-medium">${order.userName || 'Pembeli'}</p>
-                <p class="text-sm text-gray-400 mt-1">\( {order.items ? order.items.map(i => ` \){i.name} ×${i.qty}`).join(' • ') : '-'}</p>
-                <p class="text-2xl font-bold text-blue-400 mt-4">Rp ${Number(order.total || 0).toLocaleString('id-ID')}</p>
-
-                <div class="mt-5">
-                    <select onchange="updateOrderStatus('${order.id}', this.value)" class="inp text-sm">
-                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="processed" ${order.status === 'processed' ? 'selected' : ''}>Diproses</option>
-                        <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Dikirim</option>
-                        <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Selesai</option>
-                        <option value="rejected" ${order.status === 'rejected' ? 'selected' : ''}>Tolak</option>
-                    </select>
-                </div>
-            `;
-            container.appendChild(div);
+        // ORDERS
+        onValue(ref(db, 'orders'), (snap) => {
+            orders = [];
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    const o = child.val();
+                    if (o.sellerId === user.uid) {
+                        orders.push({ id: child.key, ...o });
+                    }
+                });
+            }
+            renderOrders();
         });
-    }
+    });
+}
 
-    window.updateOrderStatus = async (orderId, newStatus) => {
-        try {
-            await update(ref(db, `orders/${orderId}`), { status: newStatus });
-            showToast(`Status diubah menjadi ${newStatus}`, 'success');
-        } catch (err) {
-            console.error(err);
-            showToast('Gagal mengubah status pesanan', 'error');
-        }
-    };
+/* PRODUK */
+function renderSellerProducts() {
+    const container = document.getElementById('productList');
+    container.innerHTML = '';
 
-    function renderStoreInfo() {
-        const el = document.getElementById('storeInfo');
-        if (!sellerData) {
-            el.innerHTML = `<p class="text-gray-400">Data toko belum tersedia.</p>`;
-            return;
-        }
-        el.innerHTML = `
-            <h3 class="font-bold text-lg mb-5">Informasi Toko</h3>
-            <div class="grid grid-cols-1 gap-y-3 text-sm">
-                <p><strong>Nama Toko</strong><br>${sellerData.storeName || '-'}</p>
-                <p><strong>Kota</strong><br>${sellerData.city || '-'}</p>
-                <p><strong>WhatsApp</strong><br>${sellerData.whatsapp || '-'}</p>
-                \( {sellerData.description ? `<p class="mt-3 text-gray-300"> \){sellerData.description}</p>` : ''}
+    products.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'glass p-4 rounded-2xl flex gap-4';
+        div.innerHTML = `
+            <img src="${p.images?.[0] || 'https://placehold.co/80x80'}" class="w-20 h-20 object-cover rounded-xl">
+            <div class="flex-1">
+                <p class="font-medium">${p.name}</p>
+                <p class="text-blue-400">Rp ${Number(p.price || 0).toLocaleString('id-ID')}</p>
+                <p class="text-xs text-gray-400">Stok: ${p.stock || 0}</p>
+            </div>
+            <div>
+                <button onclick="editProduct('${p.id}')" class="btn border border-yellow-400 text-yellow-400 text-xs px-3 py-1 mb-2">Edit</button>
+                <button onclick="deleteProduct('${p.id}')" class="btn border border-red-500 text-red-400 text-xs px-3 py-1">Hapus</button>
             </div>
         `;
+        container.appendChild(div);
+    });
+}
+
+/* ORDER */
+function renderOrders() {
+    const container = document.getElementById('orderList');
+    container.innerHTML = '';
+
+    orders.forEach(order => {
+        const div = document.createElement('div');
+        div.className = 'glass p-5 rounded-2xl';
+        div.innerHTML = `
+            <div class="flex justify-between mb-3">
+                <span class="font-mono text-sm">${order.orderId || order.id}</span>
+                <span class="px-3 py-1 text-xs rounded-full">
+                    ${order.status || 'pending'}
+                </span>
+            </div>
+            <p class="font-medium">${order.userName || 'User'}</p>
+            <p class="text-sm text-gray-400">
+                ${order.items && Array.isArray(order.items)
+                    ? order.items.map(i => `${i.name} x${i.qty}`).join(', ')
+                    : 'Tidak ada item'}
+            </p>
+            <p class="text-blue-400 font-bold mt-2">Rp ${Number(order.total || 0).toLocaleString('id-ID')}</p>
+        `;
+        container.appendChild(div);
+    });
+}
+
+/* STORE */
+function loadStoreInfo() {
+    const el = document.getElementById('storeInfo');
+    if (!sellerData) return;
+
+    el.innerHTML = `
+        <h3 class="font-bold mb-4">Info Toko</h3>
+        <p><strong>Nama Toko:</strong> ${sellerData.storeName || '-'}</p>
+        <p><strong>Kota:</strong> ${sellerData.city || '-'}</p>
+        <p><strong>WhatsApp:</strong> ${sellerData.whatsapp || '-'}</p>
+        <p class="mt-4 text-sm text-gray-400">${sellerData.description || ''}</p>
+    `;
+}
+
+/* SAVE */
+window.saveProduct = async () => {
+    const name = prodName.value.trim();
+    const price = parseInt(prodPrice.value);
+    const stock = parseInt(prodStock.value);
+
+    if (!name || isNaN(price) || isNaN(stock) || price <= 0 || stock < 0) {
+        return showToast('Input tidak valid');
     }
 
-    window.saveProduct = async () => {
-        const name = document.getElementById('prodName').value.trim();
-        const priceStr = document.getElementById('prodPrice').value;
-        const stockStr = document.getElementById('prodStock').value;
-        const category = document.getElementById('prodCategory').value.trim();
-        const desc = document.getElementById('prodDesc').value.trim();
-        const imageUrl = document.getElementById('prodImage').value.trim();
-
-        if (!name || !priceStr || !stockStr) {
-            showToast('Nama produk, harga, dan stok wajib diisi!', 'error');
-            return;
-        }
-
-        const price = parseInt(priceStr);
-        const stock = parseInt(stockStr);
-
-        if (isNaN(price) || price <= 0 || isNaN(stock) || stock < 0) {
-            showToast('Harga dan stok harus angka yang valid', 'error');
-            return;
-        }
-
-        const productData = {
-            name,
-            price,
-            stock,
-            category: category || 'Umum',
-            description: desc,
-            images: imageUrl ? [imageUrl] : [],
-            sellerId: currentUser.uid,
-            sellerName: sellerData?.storeName || 'Toko Saya',
-            updatedAt: Date.now()
-        };
-
-        try {
-            if (currentEditProductId) {
-                await update(ref(db, 'products/' + currentEditProductId), productData);
-                showToast('Produk berhasil diperbarui ✅', 'success');
-            } else {
-                await push(ref(db, 'products'), productData);
-                showToast('Produk baru berhasil ditambahkan ✅', 'success');
-            }
-            switchTab(0);
-            clearProductForm();
-        } catch (err) {
-            console.error(err);
-            showToast('Gagal menyimpan produk. Coba lagi.', 'error');
-        }
+    const data = {
+        name,
+        price,
+        stock,
+        images: prodImage.value ? [prodImage.value] : [],
+        sellerId: currentUser.uid,
+        sellerName: sellerData?.storeName || 'Toko Saya'
     };
 
-    function clearProductForm() {
-        ['prodName','prodPrice','prodStock','prodCategory','prodDesc','prodImage'].forEach(id => {
-            document.getElementById(id).value = '';
-        });
-        currentEditProductId = null;
+    try {
+        if (currentEditProductId) {
+            await update(ref(db, 'products/' + currentEditProductId), data);
+        } else {
+            await push(ref(db, 'products'), data);
+        }
+        showToast('Berhasil disimpan');
+    } catch {
+        showToast('Gagal');
     }
+};
 
-    window.editProduct = (id) => {
-        const product = products.find(p => p.id === id);
-        if (!product) return showToast('Produk tidak ditemukan', 'error');
+/* EDIT */
+window.editProduct = (id) => {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
 
-        currentEditProductId = id;
-        document.getElementById('prodName').value = product.name || '';
-        document.getElementById('prodPrice').value = product.price || '';
-        document.getElementById('prodStock').value = product.stock || '';
-        document.getElementById('prodCategory').value = product.category || '';
-        document.getElementById('prodDesc').value = product.description || '';
-        document.getElementById('prodImage').value = product.images && product.images[0] ? product.images[0] : '';
-        
-        switchTab(2);
-    };
+    currentEditProductId = id;
+    prodName.value = p.name;
+    prodPrice.value = p.price;
+    prodStock.value = p.stock;
+    prodImage.value = p.images?.[0] || '';
 
-    window.deleteProduct = async (id) => {
-        if (!confirm('Yakin ingin menghapus produk ini permanently?')) return;
+    switchTab(2);
+};
 
-        try {
-            await remove(ref(db, 'products/' + id));
-            showToast('Produk berhasil dihapus', 'success');
-        } catch (err) {
-            console.error(err);
-            showToast('Gagal menghapus produk', 'error');
-        }
-    };
+/* DELETE */
+window.deleteProduct = async (id) => {
+    if (!confirm('Hapus produk?')) return;
+    await remove(ref(db, 'products/' + id));
+};
 
-    function updateStats() {
-        document.getElementById('stat-products').textContent = products.length;
-        document.getElementById('stat-sold').textContent = '0';   // nanti bisa dihitung dari orders
-    }
+/* STATS */
+function updateStats() {
+    document.getElementById('stat-products').textContent = products.length;
+    document.getElementById('stat-sold').textContent = '0';
+}
 
-    window.logoutSeller = async () => {
-        try {
-            await signOut(auth);
-            window.location.href = 'index.html';
-        } catch (e) {
-            showToast('Gagal logout', 'error');
-        }
-    };
+/* LOGOUT */
+window.logoutSeller = async () => {
+    await signOut(auth);
+    location.href = 'index.html';
+};
 
-    // Jalankan
-    simulateLoading();
-    loadSellerData();
+/* INIT */
+simulateLoading();
+loadSellerData();
 </script>
 </body>
 </html>
