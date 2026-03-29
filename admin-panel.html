@@ -427,6 +427,10 @@ select.inp option{background:var(--s1)}
           <button onclick="triggerClearData('products')" class="btn btn-red w-full justify-center"><i class="fas fa-trash"></i> Hapus Semua Produk</button>
           <button onclick="triggerClearData('seller_applications')" class="btn btn-red w-full justify-center"><i class="fas fa-store"></i> Hapus Semua Toko</button>
           <button onclick="triggerClearData('orders')" class="btn btn-red w-full justify-center"><i class="fas fa-receipt"></i> Hapus Semua Order</button>
+          <div class="border-t border-white/10 pt-3 mt-1">
+            <p class="text-[10px] text-red-400 font-black uppercase tracking-widest mb-2">⚠️ Danger Zone — Tidak Bisa Dibatalkan</p>
+            <button onclick="triggerClearData('ALL')" class="btn w-full justify-center text-sm" style="background:linear-gradient(135deg,#7f1d1d,#991b1b);color:#fff"><i class="fas fa-bomb"></i> ALL CLEAR — Hapus Semua Data</button>
+          </div>
         </div>
       </div>
       <div class="card md:col-span-2">
@@ -1030,12 +1034,18 @@ window.triggerRejectSeller = (uid, name) => {
 window.triggerBanStore = (uid, name) => {
     pendingAction = async (reason) => {
         await update(ref(db,`seller_applications/${uid}`),{status:'banned',bannedAt:Date.now(),bannedReason:reason});
-        await update(ref(db,`users/${uid}`),{role:'buyer',banned:true,bannedReason:reason});
+        await update(ref(db,`users/${uid}`),{role:'buyer',banned:true,bannedReason:reason,storeName:null,sellerStatus:null});
+        // Sembunyikan semua produk seller ini
+        const prodUpdates = {};
+        Object.entries(allProducts).filter(([,p])=>p.sellerId===uid).forEach(([id])=>{
+            prodUpdates[`products/${id}/hidden`] = true;
+        });
+        if (Object.keys(prodUpdates).length) await update(ref(db), prodUpdates);
         closeM('mSellerDetail');
-        toast('Dibanned',`Toko "${name}" dibanned`,'error');
+        toast('Dibanned 🔴',`Toko "${name}" dibanned, produk disembunyikan`,'error');
         logAction('Ban Toko',`"${name}" dibanned. Alasan: ${reason}`,'red','ban');
     };
-    openConfirmModal('Ban Toko',`Kamu akan membanned toko "<strong>${name}</strong>" dan menghapus akses seller.`,'red','ban');
+    openConfirmModal('Ban Toko',`Kamu akan membanned toko "<strong>${name}</strong>", menghapus akses seller, dan menyembunyikan semua produknya.`,'red','ban');
 };
 
 window.triggerDeleteStore = (uid, name) => {
@@ -1185,21 +1195,44 @@ $('confirmBtn').onclick = async () => {
     } catch(e){ toast('Gagal',e.message,'error'); }
 };
 
-// ─── CLEAR DATA ───
+// ─── CLEAR ALL DATA ───
 window.triggerClearData = (path) => {
-    const labels={products:'Semua Produk',seller_applications:'Semua Toko',orders:'Semua Order'};
+    const labels={products:'Semua Produk',seller_applications:'Semua Toko & Seller',orders:'Semua Order','ALL':'SEMUA DATA (kecuali admin)'};
     pendingAction = async (reason) => {
-        await remove(ref(db,path));
-        if(path==='seller_applications'){
-            // reset role semua seller jadi buyer
-            const upd={};
-            Object.entries(allUsers).filter(([,u])=>u.role==='seller').forEach(([uid])=>{upd[`users/${uid}/role`]='buyer';upd[`users/${uid}/sellerStatus`]=null;});
-            if(Object.keys(upd).length) await update(ref(db),upd);
+        if (path === 'ALL') {
+            // Hapus semua kecuali admin user
+            const adminUid = adminUser.uid;
+            const adminData = allUsers[adminUid];
+            // Hapus semua path utama
+            for (const p of ['products','seller_applications','orders','admin/logs']) {
+                try { await remove(ref(db, p)); } catch {}
+            }
+            // Hapus semua users kecuali admin
+            for (const [uid] of Object.entries(allUsers)) {
+                if (uid !== adminUid) {
+                    try { await remove(ref(db, `users/${uid}`)); } catch {}
+                }
+            }
+            // Restore admin user
+            if (adminData) await set(ref(db, `users/${adminUid}`), adminData);
+            toast('ALL CLEAR 💥','Semua data berhasil dihapus kecuali akun admin','warning');
+            logAction('ALL CLEAR',`Semua data dihapus. Alasan: ${reason}`,'red','bomb');
+            return;
+        }
+        await remove(ref(db, path));
+        if (path === 'seller_applications') {
+            const upd = {};
+            Object.entries(allUsers).filter(([,u])=>u.role==='seller').forEach(([uid])=>{
+                upd[`users/${uid}/role`]='buyer';
+                upd[`users/${uid}/sellerStatus`]=null;
+                upd[`users/${uid}/storeName`]=null;
+            });
+            if (Object.keys(upd).length) await update(ref(db), upd);
         }
         toast('Dihapus',`${labels[path]} berhasil dihapus`,'warning');
         logAction('Clear Data',`${labels[path]} dihapus. Alasan: ${reason}`,'red','trash');
     };
-    openConfirmModal(`Hapus ${labels[path]}`,`Aksi ini akan menghapus <strong>SEMUA</strong> data ${labels[path]} secara permanen. Tidak bisa dibatalkan!`,'red','exclamation-triangle');
+    openConfirmModal(`Hapus ${labels[path]}`,`Aksi ini akan menghapus <strong>SEMUA</strong> ${labels[path]} secara <strong class="text-red-400">permanen</strong>. Tidak bisa dibatalkan!`,'red','exclamation-triangle');
 };
 
 // ─── ADMIN CODE ───
