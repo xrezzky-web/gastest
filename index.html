@@ -2012,39 +2012,33 @@
                 }
 
                 // Seller banner / Admin dashboard button
+                                   // 3. LOGIKA BANNER KHUSUS ADMIN (Dapet 2 Akses)
                 if (isAdmin && sellerBanner) {
-                    sellerBanner.className = 'w-full bg-gradient-to-r from-blue-700 to-indigo-900 p-5 rounded-[24px] flex items-center justify-between cursor-pointer hover:scale-[1.01] transition shadow-xl border border-white/10 mb-5';
-                    sellerBanner.onclick = () => window.location.href = 'admin-panel.html';
+                    sellerBanner.className = 'w-full mb-5 flex flex-col gap-3';
+                    sellerBanner.onclick = null; // Matikan klik pada container utama
                     sellerBanner.innerHTML = `
-                        <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-shield text-white text-lg"></i></div>
-                            <div>
-                                <p class="text-[10px] font-bold text-blue-200 uppercase tracking-widest">Owner Access</p>
-                                <h3 class="text-base font-black text-white">DASHBOARD ADMIN</h3>
+                        <div onclick="window.location.href='admin-panel.html'" class="w-full bg-gradient-to-r from-red-600 to-red-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition shadow-lg border border-red-500/30">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-shield text-white text-base"></i></div>
+                                <div class="text-left">
+                                    <p class="text-[9px] font-bold text-red-200 uppercase tracking-widest leading-none mb-1 italic">Master Control</p>
+                                    <h3 class="text-sm font-black text-white italic uppercase">Admin Panel</h3>
+                                </div>
                             </div>
+                            <i class="fas fa-chevron-right text-white/40 text-xs"></i>
                         </div>
-                        <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center border border-white/20"><i class="fas fa-chevron-right text-white text-sm"></i></div>`;
-                    if (homeSellerCta) homeSellerCta.classList.add('hidden');
-                } else if (isSeller && sellerBanner) {
-                    sellerBanner.className = 'w-full bg-gradient-to-r from-green-800/60 to-blue-800/40 p-5 rounded-[24px] flex items-center justify-between cursor-pointer hover:scale-[1.01] transition border border-green-500/30 mb-5';
-                    sellerBanner.onclick = () => window.location.href = 'seller-dashboard.html';
-                    sellerBanner.innerHTML = `
-                        <div class="flex items-center gap-4">
-                            <div class="w-11 h-11 bg-green-500/30 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-300 text-lg"></i></div>
-                            <div>
-                                <p class="text-[10px] font-black uppercase text-green-300">✅ Seller Aktif</p>
-                                <h3 class="text-base font-black text-white">${currentUserData?.storeName || 'Toko Kamu'}</h3>
+
+                        <div onclick="window.location.href='seller-dashboard.html'" class="w-full bg-gradient-to-r from-blue-700 to-indigo-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition shadow-lg border border-white/10">
+                            <div class="flex items-center gap-4 text-left">
+                                <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-400 text-base"></i></div>
+                                <div>
+                                    <p class="text-[9px] font-bold text-blue-200 uppercase tracking-widest leading-none mb-1 italic">Personal Store</p>
+                                    <h3 class="text-sm font-black text-white italic uppercase">Seller Dashboard</h3>
+                                </div>
                             </div>
+                            <i class="fas fa-chevron-right text-white/40 text-xs"></i>
                         </div>
-                        <span class="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Dashboard →</span>`;
-                    if (homeSellerCta) homeSellerCta.classList.add('hidden');
-                } else if (isPending && sellerBanner) {
-                    sellerBanner.className = 'w-full bg-gradient-to-r from-yellow-900/40 to-orange-900/30 p-5 rounded-[24px] flex items-center gap-4 border border-yellow-500/30 mb-5';
-                    sellerBanner.onclick = null;
-                    sellerBanner.innerHTML = `
-                        <div class="w-11 h-11 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-clock text-yellow-300 text-lg animate-pulse"></i></div>
-                        <div class="flex-1"><p class="text-[10px] font-black uppercase text-yellow-300">⏳ Pending Verifikasi</p><p class="font-bold text-white text-sm">Aplikasi Seller Dikirim</p><p class="text-gray-400 text-xs">Admin sedang verifikasi. 1×24 jam.</p></div>
-                        <div class="w-2.5 h-2.5 bg-yellow-400 rounded-full animate-pulse shrink-0"></div>`;
+                    `;
                     if (homeSellerCta) homeSellerCta.classList.add('hidden');
                 } else if (sellerBanner) {
                     sellerBanner.innerHTML = '';
