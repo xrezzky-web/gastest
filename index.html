@@ -453,11 +453,18 @@
                             <div class="w-12 h-12 bg-blue-500/30 border border-blue-400/40 rounded-xl flex items-center justify-center shrink-0">
                                 <i class="fas fa-store text-blue-300 text-lg"></i>
                             </div>
-                            <div class="flex-1">
-                                <p class="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-0.5">Upgrade Akun</p>
-                                <p class="font-extrabold font-syne text-base">Jadilah Seller XREZZKY</p>
-                                <p class="text-gray-400 text-xs">Buka toko & jual produk digitalmu ke ribuan pembeli</p>
-                            </div>
+                            <div id="homeSellerCta" class="glass-card p-5 mb-6 bg-blue-600/10 border-blue-500/20 relative overflow-hidden group cursor-pointer">
+   <div class="flex items-center gap-4">
+        <div class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center">
+            <i class="fas fa-store text-blue-400 text-xl"></i>
+        </div>
+        <div>
+            <h3 class="text-sm font-bold text-white uppercase italic">Jadilah Seller</h3>
+            <p class="text-[10px] text-gray-400 uppercase italic">Mulai berjualan layanan digital</p>
+        </div>
+    </div>
+</div>
+
                             <i class="fas fa-chevron-right text-blue-400 shrink-0"></i>
                         </div>
                     </div>
@@ -1978,109 +1985,110 @@
         }, 8000);
 
         // Auth state listener
+        // --- LOGIKA AUTH + ROLE + INTERFACE DINAMIS (FINAL) ---
         onAuthStateChanged(auth, async (user) => {
             const authHeader = document.getElementById('authHeader');
             const sellerBanner = document.getElementById('sellerBanner');
             const badgeContainer = document.getElementById('roleBadgeContainer');
-            const homeSellerCta = document.getElementById('homeSellerCta');
+            const homeSellerCta = document.getElementById('homeSellerCta'); // ID Banner Promosi
 
             if (user) {
                 currentUser = user;
-                // Load user data
+                
+                // 1. Ambil data user dari Database secara Realtime
                 try {
                     const snapU = await get(ref(db, 'users/' + user.uid));
                     currentUserData = snapU.exists() ? snapU.val() : { role: 'buyer' };
-                } catch { currentUserData = { role: 'buyer' }; }
+                } catch { 
+                    currentUserData = { role: 'buyer' }; 
+                }
 
                 const role = currentUserData?.role || 'buyer';
                 const isAdmin = role === 'admin';
                 const isSeller = role === 'seller';
                 const isPending = currentUserData?.sellerStatus === 'pending';
 
-                // Header badge
+                // 2. Tentukan Style Badge Berdasarkan Role
                 const roleLabel = isAdmin ? 'Admin' : isSeller ? 'Seller' : 'Buyer';
-                const roleCls   = isAdmin ? 'text-red-400' : isSeller ? 'text-green-400' : 'text-blue-400';
                 const badgeStyle = isAdmin ? 'bg-red-500/20 text-red-400 border-red-500/40'
                                  : isSeller ? 'bg-green-500/20 text-green-400 border-green-500/40'
                                  : 'bg-blue-500/20 text-blue-400 border-blue-500/40';
 
+                // Update Header Atas
                 updateAuthHeader();
 
-                // Role badge di profil
+                // Update Badge di Tengah Halaman Profil
                 if (badgeContainer) {
                     badgeContainer.innerHTML = `<span class="px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${badgeStyle}">${roleLabel} Tier</span>`;
                 }
 
-                // Seller banner / Admin dashboard button
-                                   // --- LOGIKA DINAMIS: ADMIN / SELLER / BUYER ---
-                if (isAdmin && sellerBanner) {
-                    // ADMIN: Langsung dapet 2 tombol (Admin Panel & Seller Dashboard)
-                    sellerBanner.className = 'w-full mb-5 flex flex-col gap-3';
-                    sellerBanner.onclick = null;
-                    sellerBanner.innerHTML = `
-                        <div onclick="window.location.href='admin-panel.html'" class="w-full bg-gradient-to-r from-red-600 to-red-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition border border-red-500/30 shadow-lg">
+                // 3. LOGIKA TAMPILAN BANNER & SEMBUNYIKAN PROMOSI
+                if (isAdmin) {
+                    // ADMIN: Sembunyikan promosi & Tampilkan 2 Akses
+                    if (homeSellerCta) homeSellerCta.style.display = 'none';
+                    if (sellerBanner) {
+                        sellerBanner.className = 'w-full mb-5 flex flex-col gap-3';
+                        sellerBanner.innerHTML = `
+                            <div onclick="window.location.href='admin-panel.html'" class="w-full bg-gradient-to-r from-red-600 to-red-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition shadow-lg border border-red-500/30">
+                                <div class="flex items-center gap-4 text-left">
+                                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-shield text-white"></i></div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-red-200 uppercase tracking-widest leading-none mb-1 italic">Master Control</p>
+                                        <h3 class="text-sm font-black text-white italic uppercase">Admin Panel</h3>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-white/40 text-xs"></i>
+                            </div>
+                            <div onclick="window.location.href='seller-dashboard.html'" class="w-full bg-gradient-to-r from-blue-700 to-indigo-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition shadow-lg border border-white/10">
+                                <div class="flex items-center gap-4 text-left">
+                                    <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-400"></i></div>
+                                    <div>
+                                        <p class="text-[9px] font-bold text-blue-200 uppercase tracking-widest leading-none mb-1 italic">Personal Store</p>
+                                        <h3 class="text-sm font-black text-white italic uppercase">Seller Dashboard</h3>
+                                    </div>
+                                </div>
+                                <i class="fas fa-chevron-right text-white/40 text-xs"></i>
+                            </div>`;
+                    }
+                } 
+                else if (isSeller) {
+                    // SELLER: Sembunyikan promosi & Tampilkan Dashboard Seller
+                    if (homeSellerCta) homeSellerCta.style.display = 'none';
+                    if (sellerBanner) {
+                        sellerBanner.className = 'w-full bg-gradient-to-r from-green-800/60 to-blue-800/40 p-5 rounded-[24px] flex items-center justify-between cursor-pointer hover:scale-[1.01] transition border border-green-500/30 mb-5';
+                        sellerBanner.onclick = () => window.location.href = 'seller-dashboard.html';
+                        sellerBanner.innerHTML = `
                             <div class="flex items-center gap-4 text-left">
-                                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><i class="fas fa-user-shield text-white"></i></div>
+                                <div class="w-11 h-11 bg-green-500/30 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-300 text-lg"></i></div>
                                 <div>
-                                    <p class="text-[9px] font-bold text-red-200 uppercase tracking-widest leading-none mb-1 italic">Master Control</p>
-                                    <h3 class="text-sm font-black text-white italic uppercase">Admin Panel</h3>
+                                    <p class="text-[10px] font-black uppercase text-green-300 leading-none mb-1 italic">✅ Seller Aktif</p>
+                                    <h3 class="text-base font-black text-white italic uppercase">${currentUserData?.storeName || 'Toko Kamu'}</h3>
                                 </div>
                             </div>
-                            <i class="fas fa-chevron-right text-white/40 text-xs"></i>
-                        </div>
-                        <div onclick="window.location.href='seller-dashboard.html'" class="w-full bg-gradient-to-r from-blue-700 to-indigo-900 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:scale-[1.02] transition border border-white/10 shadow-lg">
-                            <div class="flex items-center gap-4 text-left">
-                                <div class="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-400"></i></div>
-                                <div>
-                                    <p class="text-[9px] font-bold text-blue-200 uppercase tracking-widest leading-none mb-1 italic">Personal Store</p>
-                                    <h3 class="text-sm font-black text-white italic uppercase">Seller Dashboard</h3>
-                                </div>
-                            </div>
-                            <i class="fas fa-chevron-right text-white/40 text-xs"></i>
-                        </div>`;
-                    if (homeSellerCta) homeSellerCta.classList.add('hidden');
+                            <span class="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold italic uppercase">Panel →</span>`;
+                    }
                 } 
-                else if (isSeller && sellerBanner) {
-                    // SELLER TERVERIFIKASI: Cuma dapet Seller Dashboard
-                    sellerBanner.className = 'w-full bg-gradient-to-r from-green-800/60 to-blue-800/40 p-5 rounded-[24px] flex items-center justify-between cursor-pointer hover:scale-[1.01] transition border border-green-500/30 mb-5';
-                    sellerBanner.onclick = () => window.location.href = 'seller-dashboard.html';
-                    sellerBanner.innerHTML = `
-                        <div class="flex items-center gap-4 text-left">
-                            <div class="w-11 h-11 bg-green-500/30 rounded-xl flex items-center justify-center"><i class="fas fa-store text-green-300 text-lg"></i></div>
-                            <div>
-                                <p class="text-[10px] font-black uppercase text-green-300 leading-none mb-1 italic">✅ Seller Aktif</p>
-                                <h3 class="text-base font-black text-white italic uppercase">${currentUserData?.storeName || 'Toko Kamu'}</h3>
-                            </div>
-                        </div>
-                        <span class="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold italic uppercase tracking-tighter">Panel →</span>`;
-                    if (homeSellerCta) homeSellerCta.classList.add('hidden');
+                else if (isPending) {
+                    // PENDING: Sembunyikan promosi & Tampilkan Status Menunggu
+                    if (homeSellerCta) homeSellerCta.style.display = 'none';
+                    if (sellerBanner) {
+                        sellerBanner.className = 'w-full bg-gradient-to-r from-yellow-900/40 to-orange-900/30 p-5 rounded-[24px] flex items-center gap-4 border border-yellow-500/30 mb-5';
+                        sellerBanner.innerHTML = `
+                            <div class="w-11 h-11 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-clock text-yellow-300 text-lg animate-pulse"></i></div>
+                            <div class="flex-1 text-left"><p class="text-[10px] font-black uppercase text-yellow-300 italic">⏳ Menunggu Verifikasi</p><p class="font-bold text-white text-sm italic uppercase">Pendaftaran Sedang Ditinjau Admin</p></div>`;
+                    }
                 } 
-                else if (isPending && sellerBanner) {
-                    // PENDING: Harus nunggu verifikasi (tombol dashboard disembunyikan)
-                    sellerBanner.className = 'w-full bg-gradient-to-r from-yellow-900/40 to-orange-900/30 p-5 rounded-[24px] flex items-center gap-4 border border-yellow-500/30 mb-5';
-                    sellerBanner.innerHTML = `
-                        <div class="w-11 h-11 bg-yellow-500/20 rounded-xl flex items-center justify-center shrink-0"><i class="fas fa-clock text-yellow-300 text-lg animate-pulse"></i></div>
-                        <div class="flex-1 text-left"><p class="text-[10px] font-black uppercase text-yellow-300 italic">⏳ Menunggu Verifikasi</p><p class="font-bold text-white text-sm italic">Pendaftaran Sedang Ditinjau</p></div>`;
-                    if (homeSellerCta) homeSellerCta.classList.add('hidden');
-                } 
-                else if (sellerBanner) {
-                    // BUYER BIASA: Kosongkan banner profil, biar banner daftar di home yang muncul
-                    sellerBanner.innerHTML = '';
-                    sellerBanner.className = '';
-                    if (homeSellerCta) homeSellerCta.classList.remove('hidden');
-                } else if (sellerBanner) {
-                    sellerBanner.innerHTML = '';
-                    sellerBanner.className = '';
-                    if (homeSellerCta) homeSellerCta.classList.remove('hidden');
+                else {
+                    // BUYER BIASA: Tampilkan Banner Promosi Daftar Seller
+                    if (homeSellerCta) homeSellerCta.style.display = 'block';
+                    if (sellerBanner) { sellerBanner.innerHTML = ''; sellerBanner.className = ''; }
                 }
 
-                // Update profile text
+                // 4. Update Teks Profil Standar
                 document.getElementById('userNameText').textContent = user.displayName || 'User';
                 document.getElementById('userEmailText').textContent = user.email;
                 const avatarEl = document.getElementById('profileAvatar');
                 if (avatarEl) avatarEl.textContent = (user.displayName || 'U').charAt(0).toUpperCase();
-                const avatarTxtEl = document.getElementById('avatarText');
-                if (avatarTxtEl) avatarTxtEl.textContent = (user.displayName || 'U').charAt(0).toUpperCase();
 
                 const created = user.metadata?.creationTime;
                 if (created) {
@@ -2088,13 +2096,54 @@
                     const el = document.getElementById('statsMember');
                     if (el) el.textContent = d.toLocaleDateString('id-ID', { year: 'numeric', month: 'short' });
                 }
+
             } else {
                 currentUser = null;
                 currentUserData = null;
                 updateAuthHeader();
-                if (homeSellerCta) homeSellerCta.classList.remove('hidden');
+                if (homeSellerCta) homeSellerCta.style.display = 'block';
             }
         });
+
+        // --- FUNGSI TAMBAHAN (EDIT PROFIL & PASSWORD) ---
+
+        window.openEditProfile = () => {
+            document.getElementById('editNameInput').value = currentUser.displayName;
+            document.getElementById('modalEditProfile').classList.replace('hidden', 'flex');
+        };
+
+        window.saveProfileName = async () => {
+            const newName = document.getElementById('editNameInput').value;
+            const userRef = ref(db, `users/${currentUser.uid}`);
+            const snapshot = await get(userRef);
+            const userData = snapshot.val();
+            const lastUpdate = userData?.lastDisplayNameUpdate || 0;
+            const now = Date.now();
+
+            if (now - lastUpdate < (24 * 60 * 60 * 1000)) {
+                return alert("Sabar! Nama hanya bisa diubah sekali dalam 24 jam.");
+            }
+
+            try {
+                await updateProfile(auth.currentUser, { displayName: newName });
+                await update(userRef, { displayName: newName, lastDisplayNameUpdate: now });
+                alert("Berhasil! Nama diperbarui.");
+                location.reload();
+            } catch (e) { alert("Gagal: " + e.message); }
+        };
+
+        window.openChangePassword = () => document.getElementById('modalChangePassword').classList.replace('hidden', 'flex');
+
+        window.updatePasswordAccount = async () => {
+            const newPass = document.getElementById('newPassInput').value;
+            if (newPass.length < 6) return alert("Minimal 6 karakter!");
+            try {
+                await updatePassword(auth.currentUser, newPass);
+                alert("Password Berhasil Diperbarui!");
+                closeModal('modalChangePassword');
+            } catch (e) { alert("Gagal! (Biasanya perlu login ulang demi keamanan)"); }
+        };
+
 
         // Load products realtime
         onValue(ref(db, 'products'), (snapshot) => {
