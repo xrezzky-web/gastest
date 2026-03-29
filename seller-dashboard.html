@@ -3,280 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard | XREZZKY STORE</title>
+    <title>Seller Dashboard - XREZZKY STORE</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
     <style>
         :root {
-            --bg: #f8fafc;
-            --primary: #3b82f6;
-            --surface: #ffffff;
+            --bg: #080c14; --sf: #0e1520; --sf2: #131c2e;
+            --bd: rgba(255,255,255,.07); --bl: #3b82f6; --yw: #f59e0b; --gr: #10b981;
         }
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg);
-            color: #1e293b;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: #f1f5f9;
+            min-height: 100vh;
         }
-        h1, h2, .font-syne { font-family: 'Syne', sans-serif; }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            transition: all 0.3s;
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59,130,246,0.4); }
+        .glass { background: rgba(14,21,32,0.92); backdrop-filter: blur(16px); border: 1px solid var(--bd); }
+        .inp { width:100%; padding:14px; border-radius:12px; background:var(--sf2); border:1px solid var(--bd); color:#f1f5f9; }
+        .inp:focus { border-color: var(--bl); }
+        .btn { padding:12px 20px; border-radius:12px; font-weight:700; cursor:pointer; }
+        .bp { background:var(--bl); color:white; }
+        .by { background:var(--yw); color:black; }
+        .bg { background:var(--gr); color:white; }
+        .tab-active { border-bottom: 3px solid var(--bl); color: white; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="pb-20">
 
-    <div class="max-w-6xl mx-auto">
-        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-            <div>
-                <h1 class="text-3xl font-extrabold">Seller Dashboard</h1>
-                <p class="text-gray-500">Kelola produk digital kamu di sini.</p>
-            </div>
-            <div class="flex gap-3">
-                <a href="index.html" class="px-6 py-3 bg-white rounded-2xl font-bold text-sm border hover:bg-gray-50 transition">Lihat Toko</a>
-                <button onclick="toggleModal('modalAdd')" class="px-6 py-3 btn-primary rounded-2xl font-bold text-sm flex items-center gap-2">
-                    <i class="fas fa-plus"></i> Tambah Produk
-                </button>
-            </div>
+<div id="loading" class="fixed inset-0 bg-[#080c14] flex flex-col items-center justify-center z-50">
+    <div style="font-family:'Syne',sans-serif;" class="text-4xl font-bold mb-6 text-blue-400">Seller Dashboard</div>
+    <div class="w-48 h-1 bg-gray-800 rounded-full overflow-hidden">
+        <div id="progressBar" class="h-full bg-blue-500 transition-all" style="width:0%"></div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 py-6">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 style="font-family:'Syne',sans-serif;" class="text-3xl font-bold">Seller Dashboard</h1>
+            <p id="storeName" class="text-gray-400"></p>
         </div>
+        <button onclick="logoutSeller()" class="btn border border-red-500 text-red-400 hover:bg-red-500/10">Logout</button>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div class="glass-card p-6 flex items-center gap-5">
-                <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl">
-                    <i class="fas fa-box"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Produk</p>
-                    <h3 class="text-2xl font-bold" id="statTotal">0</h3>
-                </div>
-            </div>
-            <div class="glass-card p-6 flex items-center gap-5">
-                <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-xl">
-                    <i class="fas fa-layer-group"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Stok</p>
-                    <h3 class="text-2xl font-bold" id="statStock">0</h3>
-                </div>
-            </div>
-            <div class="glass-card p-6 flex items-center gap-5">
-                <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-xl">
-                    <i class="fas fa-shopping-cart"></i>
-                </div>
-                <div>
-                    <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Produk Terjual</p>
-                    <h3 class="text-2xl font-bold" id="statSold">0</h3>
-                </div>
-            </div>
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="glass p-5 rounded-2xl text-center">
+            <p class="text-xs text-gray-400">Total Produk</p>
+            <p id="stat-products" class="text-3xl font-bold text-blue-400">0</p>
         </div>
-
-        <div class="glass-card overflow-hidden">
-            <div class="p-6 border-b bg-white/50">
-                <h2 class="text-xl font-bold">Daftar Produk</h2>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-gray-50 text-xs font-bold uppercase text-gray-500">
-                        <tr>
-                            <th class="px-6 py-4">Info Produk</th>
-                            <th class="px-6 py-4">Harga</th>
-                            <th class="px-6 py-4">Stok</th>
-                            <th class="px-6 py-4 text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="productTableBody" class="divide-y divide-gray-100">
-                        </tbody>
-                </table>
-            </div>
+        <div class="glass p-5 rounded-2xl text-center">
+            <p class="text-xs text-gray-400">Total Terjual</p>
+            <p id="stat-sold" class="text-3xl font-bold text-green-400">0</p>
+        </div>
+        <div class="glass p-5 rounded-2xl text-center">
+            <p class="text-xs text-gray-400">Rating Toko</p>
+            <p id="stat-rating" class="text-3xl font-bold text-yellow-400">0.0</p>
         </div>
     </div>
 
-    <div id="modalAdd" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] hidden items-center justify-center p-4">
-        <div class="bg-white rounded-[32px] w-full max-w-lg p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold">Tambah Produk Baru</h2>
-                <button onclick="toggleModal('modalAdd')" class="text-gray-400 hover:text-black"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            
-            <form id="productForm" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Nama Produk</label>
-                    <input type="text" id="pName" class="w-full p-4 bg-gray-50 border rounded-2xl focus:ring-2 ring-blue-500 outline-none" placeholder="Contoh: Joki Dead Rails Level 50" required>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Harga (Rp)</label>
-                        <input type="number" id="pPrice" class="w-full p-4 bg-gray-50 border rounded-2xl focus:ring-2 ring-blue-500 outline-none" placeholder="50000" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Stok</label>
-                        <input type="number" id="pStock" class="w-full p-4 bg-gray-50 border rounded-2xl focus:ring-2 ring-blue-500 outline-none" placeholder="99" required>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">URL Gambar (Imgur/Lainnya)</label>
-                    <input type="url" id="pImage" class="w-full p-4 bg-gray-50 border rounded-2xl focus:ring-2 ring-blue-500 outline-none" placeholder="https://i.imgur.com/..." required>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Deskripsi Layanan</label>
-                    <textarea id="pDesc" rows="4" class="w-full p-4 bg-gray-50 border rounded-2xl focus:ring-2 ring-blue-500 outline-none" placeholder="Tulis detail layanan kamu di sini..."></textarea>
-                </div>
-                <button type="submit" class="w-full py-4 btn-primary rounded-2xl font-bold mt-4">Simpan Produk</button>
-            </form>
+    <!-- Tabs -->
+    <div class="flex border-b border-white/10 mb-6 overflow-x-auto">
+        <button onclick="switchTab(0)" class="tab px-6 py-3 tab-active" id="tab-0">📦 Produk Saya</button>
+        <button onclick="switchTab(1)" class="tab px-6 py-3" id="tab-1">📋 Pesanan Masuk</button>
+        <button onclick="switchTab(2)" class="tab px-6 py-3" id="tab-2">➕ Tambah Produk</button>
+        <button onclick="switchTab(3)" class="tab px-6 py-3" id="tab-3">🏪 Info Toko</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div id="tab-content-0" class="tab-content">
+        <div id="productList" class="space-y-4"></div>
+    </div>
+
+    <div id="tab-content-1" class="tab-content hidden">
+        <div id="orderList" class="space-y-4"></div>
+    </div>
+
+    <div id="tab-content-2" class="tab-content hidden">
+        <div class="glass p-6 rounded-3xl">
+            <h3 class="font-bold mb-6 text-lg">Tambah / Edit Produk</h3>
+            <input id="prodName" type="text" placeholder="Nama Produk *" class="inp mb-3">
+            <input id="prodPrice" type="number" placeholder="Harga (Rp) *" class="inp mb-3">
+            <input id="prodStock" type="number" placeholder="Stok *" class="inp mb-3">
+            <input id="prodCategory" type="text" placeholder="Kategori (contoh: Fashion, Elektronik)" class="inp mb-3">
+            <textarea id="prodDesc" placeholder="Deskripsi produk" class="inp h-24 mb-4"></textarea>
+            <input id="prodImage" type="text" placeholder="URL Gambar (https://...)" class="inp mb-4">
+            <button onclick="saveProduct()" class="btn bg w-full py-4">Simpan Produk</button>
         </div>
     </div>
 
-    <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getDatabase, ref, set, push, onValue, remove, update, get } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+    <div id="tab-content-3" class="tab-content hidden">
+        <div id="storeInfo" class="glass p-6 rounded-3xl"></div>
+    </div>
+</div>
 
-const firebaseConfig = {
-    apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
-    authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
-    databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "xrezzkystore-marketplace-83bc0",
-    storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
-    messagingSenderId: "604900856944",
-    appId: "1:604900856944:web:c48c973da45214c68a10b5"
-};
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { getDatabase, ref, onValue, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
-
-let currentAdmin = null;
-
-// 1. PROTEKSI HALAMAN (Cek apakah user adalah Admin)
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        const userRef = ref(db, 'users/' + user.uid);
-        const snapshot = await get(userRef);
-        const userData = snapshot.val();
-
-        if (userData && userData.role === 'admin') {
-            currentAdmin = user;
-            loadProducts(); // Jika admin, baru load data
-        } else {
-            alert("Akses Ditolak! Anda bukan Admin.");
-            window.location.href = 'index.html';
-        }
-    } else {
-        window.location.href = 'index.html';
-    }
-});
-
-        window.toggleModal = (id) => {
-            const el = document.getElementById(id);
-            el.classList.toggle('hidden');
-            el.classList.toggle('flex');
-        }
-
-        // Contoh fungsi simpan (Ini bagian yang akan kita sambungkan ke Firebase di tahap berikutnya)
-        document.getElementById('productForm').onsubmit = (e) => {
-            e.preventDefault();
-            alert('Produk berhasil ditambahkan! (Logika Firebase akan kita tambahkan di langkah selanjutnya)');
-            toggleModal('modalAdd');
-        }
-        
-        // 2. FUNGSI TAMBAH PRODUK
-document.getElementById('productForm').onsubmit = async (e) => {
-    e.preventDefault();
-    
-    const newProduct = {
-        name: document.getElementById('pName').value,
-        price: document.getElementById('pPrice').value,
-        stock: document.getElementById('pStock').value,
-        images: [document.getElementById('pImage').value], // Disimpan dalam array
-        description: document.getElementById('pDesc').value,
-        category: "Official Service", // Otomatis kategori Owner
-        sellerId: "OWNER_XREZZKY", // ID Statis untuk barang milik Owner
-        createdAt: Date.now(),
-        sold: 0
+    const firebaseConfig = {
+        apiKey: "AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
+        authDomain: "xrezzkystore-marketplace-83bc0.firebaseapp.com",
+        databaseURL: "https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "xrezzkystore-marketplace-83bc0",
+        storageBucket: "xrezzkystore-marketplace-83bc0.firebasestorage.app",
+        messagingSenderId: "604900856944",
+        appId: "1:604900856944:web:c48c973da45214c68a10b5"
     };
 
-    try {
-        const productListRef = ref(db, 'products');
-        await push(productListRef, newProduct);
-        
-        alert("Produk Berhasil Ditambahkan!");
-        document.getElementById('productForm').reset();
-        toggleModal('modalAdd');
-    } catch (error) {
-        alert("Gagal: " + error.message);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    let currentUser = null;
+    let sellerData = null;
+    let products = [];
+    let orders = [];
+    let currentEditProductId = null;
+
+    // Loading
+    function simulateLoading() {
+        setTimeout(() => document.getElementById('loading').remove(), 1200);
     }
-};
 
-// 3. LOAD PRODUK KE TABEL
-function loadProducts() {
-    const productRef = ref(db, 'products');
-    onValue(productRef, (snapshot) => {
-        const data = snapshot.val();
-        const tableBody = document.getElementById('productTableBody');
-        tableBody.innerHTML = '';
-        
-        let totalStok = 0;
-        let totalItem = 0;
+    // Switch Tab
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById(`tab-content-${tab}`).classList.remove('hidden');
 
-        if (data) {
-            Object.keys(data).forEach(key => {
-                const p = data[key];
-                totalItem++;
-                totalStok += Number(p.stock);
+        document.querySelectorAll('.tab').forEach(el => el.classList.remove('tab-active'));
+        document.getElementById(`tab-${tab}`).classList.add('tab-active');
+    }
 
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="px-6 py-4">
-                        <div class="flex items-center gap-3">
-                            <img src="${p.images[0]}" class="w-10 h-10 rounded-lg object-cover">
-                            <span class="font-bold text-sm">${p.name}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 text-sm">Rp ${Number(p.price).toLocaleString('id-ID')}</td>
-                    <td class="px-6 py-4 text-sm">${p.stock}</td>
-                    <td class="px-6 py-4 text-center">
-                        <button onclick="deleteProduct('${key}')" class="text-red-500 hover:text-red-700 p-2">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(tr);
+    // Realtime Data
+    function loadSellerData() {
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'index.html';
+                return;
+            }
+            currentUser = user;
+
+            // Load Seller Info
+            onValue(ref(db, 'sellers/' + user.uid), (snap) => {
+                if (snap.exists()) {
+                    sellerData = snap.val();
+                    document.getElementById('storeName').textContent = sellerData.storeName || 'Toko Saya';
+                    loadStoreInfo();
+                }
             });
-        }
-        
-        // Update Statistik di Dashboard
-        document.getElementById('statTotal').textContent = totalItem;
-        document.getElementById('statStock').textContent = totalStok;
-    });
-}
 
-// 4. FUNGSI HAPUS
-window.deleteProduct = (id) => {
-    if (confirm("Hapus produk ini?")) {
-        remove(ref(db, 'products/' + id));
+            // Load Products (hanya milik seller ini)
+            onValue(ref(db, 'products'), (snap) => {
+                products = [];
+                snap.forEach(child => {
+                    const p = child.val();
+                    if (p.sellerId === user.uid) {
+                        products.push({ id: child.key, ...p });
+                    }
+                });
+                renderSellerProducts();
+                updateStats();
+            });
+
+            // Load Orders (hanya untuk seller ini)
+            onValue(ref(db, 'orders'), (snap) => {
+                orders = [];
+                snap.forEach(child => {
+                    const o = child.val();
+                    if (o.sellerId === user.uid) {
+                        orders.push({ id: child.key, ...o });
+                    }
+                });
+                renderOrders();
+            });
+        });
     }
-};
 
-window.toggleModal = (id) => {
-    const el = document.getElementById(id);
-    el.classList.toggle('hidden');
-    el.classList.toggle('flex');
-};
+    function renderSellerProducts() {
+        const container = document.getElementById('productList');
+        container.innerHTML = '';
+        products.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'glass p-4 rounded-2xl flex gap-4';
+            div.innerHTML = `
+                <img src="${p.images && p.images[0] ? p.images[0] : 'https://placehold.co/80x80/1a2333/64748b?text=No+Img'}" class="w-20 h-20 object-cover rounded-xl">
+                <div class="flex-1">
+                    <p class="font-medium">${p.name}</p>
+                    <p class="text-blue-400">Rp ${Number(p.price).toLocaleString('id-ID')}</p>
+                    <p class="text-xs text-gray-400">Stok: ${p.stock || 0}</p>
+                </div>
+                <div>
+                    <button onclick="editProduct('${p.id}')" class="btn border border-yellow-400 text-yellow-400 text-xs px-3 py-1 mb-2">Edit</button>
+                    <button onclick="deleteProduct('${p.id}')" class="btn border border-red-500 text-red-400 text-xs px-3 py-1">Hapus</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
 
+    function renderOrders() {
+        const container = document.getElementById('orderList');
+        container.innerHTML = '';
+        orders.forEach(order => {
+            const div = document.createElement('div');
+            div.className = 'glass p-5 rounded-2xl';
+            div.innerHTML = `
+                <div class="flex justify-between mb-3">
+                    <span class="font-mono text-sm">${order.orderId}</span>
+                    <span class="px-3 py-1 text-xs rounded-full ${order.status === 'completed' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}">
+                        ${order.status || 'pending'}
+                    </span>
+                </div>
+                <p class="font-medium">${order.userName}</p>
+                <p class="text-sm text-gray-400">\( {order.items.map(i => ` \){i.name} x${i.qty}`).join(', ')}</p>
+                <p class="text-blue-400 font-bold mt-2">Rp ${Number(order.total).toLocaleString('id-ID')}</p>
+                
+                <div class="mt-4 flex gap-2">
+                    <select onchange="updateOrderStatus('${order.id}', this.value)" class="inp text-sm">
+                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="processed" ${order.status === 'processed' ? 'selected' : ''}>Diproses</option>
+                        <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Dikirim</option>
+                        <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Selesai</option>
+                        <option value="rejected" ${order.status === 'rejected' ? 'selected' : ''}>Tolak</option>
+                    </select>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
 
-    </script>
+    window.updateOrderStatus = async (orderId, status) => {
+        try {
+            await update(ref(db, 'orders/' + orderId), { status });
+            if (status === 'rejected') {
+                // Kembalikan stok (logic sederhana)
+                showToast('Pesanan ditolak, stok akan dikembalikan');
+            }
+            showToast(`Status diubah menjadi ${status}`);
+        } catch (e) {
+            showToast('Gagal update status');
+        }
+    };
+
+    function loadStoreInfo() {
+        const el = document.getElementById('storeInfo');
+        el.innerHTML = `
+            <h3 class="font-bold mb-4">Info Toko</h3>
+            <p><strong>Nama Toko:</strong> ${sellerData.storeName}</p>
+            <p><strong>Kota:</strong> ${sellerData.city}</p>
+            <p><strong>WhatsApp:</strong> ${sellerData.whatsapp}</p>
+            <p class="mt-4 text-sm text-gray-400">${sellerData.description || ''}</p>
+        `;
+    }
+
+    window.saveProduct = async () => {
+        const name = document.getElementById('prodName').value.trim();
+        const price = parseInt(document.getElementById('prodPrice').value);
+        const stock = parseInt(document.getElementById('prodStock').value);
+        const category = document.getElementById('prodCategory').value.trim();
+        const desc = document.getElementById('prodDesc').value.trim();
+        const imageUrl = document.getElementById('prodImage').value.trim();
+
+        if (!name || !price || !stock) return showToast('Nama, harga, dan stok wajib diisi');
+
+        const productData = {
+            name, price, stock, category: category || 'Lainnya',
+            description: desc, 
+            images: imageUrl ? [imageUrl] : [],
+            sellerId: currentUser.uid,
+            sellerName: sellerData.storeName,
+            updatedAt: Date.now()
+        };
+
+        try {
+            if (currentEditProductId) {
+                await update(ref(db, 'products/' + currentEditProductId), productData);
+                showToast('Produk berhasil diperbarui');
+            } else {
+                await push(ref(db, 'products'), productData);
+                showToast('Produk berhasil ditambahkan');
+            }
+            switchTab(0); // Kembali ke tab produk
+            clearProductForm();
+        } catch (e) {
+            showToast('Gagal menyimpan produk');
+        }
+    };
+
+    function clearProductForm() {
+        document.getElementById('prodName').value = '';
+        document.getElementById('prodPrice').value = '';
+        document.getElementById('prodStock').value = '';
+        document.getElementById('prodCategory').value = '';
+        document.getElementById('prodDesc').value = '';
+        document.getElementById('prodImage').value = '';
+        currentEditProductId = null;
+    }
+
+    window.editProduct = (id) => {
+        const p = products.find(prod => prod.id === id);
+        if (!p) return;
+        currentEditProductId = id;
+        document.getElementById('prodName').value = p.name;
+        document.getElementById('prodPrice').value = p.price;
+        document.getElementById('prodStock').value = p.stock;
+        document.getElementById('prodCategory').value = p.category || '';
+        document.getElementById('prodDesc').value = p.description || '';
+        document.getElementById('prodImage').value = p.images && p.images[0] ? p.images[0] : '';
+        switchTab(2);
+    };
+
+    window.deleteProduct = async (id) => {
+        if (!confirm('Yakin hapus produk ini?')) return;
+        try {
+            await remove(ref(db, 'products/' + id));
+            showToast('Produk dihapus');
+        } catch (e) {
+            showToast('Gagal menghapus');
+        }
+    };
+
+    function updateStats() {
+        document.getElementById('stat-products').textContent = products.length;
+        // Total terjual bisa dihitung dari orders nanti
+        document.getElementById('stat-sold').textContent = '0';
+    }
+
+    window.logoutSeller = async () => {
+        await signOut(auth);
+        window.location.href = 'index.html';
+    };
+
+    // Init
+    simulateLoading();
+    loadSellerData();
+</script>
 </body>
 </html>
