@@ -1176,7 +1176,6 @@
     let currentFilter = 'all';
     let toastTimer = null;
 
-
     // =========================================================
     //  UTILS
     // =========================================================
@@ -1623,9 +1622,6 @@
         if (tot) tot.textContent = `Rp ${(Number(selectedProduct.price||0) * val).toLocaleString('id-ID')}`;
     };
 
-        openModal('modalDetail');
-    };
-
     // Buka toko dari detail produk
     window.openStoreFromDetail = () => {
         if (!selectedProduct) return;
@@ -2051,9 +2047,6 @@
         navigator.clipboard?.writeText(id).then(()=>showToast('Disalin! 🔗', `ID Pesanan ${id} disalin`,'success'));
     };
 
-    window.copyOrderId = (id) => {
-        navigator.clipboard?.writeText(id).then(()=>showToast('Disalin! 🔗',`ID ${id} disalin`,'success'));
-    };
     window.copyOrderDetail = (oid) => {
         get(ref(db,`orders/${currentUser.uid}/${oid}`)).then(snap=>{
             if(!snap.exists()) return;
