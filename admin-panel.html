@@ -363,13 +363,30 @@ select.inp option{background:var(--s1)}
 
   <!-- ===== ORDERS ===== -->
   <section id="sec-orders" class="section">
-    <div class="flex items-center justify-between mb-5">
-      <h1 class="text-2xl font-extrabold syne">Kelola Order</h1>
-      <button onclick="openAddOrderModal()" class="btn btn-blue"><i class="fas fa-plus"></i> Tambah Order Manual</button>
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h1 class="text-2xl font-extrabold syne">Monitor Order Global</h1>
+        <p class="text-xs text-slate-500 mt-0.5">Semua transaksi realtime · Admin hanya monitor & moderasi</p>
+      </div>
+      <button onclick="openAddOrderModal()" class="btn btn-blue"><i class="fas fa-plus"></i> Tambah Manual</button>
+    </div>
+    <div class="flex gap-3 mb-4 flex-wrap">
+      <select id="orderStatusFilter" class="inp" style="width:180px" onchange="renderOrders()">
+        <option value="all">Semua Status</option>
+        <option value="confirm">⏳ Konfirmasi Seller</option>
+        <option value="pending">💳 Pending Bayar</option>
+        <option value="processing">🔄 Diproses</option>
+        <option value="completed">✅ Selesai</option>
+        <option value="cancelled">❌ Ditolak/Batal</option>
+      </select>
+      <input type="text" id="orderSearch" placeholder="Cari nama/produk/ID..." class="inp" style="width:220px" oninput="renderOrders()">
+      <div class="flex items-center gap-2 text-xs text-green-400 font-bold ml-auto">
+        <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div> Realtime
+      </div>
     </div>
     <div class="card overflow-x-auto">
       <table class="tbl">
-        <thead><tr><th>Order ID</th><th>Pembeli</th><th>Produk</th><th>Total</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+        <thead><tr><th>ID · Waktu</th><th>Pembeli</th><th>Produk · Toko</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead>
         <tbody id="orderBody"></tbody>
       </table>
     </div>
@@ -576,15 +593,22 @@ select.inp option{background:var(--s1)}
 <div id="mOrderStatus" class="overlay">
   <div class="modal p-7">
     <button onclick="closeM('mOrderStatus')" class="absolute top-4 right-4 w-9 h-9 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times text-sm"></i></button>
-    <h2 class="text-xl font-extrabold syne mb-2">Update Status Order</h2>
-    <p id="osOrderId" class="text-slate-500 text-xs mb-5">ID: -</p>
+    <h2 class="text-xl font-extrabold syne mb-1">Update Status Order</h2>
+    <p id="osOrderId" class="text-slate-500 text-xs mb-1">ID: -</p>
+    <div id="osOrderDetail" class="bg-white/3 rounded-xl p-3 mb-4 text-xs space-y-1 text-slate-400"></div>
     <input type="hidden" id="os_uid"><input type="hidden" id="os_oid">
+    <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Status Baru</label>
     <select id="os_status" class="inp mb-4">
-      <option value="pending">⏳ Pending — Menunggu Konfirmasi</option>
+      <option value="confirm">⏳ Confirm — Menunggu Konfirmasi Seller</option>
+      <option value="pending">💳 Pending — Menunggu Pembayaran</option>
       <option value="processing">🔄 Processing — Sedang Diproses</option>
       <option value="completed">✅ Completed — Selesai</option>
-      <option value="cancelled">❌ Cancelled — Dibatalkan</option>
+      <option value="cancelled">❌ Cancelled — Dibatalkan/Tolak</option>
     </select>
+    <div class="mb-4">
+      <label class="text-xs text-slate-400 font-bold uppercase mb-1.5 block">Catatan Admin (opsional)</label>
+      <textarea id="os_note" class="inp" rows="2" placeholder="Catatan untuk seller/buyer..."></textarea>
+    </div>
     <button onclick="saveOrderStatus()" class="btn btn-blue w-full justify-center"><i class="fas fa-check"></i> Update Status</button>
   </div>
 </div>
@@ -595,13 +619,13 @@ import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from
 import { getDatabase, ref, onValue, set, get, remove, update, push } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
 const FB = {
-    apiKey:"AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",
-    authDomain:"xrezzkystore-marketplace-83bc0.firebaseapp.com",
-    databaseURL:"https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId:"xrezzkystore-marketplace-83bc0",
-    storageBucket:"xrezzkystore-marketplace-83bc0.firebasestorage.app",
-    messagingSenderId:"604900856944",
-    appId:"1:604900856944:web:c48c973da45214c68a10b5"
+    apiKey:"AIzaSyBouXC_NmAuNydTk3gKL83A1BiyqZQYyXY",
+    authDomain:"marketplace-48c4d.firebaseapp.com",
+    databaseURL:"https://marketplace-48c4d-default-rtdb.firebaseio.com",
+    projectId:"marketplace-48c4d",
+    storageBucket:"marketplace-48c4d.firebasestorage.app",
+    messagingSenderId:"565598495756",
+    appId:"1:565598495756:web:c48c973da45214c68a10b5"
 };
 const app  = initializeApp(FB);
 const auth = getAuth(app);
@@ -1004,10 +1028,18 @@ window.approveSeller = async (uid) => {
     const s = allSellers[uid]; if(!s) return;
     try {
         await update(ref(db,`seller_applications/${uid}`),{status:'approved',reviewedAt:Date.now()});
-        await update(ref(db,`users/${uid}`),{role:'seller',storeName:s.storeName,sellerStatus:'approved'});
+        // Cek role existing — jangan override admin jadi seller
+        const userSnap = await get(ref(db,`users/${uid}`));
+        const existingRole = userSnap.exists() ? userSnap.val().role : 'buyer';
+        const newRole = existingRole === 'admin' ? 'admin' : 'seller'; // Admin tetap admin
+        await update(ref(db,`users/${uid}`),{
+            role: newRole,
+            storeName: s.storeName,
+            sellerStatus: 'approved'
+        });
         closeM('mSellerDetail');
-        toast('Disetujui! ✅',`Toko "${s.storeName}" berhasil diaktifkan`,'success');
-        logAction('Approve Seller',`"${s.storeName}" disetujui`,'green','check');
+        toast('Disetujui! ✅',`Toko "${s.storeName}" berhasil diaktifkan${newRole==='admin'?' (role admin dipertahankan)':''}`, 'success');
+        logAction('Approve Seller',`"${s.storeName}" disetujui. Role: ${newRole}`,'green','check');
     } catch(e){ toast('Gagal',e.message,'error'); }
 };
 
@@ -1109,31 +1141,100 @@ window.triggerDeleteUser = (uid, name) => {
     openConfirmModal('Hapus Pengguna',`Kamu akan menghapus data "<strong>${name}</strong>" dari database. Akun Firebase Auth tidak ikut terhapus.`,'red','user-times');
 };
 
-// ─── ORDERS ───
+// ─── ORDERS (Global Realtime View) ───
 window.renderOrders = () => {
     const body=$('orderBody'); body.innerHTML='';
-    const statusMap={pending:'⏳ Pending',processing:'🔄 Diproses',completed:'✅ Selesai',cancelled:'❌ Dibatalkan'};
-    const badgeMap={pending:'badge-pending',processing:'badge-buyer',completed:'badge-approved',cancelled:'badge-rejected'};
-    let hasData=false;
+    const statusFilter = $('orderStatusFilter')?.value || 'all';
+    const searchQ = ($('orderSearch')?.value || '').toLowerCase();
+    const statusMap={
+        confirm:    {l:'⏳ Konfirmasi Seller', b:'badge-pending'},
+        pending:    {l:'💳 Pending Bayar',     b:'badge-pending'},
+        processing: {l:'🔄 Diproses',          b:'badge-buyer'},
+        completed:  {l:'✅ Selesai',            b:'badge-approved'},
+        cancelled:  {l:'❌ Ditolak/Batal',      b:'badge-rejected'},
+    };
+    let allOrderList = [];
     Object.entries(allOrders).forEach(([uid,userOrders])=>{
         if(!userOrders) return;
         Object.entries(userOrders).forEach(([oid,o])=>{
-            hasData=true;
-            const u=allUsers[uid];
-            const dt=o.createdAt?new Date(o.createdAt).toLocaleDateString('id-ID'):'-';
-            const tr=document.createElement('tr');
-            tr.innerHTML=`
-                <td class="text-xs font-mono text-slate-400">${oid.slice(-6).toUpperCase()}</td>
-                <td class="text-xs">${u?.name||uid.slice(0,8)+'...'}</td>
-                <td class="text-xs font-semibold">${o.productName||'-'}</td>
-                <td class="text-xs font-bold text-blue-400">Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}</td>
-                <td><span class="badge ${badgeMap[o.status||'pending']}">${statusMap[o.status||'pending']}</span></td>
-                <td class="text-xs text-slate-500">${dt}</td>
-                <td><button onclick="openOrderStatus('${uid}','${oid}','${o.status||'pending'}')" class="btn btn-ghost text-xs py-1.5 px-2"><i class="fas fa-edit"></i></button></td>`;
-            body.appendChild(tr);
+            allOrderList.push({uid, oid, ...o});
         });
     });
-    if(!hasData) body.innerHTML=`<tr><td colspan="7" class="text-center py-8 text-slate-600">Belum ada order</td></tr>`;
+    // Filter
+    if (statusFilter !== 'all') allOrderList = allOrderList.filter(o=>o.status===statusFilter);
+    if (searchQ) allOrderList = allOrderList.filter(o=>{
+        const u = allUsers[o.uid];
+        return (o.productName||'').toLowerCase().includes(searchQ)
+            || (o.storeName||'').toLowerCase().includes(searchQ)
+            || (u?.name||'').toLowerCase().includes(searchQ)
+            || (u?.email||'').toLowerCase().includes(searchQ)
+            || o.oid.slice(-8).toLowerCase().includes(searchQ);
+    });
+    // Sort newest first
+    allOrderList.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
+    if (allOrderList.length === 0) {
+        body.innerHTML=`<tr><td colspan="6" class="text-center py-8 text-slate-600">Tidak ada order</td></tr>`;
+        return;
+    }
+    allOrderList.forEach(o=>{
+        const u=allUsers[o.uid];
+        const st=statusMap[o.status||'confirm']||statusMap.confirm;
+        const dtFull = o.createdAt ? new Date(o.createdAt).toLocaleString('id-ID',{
+            day:'2-digit',month:'short',year:'numeric',
+            hour:'2-digit',minute:'2-digit',second:'2-digit'
+        }) : '-';
+        const shortId = o.oid.slice(-8).toUpperCase();
+        const tr=document.createElement('tr');
+        tr.innerHTML=`
+            <td>
+                <div class="flex items-center gap-1.5">
+                    <span class="text-xs font-mono text-slate-300 font-bold">${shortId}</span>
+                    <button onclick="copyOrderId('${shortId}','${o.oid}')" class="text-slate-600 hover:text-blue-400 transition" title="Salin ID">
+                        <i class="fas fa-copy text-[10px]"></i>
+                    </button>
+                </div>
+                <p class="text-[9px] text-slate-600 mt-0.5">${dtFull}</p>
+            </td>
+            <td>
+                <p class="text-xs font-semibold">${u?.name||'-'}</p>
+                <p class="text-[10px] text-slate-500 truncate max-w-[140px]">${u?.email||o.uid.slice(0,12)+'...'}</p>
+            </td>
+            <td>
+                <p class="text-xs font-semibold line-clamp-1">${o.productName||'-'} ${o.qty>1?`<span class="text-blue-400">(${o.qty}x)</span>`:''}</p>
+                <p class="text-[10px] text-slate-500">${o.storeName||'-'}</p>
+            </td>
+            <td class="text-xs font-bold text-blue-400">Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}</td>
+            <td><span class="badge ${st.b}">${st.l}</span></td>
+            <td>
+                <div class="flex gap-1">
+                    <button onclick="openOrderStatus('${o.uid}','${o.oid}','${o.status||'confirm'}')" class="btn btn-ghost text-xs py-1.5 px-2" title="Update Status"><i class="fas fa-edit"></i></button>
+                    <button onclick="openOrderBanAction('${o.uid}','${o.oid}','${(o.productName||'').replace(/'/g,"\\'")}','${(u?.name||'').replace(/'/g,"\\'")}','${(o.sellerId||'')}','${(o.storeName||'').replace(/'/g,"\\'")}' )" class="btn btn-ghost text-xs py-1.5 px-2 text-red-400 hover:bg-red-500/10" title="Laporkan/Ban"><i class="fas fa-flag"></i></button>
+                </div>
+            </td>`;
+        body.appendChild(tr);
+    });
+};
+
+window.copyOrderId = (shortId, fullId) => {
+    const text = `ID Pesanan: ${shortId}\nFull ID: ${fullId}`;
+    navigator.clipboard?.writeText(text).then(()=>toast('Disalin! 🔗',`ID Pesanan ${shortId} berhasil disalin`,'success'));
+};
+
+// Quick action dari order — ban seller / laporan
+window.openOrderBanAction = (buyerUid, oid, prodName, buyerName, sellerId, storeName) => {
+    if (!sellerId || sellerId === 'undefined') {
+        toast('Info', 'Produk ini tidak memiliki sellerId yang valid', 'info');
+        return;
+    }
+    const seller = Object.values(allSellers).find(s => s.uid === sellerId);
+    if (!seller) {
+        toast('Info', `Seller "${storeName||'?'}" tidak ditemukan di sistem`, 'info');
+        return;
+    }
+    if (confirm(`🚨 LAPORAN ORDER\n\nProduk: ${prodName}\nPembeli: ${buyerName}\nToko: ${storeName}\n\nApakah kamu ingin membanned toko "${storeName}"?\nKamu akan diminta alasan.`)) {
+        triggerBanStore(sellerId, storeName);
+    }
 };
 
 window.openAddOrderModal = () => openM('mAddOrder');
@@ -1156,15 +1257,40 @@ window.submitOrder = async () => {
 window.openOrderStatus = (uid, oid, current) => {
     $('os_uid').value=uid; $('os_oid').value=oid;
     $('os_status').value=current;
-    $('osOrderId').textContent=`ID: ${oid.slice(-8).toUpperCase()}`;
+    $('os_note').value='';
+    const shortId = oid.slice(-8).toUpperCase();
+    $('osOrderId').textContent=`ID: ${shortId}`;
+
+    // Show order detail
+    const o = allOrders[uid]?.[oid];
+    const u = allUsers[uid];
+    if (o) {
+        const dtFull = o.createdAt ? new Date(o.createdAt).toLocaleString('id-ID',{
+            day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'
+        }) : '-';
+        $('osOrderDetail').innerHTML = `
+            <div class="flex justify-between"><span class="font-bold text-slate-300">Pembeli:</span><span>${u?.name||uid.slice(0,10)}</span></div>
+            <div class="flex justify-between"><span class="font-bold text-slate-300">Produk:</span><span>${o.productName||'-'} ${o.qty>1?`(${o.qty}x)`:''}</span></div>
+            <div class="flex justify-between"><span class="font-bold text-slate-300">Total:</span><span class="text-blue-400 font-bold">Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}</span></div>
+            <div class="flex justify-between"><span class="font-bold text-slate-300">Waktu:</span><span>${dtFull}</span></div>
+            <div class="flex justify-between"><span class="font-bold text-slate-300">Toko:</span><span>${o.storeName||'-'}</span></div>`;
+    }
     openM('mOrderStatus');
 };
+
 window.saveOrderStatus = async () => {
-    const uid=$('os_uid').value, oid=$('os_oid').value, st=$('os_status').value;
+    const uid=$('os_uid').value, oid=$('os_oid').value;
+    const st=$('os_status').value;
+    const note=$('os_note').value.trim();
+    const shortId = oid.slice(-8).toUpperCase();
     try {
-        await update(ref(db,`orders/${uid}/${oid}`),{status:st});
-        closeM('mOrderStatus'); toast('Berhasil',`Status order diubah ke ${st}`);
-        logAction('Update Order',`Order ${oid.slice(-6).toUpperCase()} → ${st}`,'blue','edit');
+        const upd = { status: st, adminNote: note||null, updatedAt: Date.now() };
+        // Kalau admin tolak — set cancelReason dari note
+        if (st === 'cancelled' && note) upd.cancelReason = `[Admin] ${note}`;
+        await update(ref(db,`orders/${uid}/${oid}`), upd);
+        closeM('mOrderStatus');
+        toast('Berhasil',`Order ${shortId} → ${st}`);
+        logAction('Update Order',`${shortId} diubah ke "${st}"${note?`. Catatan: ${note}`:''}`, 'blue','edit');
     } catch(e){ toast('Gagal',e.message,'error'); }
 };
 
@@ -1265,21 +1391,16 @@ const loadConfigToForm = () => {
     $('cfg_adminWa').value  = c.adminWa||'6281234567890';
     $('cfg_trustBadges').value=(c.trustBadges||['TERJAMIN','TRUSTED','#1 MARKETPLACE']).join(', ');
 
-    // Ticker
-    tickerItems = c.tickerItems||['✨ Flash Sale skin Mobile Legends hingga 50% OFF setiap Jumat','🎮 Gratis ongkir untuk pembelian pertama kamu','🔐 Semua transaksi dijamin aman & bergaransi','💎 Member Premium dapat akses early bird produk baru'];
+    // Ticker — default KOSONG
+    tickerItems = c.tickerItems || [];
     renderTickerList();
 
-    // Features
-    featureItems = c.features||[
-        {icon:'fa-shield-alt',color:'blue',title:'Transaksi Aman',desc:'Sistem escrow & garansi'},
-        {icon:'fa-bolt',color:'green',title:'Proses Cepat',desc:'Pengiriman instan'},
-        {icon:'fa-headset',color:'purple',title:'CS 24/7',desc:'Siap bantu kapanpun'},
-        {icon:'fa-star',color:'yellow',title:'Produk Premium',desc:'Kualitas terjamin'},
-    ];
+    // Features — default KOSONG (bisa ditambah admin)
+    featureItems = c.features || [];
     renderFeatureList();
 
-    // Categories
-    categories = c.categories||['Game Mobile','Premium Apps','E-Voucher','Akun Sosmed','Jasa Digital'];
+    // Categories — default KOSONG
+    categories = c.categories || [];
     renderCatList();
 };
 
