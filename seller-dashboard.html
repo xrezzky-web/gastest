@@ -267,6 +267,7 @@ select.inp option{background:var(--s1)}
           <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Harga (Rp) <span class="text-red-400">*</span></label><input id="prod_price" type="number" class="inp" placeholder="0"></div>
           <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Stok <span class="text-red-400">*</span></label><input id="prod_stock" type="number" class="inp" placeholder="0"></div>
         </div>
+        <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Maks. Beli per Transaksi <span class="text-slate-600">(kosong = tidak dibatasi)</span></label><input id="prod_maxbuy" type="number" class="inp" placeholder="Contoh: 5 (artinya max 5 per beli)"></div>
         <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Kategori</label><input id="prod_cat" type="text" class="inp" placeholder="Game Mobile, E-Voucher, dll"></div>
         <div><label class="text-xs text-slate-400 font-bold uppercase mb-1 block">Deskripsi</label><textarea id="prod_desc" class="inp" rows="4" placeholder="Deskripsikan produkmu secara detail..."></textarea></div>
       </div>
@@ -364,7 +365,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/fireba
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getDatabase, ref, onValue, set, get, remove, update, push } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-const FB = {apiKey:"AIzaSyA75bdcfawOi957by8y_4-l4sJCCo6pF88",authDomain:"xrezzkystore-marketplace-83bc0.firebaseapp.com",databaseURL:"https://xrezzkystore-marketplace-83bc0-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"xrezzkystore-marketplace-83bc0",storageBucket:"xrezzkystore-marketplace-83bc0.firebasestorage.app",messagingSenderId:"604900856944",appId:"1:604900856944:web:c48c973da45214c68a10b5"};
+const FB = {apiKey:"AIzaSyBouXC_NmAuNydTk3gKL83A1BiyqZQYyXY",authDomain:"marketplace-48c4d.firebaseapp.com",databaseURL:"https://marketplace-48c4d-default-rtdb.firebaseio.com",projectId:"marketplace-48c4d",storageBucket:"marketplace-48c4d.firebasestorage.app",messagingSenderId:"565598495756",appId:"1:565598495756:web:0a80f3dd4a56a7f57efa29"};
 const app=initializeApp(FB),auth=getAuth(app),db=getDatabase(app);
 
 // ─── STATE ───
@@ -459,6 +460,9 @@ const initSeller=()=>{
   $('sAvatar').textContent=(sellerData.storeName||'S').charAt(0).toUpperCase();
   $('storeNameHeader').textContent=sellerData.storeName||'-';
 
+  // Request browser notification permission
+  if(Notification.permission==='default') Notification.requestPermission();
+
   // Load products (only mine)
   onValue(ref(db,'products'),snap=>{
     myProducts={};
@@ -470,14 +474,18 @@ const initSeller=()=>{
     renderReviews();
   });
 
-  // Load ALL orders and filter by seller's products
+  // Load ALL orders and filter by seller's products — match by sellerId
   onValue(ref(db,'orders'),snap=>{
     myOrders={};
     const all=snap.val()||{};
     Object.entries(all).forEach(([uid,userOrders])=>{
       if(!userOrders)return;
       Object.entries(userOrders).forEach(([oid,o])=>{
-        if(myProducts[o.productId]||Object.values(myProducts).find(p=>p.name===o.productName)){
+        // Match by sellerId first (most reliable), fallback to productId match
+        const isMine = o.sellerId === CU.uid
+            || myProducts[o.productId]
+            || Object.values(myProducts).find(p=>p.name===o.productName);
+        if(isMine){
           if(!myOrders[uid])myOrders[uid]={};
           myOrders[uid][oid]=o;
         }
@@ -486,11 +494,15 @@ const initSeller=()=>{
     updateStats();
     renderDashOrders();
     renderOrders();
-    // New order badge
+    // New order badge — count confirm status
     let confirmCount=0;
     Object.values(myOrders).forEach(uo=>Object.values(uo).forEach(o=>{if(o.status==='confirm')confirmCount++;}));
     const nb=$('newOrderBadge');
     if(confirmCount>0){nb.textContent=confirmCount;nb.classList.remove('hidden');}else nb.classList.add('hidden');
+    // Browser notification for new confirm orders
+    if(confirmCount>0 && document.visibilityState==='hidden' && Notification.permission==='granted'){
+      new Notification('🛒 Pesanan Baru!',{body:`${confirmCount} pesanan menunggu konfirmasi kamu`,icon:'/favicon.ico'});
+    }
   });
 
   loadStoreForm();
@@ -523,7 +535,7 @@ window.go=name=>{
 window.openAddProd=()=>{
   $('prodModalTitle').textContent='Tambah Produk';
   $('prod_id').value='';
-  ['prod_name','prod_price','prod_stock','prod_cat','prod_desc','prod_img1','prod_img2','prod_img3'].forEach(id=>$(id).value='');
+  ['prod_name','prod_price','prod_stock','prod_maxbuy','prod_cat','prod_desc','prod_img1','prod_img2','prod_img3'].forEach(id=>$(id)&&($(id).value=''));
   $('imgPreviews').innerHTML='';
   openM('mProd');
 };
@@ -535,6 +547,7 @@ window.openEditProd=(id)=>{
   $('prod_name').value=p.name||'';
   $('prod_price').value=p.price||0;
   $('prod_stock').value=p.stock||0;
+  $('prod_maxbuy').value=p.maxBuy||'';
   $('prod_cat').value=p.category||'';
   $('prod_desc').value=p.description||'';
   $('prod_img1').value=p.images?.[0]||'';
@@ -561,6 +574,7 @@ window.saveProd=async()=>{
   const name=$('prod_name').value.trim();
   const price=Number($('prod_price').value)||0;
   const stock=Number($('prod_stock').value)||0;
+  const maxBuyRaw=$('prod_maxbuy')?.value?.trim();
   if(!name)return toast('Error','Nama produk wajib!','error');
   if(price<=0)return toast('Error','Harga harus lebih dari 0!','error');
 
@@ -571,6 +585,10 @@ window.saveProd=async()=>{
     storeName:sellerData.storeName||'Toko',storeId:CU.uid,
     createdAt:id?myProducts[id]?.createdAt||Date.now():Date.now(),updatedAt:Date.now()
   };
+  // maxBuy — hanya set kalau diisi
+  if(maxBuyRaw&&Number(maxBuyRaw)>0) data.maxBuy=Number(maxBuyRaw);
+  else if(id&&myProducts[id]?.maxBuy) data.maxBuy=null; // clear if emptied
+
   try{
     if(id){await update(ref(db,`products/${id}`),data);}
     else{await push(ref(db,'products'),data);}
@@ -704,25 +722,36 @@ window.openOrderDetail=(uid,oid)=>{
   } else {
     $('ord_rejectReason').classList.add('hidden');
   }
-  // WA Template
+  // WA Template — with full timestamp
   const p=myProducts[o.productId]||{};
-  const waMsg=
-`Halo ${o.buyerName||'Pelanggan'},
+  const orderTime = o.createdAt ? new Date(o.createdAt).toLocaleString('id-ID',{
+    weekday:'long',day:'2-digit',month:'long',year:'numeric',
+    hour:'2-digit',minute:'2-digit',second:'2-digit'
+  }) : '-';
+  const waMsg =
+`${o.status==='confirm'?'🔔 *PESANAN BARU MASUK!*':o.status==='completed'?'✅ *Pesanan Selesai!*':'📋 *Update Pesanan*'}
 
-✅ Update Pesanan Kamu!
-
-🏪 Toko: ${sellerData.storeName||'XREZZKY Seller'}
-📋 ID Pesanan: ${oid.slice(-8).toUpperCase()}
-📦 Nama Produk: ${o.productName||'-'}
+━━━━━━━━━━━━━━━━━━
+🏪 Toko: *${sellerData.storeName||'XREZZKY Seller'}*
+📋 ID Pesanan: *${oid.slice(-8).toUpperCase()}*
+🕐 Waktu: ${orderTime}
+━━━━━━━━━━━━━━━━━━
+📦 Produk: *${o.productName||'-'}*
 📝 Deskripsi: ${p.description||'-'}
-🏷️ Kategori: ${p.category||'-'}
-💰 Harga: Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}
-💳 Total: Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}
+🏷️ Kategori: ${p.category||o.category||'-'}
+🔢 Jumlah: ${o.qty||1} unit
+💰 Harga: Rp ${Number(o.unitPrice||o.totalPrice||0).toLocaleString('id-ID')} / unit
+💳 Total: *Rp ${Number(o.totalPrice||0).toLocaleString('id-ID')}*
 🆔 ID Produk: ${o.productId||'-'}
+━━━━━━━━━━━━━━━━━━
+👤 Pembeli: *${o.buyerName||'-'}*
+📱 WA: ${o.buyerWa||'-'}
+📧 Email: ${o.buyerEmail||'-'}
+━━━━━━━━━━━━━━━━━━
+📊 Status: *${st.l}*
+${o.status==='confirm'?'\n👆 Pesanan perlu dikonfirmasi seller.':''}${o.status==='pending'?'\n💳 Silakan lakukan pembayaran sesuai instruksi.':''}${o.status==='processing'?'\n⚙️ Pesanan sedang diproses!':''}${o.status==='completed'?'\n🙏 Terima kasih sudah berbelanja!':''}${o.status==='cancelled'&&o.cancelReason?`\n❌ Alasan: ${o.cancelReason}`:''}
 
-📊 Status: ${st.l}
-${o.status==='pending'?`\n💳 Silakan lakukan pembayaran dan konfirmasi ke kami.\n`:''}${o.status==='processing'?`\n⚙️ Pesanan sedang kami proses, harap tunggu ya!\n`:''}${o.status==='completed'?`\n✅ Pesanan selesai! Terima kasih sudah berbelanja 🙏\n`:''}
-— ${sellerData.storeName||'XREZZKY Store'} via XREZZKY OFFICIAL STORE`;
+— *${sellerData.storeName||'XREZZKY Store'}* via XREZZKY OFFICIAL STORE`;
   $('ord_waMsg').textContent=waMsg;
   window._currentWaMsg=waMsg;
   window._currentOrderBuyerWa=(o.buyerWa||'').replace(/\D/g,'');
